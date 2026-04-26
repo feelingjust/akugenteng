@@ -131,9 +131,11 @@
   let score = 0, wave = 1;
   let enemies = [], bullets = [], stars = [];
   let lastFire = 0, lastSpawn = 0;
-
+  
   const player = {
-    x: 0, y: 0, speed: 7, shield: 200, heat: 0, overheated: false,
+    x: 0, y: 0, speed: 7, 
+    shield: 200, maxShield: 200,
+    heat: 0, maxHeat: 100, overheated: false,
     input: { u: false, d: false, l: false, r: false, f: false }
   };
   
@@ -209,11 +211,23 @@
     const now = Date.now();
     if(player.input.f && !player.overheated && now - lastFire > 120) {
       bullets.push({x: player.x, y: player.y - 20});
-      player.heat += 4; lastFire = now;
-      if(player.heat >= 100) player.overheated = true;
+      player.heat += 6;
+      lastFire = now;
+      if(player.heat >= player.maxHeat) {
+        player.heat = player.maxHeat;
+        player.overheated = true;
+      }
     }
-    player.heat = Math.max(0, player.heat - 0.8);
-    if(player.heat <= 0) player.overheated = false;
+    
+    if(player.overheated) {
+      player.heat -= 0.5;
+      if(player.heat <= 0) {
+        player.heat = 0;
+        player.overheated = false;
+      }
+    } else {
+      player.heat = Math.max(0, player.heat - 1.2);
+    }
 
     // Enemy Spawning
     const config = getDifficulty();

@@ -266,8 +266,11 @@
     // UI Update
     document.getElementById('score').innerText = score;
     document.getElementById('wave').innerText = wave;
-    document.getElementById('s-fill').style.width = player.shield + '%';
-    document.getElementById('h-fill').style.width = player.heat + '%';
+    document.getElementById('s-fill').style.width = (player.shield / player.maxShield * 100) + '%';
+    const hBar = document.getElementById('h-fill');
+    hBar.style.width = player.heat + '%';
+    if(player.overheated) hBar.classList.add('overheat-active');
+    else hBar.classList.remove('overheat-active');
   }
 
   function draw() {

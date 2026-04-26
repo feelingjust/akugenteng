@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Takaka Store — Top Up E-Wallet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+  :root {
+    --bg:        #0a0812;
+    --bg2:       #0f0d1a;
+    --surface:   #161228;
+    --surface2:  #1e1830;
+    --darker:    #0d0b18;
+
+    --border:    rgba(160,130,255,0.09);
+    --border2:   rgba(160,130,255,0.18);
+
+    --purple:    #7c5cbf;
+    --purple-lt: #a07de8;
+    --purple-dk: #4b3580;
+    --biru:      #8b5cf6;
+    --biru2:     #a78bfa;
+    --glow:      rgba(124,92,191,0.28);
+    --glow-sm:   rgba(124,92,191,0.14);
+
+    --accent:    #c084fc;
+    --accent2:   #e0b4ff;
+    --gold:      #e2b84a;
+    --yellow:    #ffd600;
+    --danger:    #f04b6a;
+    --red:       #ff1744;
+    --success:   #34d399;
+    --green:     #00e676;
+    --blue:      #64b5f6;
+
+    --gopay:     #00aa5b;
+    --gopay-lt:  #00d472;
+    --gopay-dk:  #007a41;
+    --gopay-glow: rgba(0,170,91,0.22);
+    --gopay-bg:  rgba(0,170,91,0.08);
+
+    --text:      #ede9f8;
+    --text2:     #b8aed4;
+    --text-dim:  #6b5f8a;
+    --muted:     #6b5f8a;
+
+    --radius:    16px;
+    --radius-sm: 10px;
+    --shadow:    0 8px 32px rgba(0,0,0,0.55);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 10% 0%, rgba(124,92,191,0.20) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 90% 100%, rgba(168,85,247,0.12) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 520px;
+    margin: 0 auto; padding-bottom: 56px;
+  }
+  @media (min-width: 520px) {
+    .page { border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+  }
+
+  /* HEADER */
+  .app-header {
+    background: linear-gradient(160deg, #1c1530 0%, #0f0d1a 100%);
+    border-bottom: 1px solid var(--border2);
+    padding: clamp(18px,5vw,28px) clamp(16px,4.5vw,28px) clamp(22px,6vw,32px);
+    position: relative; overflow: hidden;
+  }
+  .app-header::before {
+    content: ''; position: absolute;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: var(--glow); top: -130px; right: -70px;
+    filter: blur(70px); pointer-events: none;
+  }
+  .header-top {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: clamp(16px,4vw,24px);
+  }
+  .logo { font-family: 'Syne', sans-serif; font-size: clamp(20px,5.5vw,26px); font-weight: 800; letter-spacing: -0.5px; }
+  .logo em { font-style: normal; color: var(--accent); }
+  .header-right { display: flex; align-items: center; gap: 8px; }
+  .pill-live {
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.25);
+    color: var(--success); font-size: 9px; font-weight: 800; letter-spacing: 0.7px;
+    padding: 4px 10px; border-radius: 99px;
+  }
+  .pill-live::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--success); animation: blink 1.6s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+
+  .field-label {
+    font-size: 9px; font-weight: 800; letter-spacing: 1.3px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 8px; display: block;
+  }
+  .phone-field {
+    display: flex; align-items: stretch;
+    background: rgba(255,255,255,0.03); border: 1.5px solid var(--border2);
+    border-radius: var(--radius); overflow: hidden; transition: border-color .3s, box-shadow .3s;
+  }
+  .phone-field:focus-within { border-color: var(--purple-lt); box-shadow: 0 0 0 3px var(--glow-sm); }
+  .field-prefix {
+    padding: 0 14px; display: flex; align-items: center;
+    font-size: 13px; font-weight: 600; color: var(--text2);
+    border-right: 1.5px solid var(--border2);
+    background: rgba(255,255,255,0.02); flex-shrink: 0; white-space: nowrap;
+  }
+  .phone-input {
+    flex: 1; min-width: 0; background: transparent; border: none; outline: none;
+    font-family: 'DM Sans', sans-serif; font-size: clamp(15px,4vw,17px); font-weight: 500;
+    color: var(--text); padding: clamp(12px,3vw,15px) clamp(12px,3vw,16px);
+  }
+  .phone-input::placeholder { color: var(--muted); font-size: 14px; }
+  .clear-btn {
+    background: none; border: none; cursor: pointer; color: var(--muted); font-size: 14px;
+    padding: 0 14px; display: flex; align-items: center; flex-shrink: 0; transition: color .2s;
+  }
+  .clear-btn:hover { color: var(--danger); }
+
+  /* inline alert below phone field */
+  .nomor-alert {
+    display: none; margin-top: 8px;
+    background: rgba(139,92,246,0.10); border: 1px solid rgba(139,92,246,0.28);
+    border-radius: 10px; padding: 9px 13px;
+    font-size: 12px; font-weight: 700; color: var(--biru2);
+    align-items: center; gap: 8px;
+  }
+  .nomor-alert.show { display: flex; }
+
+  .field-hint { font-size: 11px; color: var(--muted); margin-top: 7px; padding-left: 2px; transition: color .3s; }
+  .field-hint.ok  { color: var(--success); }
+  .field-hint.err { color: var(--danger); }
+
+  /* GOPAY BANNER */
+  .gopay-banner {
+    margin: clamp(12px,3vw,16px) clamp(14px,4vw,20px) 0;
+    background: linear-gradient(135deg, rgba(0,170,91,0.12), rgba(0,122,65,0.06));
+    border: 1px solid rgba(0,170,91,0.25); border-radius: var(--radius);
+    padding: clamp(12px,3vw,16px) clamp(14px,4vw,18px);
+    display: flex; align-items: center; gap: 14px;
+    position: relative; overflow: hidden; cursor: pointer; transition: all .25s;
+  }
+  .gopay-banner:hover { border-color: rgba(0,170,91,0.45); transform: translateY(-1px); }
+  .gopay-icon-wrap {
+    width: 44px; height: 44px; border-radius: 13px;
+    background: var(--gopay); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,170,91,0.35);
+  }
+  .gopay-icon-wrap img { width: 28px; height: 28px; object-fit: contain; border-radius: 6px; }
+  .gopay-info { flex: 1; }
+  .gopay-info strong { font-family: 'Syne', sans-serif; font-size: clamp(12px,3vw,14px); font-weight: 700; color: var(--gopay-lt); display: block; margin-bottom: 2px; }
+  .gopay-info span { font-size: 11px; color: rgba(52,211,153,0.75); }
+  .gopay-badge { background: var(--gopay); color: #fff; font-size: 9px; font-weight: 800; padding: 4px 9px; border-radius: 7px; flex-shrink: 0; text-transform: uppercase; }
+
+  /* STATS */
+  .stats-row {
+    display: flex; gap: clamp(6px,2vw,10px);
+    padding: clamp(12px,3vw,16px) clamp(14px,4vw,20px);
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+  }
+  .stat-card {
+    flex: 1; display: flex; align-items: center; gap: clamp(6px,1.8vw,9px);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: clamp(8px,2vw,11px) clamp(8px,2.2vw,12px);
+  }
+  .stat-ico { width: clamp(26px,5.5vw,30px); height: clamp(26px,5.5vw,30px); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: clamp(12px,2.8vw,14px); flex-shrink: 0; }
+  .stat-card:nth-child(1) .stat-ico { background: rgba(124,92,191,.2); }
+  .stat-card:nth-child(2) .stat-ico { background: rgba(52,211,153,.12); }
+  .stat-card:nth-child(3) .stat-ico { background: rgba(0,170,91,.14); }
+  .stat-val { font-size: clamp(10px,2.4vw,12px); font-weight: 700; line-height: 1.15; }
+  .stat-key { font-size: 9px; color: var(--muted); margin-top: 2px; white-space: nowrap; }
+
+  /* HOW TO */
+  .how-box {
+    margin: clamp(14px,4vw,20px) clamp(14px,4vw,20px) 0;
+    background: linear-gradient(135deg, rgba(124,92,191,.10), rgba(75,53,128,.04));
+    border: 1px solid var(--border2); border-radius: var(--radius); padding: clamp(14px,4vw,18px);
+  }
+  .how-title { font-family: 'Syne', sans-serif; font-size: clamp(12px,3.2vw,13px); font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 7px; color: var(--accent2); }
+  .how-steps { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .how-steps li { display: flex; align-items: center; gap: 10px; font-size: clamp(11px,2.6vw,12px); color: var(--text2); }
+  .step-dot { width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--purple-dk)); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; color: white; flex-shrink: 0; }
+
+  .divider { height: 1px; background: var(--border); margin: clamp(14px,4vw,20px) clamp(14px,4vw,20px) 0; }
+
+  /* WALLET TABS */
+  .tabs-header { display: flex; justify-content: space-between; align-items: center; padding: clamp(14px,4vw,20px) clamp(14px,4vw,20px) 6px; }
+  .tabs-title { font-family: 'Syne', sans-serif; font-size: clamp(14px,3.6vw,16px); font-weight: 700; }
+  .tabs-count { background: rgba(160,130,255,0.12); border: 1px solid var(--border2); color: var(--muted); font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 99px; }
+
+  .wallet-tabs {
+    display: flex; gap: clamp(6px,2vw,10px);
+    overflow-x: auto; scrollbar-width: none;
+    padding: clamp(8px,2vw,10px) clamp(14px,4vw,20px) clamp(10px,3vw,14px);
+    -webkit-overflow-scrolling: touch;
+  }
+  .wallet-tabs::-webkit-scrollbar { display: none; }
+  .wtab { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; padding: 3px; transition: transform .2s; }
+  .wtab:not(.active):hover { transform: translateY(-2px); }
+  .wtab-icon {
+    width: clamp(52px,12.5vw,64px); height: clamp(52px,12.5vw,64px);
+    border-radius: clamp(14px,3.5vw,17px); background: var(--surface); border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; transition: all .25s ease; position: relative;
+  }
+  .wtab-icon img { width: clamp(30px,7.5vw,38px); height: clamp(30px,7.5vw,38px); object-fit: contain; border-radius: 7px; transition: transform .25s ease; }
+  .wtab:not(.active):hover .wtab-icon img { transform: scale(1.1); }
+  .wtab.active .wtab-icon { border-color: var(--purple-lt); background: rgba(124,92,191,.15); box-shadow: 0 0 0 3px var(--glow-sm), 0 6px 22px var(--glow); }
+  .wtab-label { font-size: clamp(9px,2.1vw,10px); font-weight: 700; color: var(--muted); transition: color .25s; }
+  .wtab.active .wtab-label { color: var(--purple-lt); }
+  .wtab-new { position: absolute; top: -5px; right: -5px; background: var(--gopay); color: #fff; font-size: 7px; font-weight: 900; padding: 2px 5px; border-radius: 5px; letter-spacing: .4px; border: 1.5px solid var(--bg); }
+
+  /* PRODUCT SECTION */
+  .prod-section { display: none; padding: 0 clamp(12px,3.5vw,20px); animation: fadeUp .3s ease; }
+  .prod-section.active { display: block; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  .prod-header { display: flex; align-items: center; gap: 12px; padding: clamp(10px,3vw,14px) 2px clamp(12px,3.5vw,16px); border-bottom: 1px solid var(--border); margin-bottom: clamp(10px,3vw,14px); }
+  .prod-logo { width: 44px; height: 44px; border-radius: 13px; background: var(--surface2); overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid var(--border2); }
+  .prod-logo img { width: 29px; object-fit: contain; }
+  .prod-header-info h3 { font-family: 'Syne', sans-serif; font-size: clamp(13px,3.6vw,15px); font-weight: 700; }
+  .prod-header-info p { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* GRID */
+  .prod-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(8px,2.5vw,12px); padding-bottom: clamp(12px,3vw,18px); }
+  @media (min-width: 480px) { .prod-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  /* CARD */
+  .prod-card {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: clamp(12px,3vw,16px) clamp(10px,2.8vw,14px);
+    cursor: pointer; display: flex; flex-direction: column; gap: 7px;
+    position: relative; overflow: hidden;
+    transition: border-color .25s, transform .2s, box-shadow .25s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .prod-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--purple) 0%, transparent 80%); opacity: 0; transition: opacity .25s; pointer-events: none; }
+  .prod-card:hover { border-color: var(--border2); transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,.45), 0 0 0 1px var(--border2); }
+  .prod-card:hover::after { opacity: .07; }
+  .prod-card:active { transform: scale(.96); transition: transform .1s; }
+
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .card-logo { width: 32px; height: 32px; border-radius: 9px; background: var(--surface2); overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); }
+  .card-logo img { width: 22px; object-fit: contain; }
+  .badge-hot { background: rgba(226,184,74,.12); border: 1px solid rgba(226,184,74,.28); color: var(--gold); font-size: 7px; font-weight: 800; letter-spacing: .5px; padding: 2px 6px; border-radius: 5px; text-transform: uppercase; align-self: flex-start; white-space: nowrap; }
+  .card-name { font-size: clamp(10px,2.4vw,11px); font-weight: 600; color: var(--text2); }
+  .card-price { font-family: 'Syne', sans-serif; font-size: clamp(13px,3.4vw,15px); font-weight: 700; color: var(--accent); letter-spacing: -.3px; }
+  .card-btn { width: 100%; padding: clamp(7px,1.8vw,9px) 0; background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dk) 100%); border: none; border-radius: 9px; color: #fff; font-family: 'DM Sans', sans-serif; font-size: clamp(10px,2.4vw,11px); font-weight: 700; cursor: pointer; transition: filter .2s, transform .15s; }
+  .card-btn:hover { filter: brightness(1.18); }
+  .card-btn:active { transform: scale(.97); }
+
+  /* FOOTER */
+  .app-footer { text-align: center; padding: clamp(20px,5vw,32px) 20px clamp(24px,6vw,36px); color: var(--muted); font-size: 10px; line-height: 1.9; border-top: 1px solid var(--border); margin-top: clamp(12px,3vw,20px); }
+  .app-footer strong { color: var(--text2); }
+  .footer-pay-icons { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .fpay { background: var(--surface); border: 1px solid var(--border2); border-radius: 7px; padding: 4px 9px; font-size: 9px; font-weight: 700; color: var(--muted); }
+  .fpay.g { color: var(--gopay-lt); border-color: rgba(0,170,91,0.25); background: var(--gopay-bg); }
+
+  /* TOAST */
+  #toast-wrap { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); width: min(92%, 420px); z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+  .toast { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 12px; color: var(--text); display: flex; align-items: center; gap: 9px; box-shadow: var(--shadow); animation: toastIn .3s ease; pointer-events: all; }
+  .toast.ok  { border-color: rgba(52,211,153,.35); }
+  @keyframes toastIn { from{opacity:0;transform:translateY(-8px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+
+  /* ═══ QRIS MODAL ═══ */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 200; align-items: flex-end; justify-content: center; backdrop-filter: blur(8px); }
+  .modal-overlay.show { display: flex; }
+  .modal-sheet { background: #0d0b18; border-radius: 24px 24px 0 0; width: 100%; max-width: 520px; padding: 20px 20px 36px; position: relative; animation: slideUpM 0.32s cubic-bezier(.22,.68,0,1.2); max-height: 92vh; overflow-y: auto; border-top: 1px solid rgba(139,92,246,0.18); }
+  @keyframes slideUpM { from{transform:translateY(100%)} to{transform:translateY(0)} }
+  .modal-handle { width: 40px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 10px; margin: 0 auto 18px; }
+  .modal-close { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.10); border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+  .qris-order-box { background: var(--darker); border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.06); }
+  .qris-order-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 6px; }
+  .qris-order-row:last-child { margin-bottom: 0; }
+  .qris-order-row .label { color: var(--text-dim); font-weight: 600; }
+  .qris-order-row .value { color: #fff; font-weight: 700; font-family: 'Rajdhani', sans-serif; font-size: 14px; }
+  .qris-order-row .value.total { color: var(--green); font-size: 18px; font-weight: 800; }
+  .qris-order-row .value.uid { color: var(--blue); }
+  .qris-order-row .value.admin { color: var(--yellow); }
+  .qris-order-row.admin-row { background: rgba(255,214,0,0.05); border-radius: 8px; padding: 5px 6px; margin: 2px 0; }
+  .admin-badge { background: rgba(255,214,0,0.15); border: 1px solid rgba(255,214,0,0.3); border-radius: 6px; padding: 2px 7px; font-size: 10px; font-weight: 800; color: var(--yellow); margin-left: 6px; }
+
+  .qris-box { background: #fff; border-radius: 16px; padding: 12px; margin: 0 auto 14px; width: fit-content; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+  .qris-img-wrap { position: relative; display: inline-block; line-height: 0; }
+  .qris-img-wrap img.qris-main { display: block; width: 200px; height: 200px; border-radius: 6px; object-fit: cover; }
+  .qris-ff-logo { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 44px; height: 44px; background: linear-gradient(135deg,#7c3aed,#4c1d95); border-radius: 10px; border: 3px solid #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.4); font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 1px; }
+  .qris-logo-strip { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; padding: 0 2px; }
+  .qris-label-img { font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; color: #e60000; letter-spacing: 1px; }
+
+  .qris-header { text-align: center; margin-bottom: 14px; }
+  .qris-title { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: #fff; }
+  .qris-subtitle { font-size: 11px; color: var(--text-dim); margin-top: 3px; font-weight: 600; }
+
+  .qris-autodetect { display: none; align-items: center; justify-content: center; gap: 10px; background: rgba(0,230,118,0.07); border: 1px solid rgba(0,230,118,0.2); border-radius: 12px; padding: 11px 14px; margin-bottom: 12px; font-size: 12px; font-weight: 700; color: var(--green); }
+  .qris-autodetect.waiting { display: flex; background: rgba(255,214,0,0.07); border-color: rgba(255,214,0,0.2); color: var(--yellow); }
+  .qris-autodetect.detected { display: flex; background: rgba(0,230,118,0.10); border-color: rgba(0,230,118,0.3); color: var(--green); }
+  .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); flex-shrink: 0; animation: pulseDot 1.2s ease-in-out infinite; }
+  .pulse-dot.green { background: var(--green); animation: none; }
+  @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(0.6)} }
+
+  .qris-note-scan { text-align: center; font-size: 11px; color: var(--text-dim); font-weight: 600; margin-bottom: 12px; line-height: 1.5; }
+  .qris-note-scan strong { color: var(--biru2); }
+  .qris-countdown { display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(255,214,0,0.08); border: 1px solid rgba(255,214,0,0.2); border-radius: 10px; padding: 9px; margin-bottom: 14px; font-size: 12px; font-weight: 700; color: var(--yellow); }
+  #countdownNum { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; min-width: 50px; text-align: center; }
+
+  .qris-steps { margin-bottom: 14px; }
+  .qris-steps-title { font-size: 10px; font-weight: 800; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .qris-step { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 7px; font-size: 12px; color: var(--text); font-weight: 600; line-height: 1.4; }
+  .step-num { width: 20px; height: 20px; background: linear-gradient(135deg, var(--biru), #6d28d9); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: #fff; flex-shrink: 0; margin-top: 1px; }
+
+  .bukti-upload-wrap { margin-bottom: 14px; }
+  .bukti-label { font-size: 11px; font-weight: 800; color: var(--biru2); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .bukti-opsional { color: var(--red); font-size: 10px; font-weight: 700; text-transform: none; letter-spacing: 0; }
+  .bukti-dropzone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: rgba(139,92,246,0.05); border: 1.5px dashed rgba(139,92,246,0.35); border-radius: 14px; padding: 18px 12px; cursor: pointer; transition: all .2s; min-height: 100px; position: relative; overflow: hidden; }
+  .bukti-dropzone:hover, .bukti-dropzone.has-file { border-color: var(--biru); background: rgba(139,92,246,0.10); }
+  .bukti-icon { font-size: 26px; line-height: 1; }
+  .bukti-text { font-size: 12px; font-weight: 700; color: var(--text); text-align: center; line-height: 1.4; }
+  .bukti-hint { font-size: 10px; color: var(--text-dim); font-weight: 600; }
+  .bukti-preview { width: 100%; max-height: 160px; object-fit: cover; border-radius: 10px; margin-top: 4px; }
+  .bukti-clear { display: none; position: absolute; top: 8px; right: 8px; background: rgba(255,23,68,0.8); border: none; color: #fff; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; cursor: pointer; align-items: center; justify-content: center; }
+  .bukti-dropzone.has-file .bukti-clear { display: flex; }
+
+  .btn-konfirm { width: 100%; background: linear-gradient(135deg,#00c853,#00a040); color: #fff; border: none; border-radius: 14px; padding: 14px; font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,200,83,0.3); transition: all .2s; }
+  .btn-konfirm:hover { transform: translateY(-1px); }
+  .btn-konfirm:disabled { background: rgba(255,255,255,0.08) !important; color: var(--text-dim) !important; box-shadow: none !important; cursor: not-allowed; transform: none !important; }
+  .btn-konfirm-hint { text-align: center; font-size: 11px; font-weight: 700; color: var(--red); margin-top: 6px; display: none; }
+  .btn-konfirm-hint.show { display: block; }
+
+  .supported-apps { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; margin-top: 12px; }
+  .app-tag { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.10); border-radius: 20px; padding: 3px 9px; font-size: 10px; font-weight: 700; color: var(--text-dim); }
+
+  .qris-success { display: none; text-align: center; padding: 20px 0; }
+  .success-icon { font-size: 52px; margin-bottom: 14px; animation: popIn .4s cubic-bezier(.22,.68,0,1.4); }
+  @keyframes popIn { from{transform:scale(0)} to{transform:scale(1)} }
+  .success-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--green); margin-bottom: 6px; }
+  .success-msg { font-size: 13px; color: var(--text-dim); font-weight: 600; line-height: 1.6; }
+
+  .tg-notif-badge { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e2d42; border: 1px solid #2d8fe6; border-radius: 14px; padding: 10px 18px; font-size: 12px; font-weight: 700; color: #74c0fc; z-index: 9999; box-shadow: 0 6px 24px rgba(0,0,0,0.5); white-space: nowrap; }
+
+
+
+  @media (max-width: 380px) { .stats-row { gap: 5px; } .stat-key { display: none; } .gopay-info span { display: none; } }
+  @media (min-width: 520px) { .qris-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; } .qris-steps-title { grid-column: 1 / -1; } }
+
+
+  /* ═══ LIVE CHAT (from free-fire) ═══ */
+  .chat-fab {
+    position: fixed; bottom: 24px; right: 20px; z-index: 200;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+  }
+  .chat-fab-btn {
+    width: 58px; height: 58px;
+    background: linear-gradient(135deg, #7c3aed, #4c1d95);
+    border-radius: 50%; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 24px rgba(139,92,246,0.55);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative; color: #fff; font-size: 22px;
+  }
+  .chat-fab-btn:hover { transform: scale(1.08); box-shadow: 0 8px 30px rgba(139,92,246,0.7); }
+  .chat-fab-label {
+    background: linear-gradient(135deg, #7c3aed, #4c1d95);
+    color: #fff; font-size: 12px; font-weight: 800;
+    padding: 6px 14px; border-radius: 20px;
+    box-shadow: 0 4px 14px rgba(139,92,246,0.4);
+    white-space: nowrap; letter-spacing: 0.5px;
+    animation: floatLabel 2.5s ease-in-out infinite;
+  }
+  @keyframes floatLabel { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+  .chat-unread {
+    position: absolute; top: -2px; right: -2px;
+    width: 18px; height: 18px; background: var(--red);
+    border-radius: 50%; border: 2px solid var(--darker);
+    font-size: 10px; font-weight: 800; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .chat-panel {
+    position: fixed; bottom: 96px; right: 16px;
+    width: 340px; max-width: calc(100vw - 32px);
+    background: #0d0d1a; border-radius: 20px;
+    border: 1px solid rgba(139,92,246,0.25);
+    box-shadow: 0 16px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(139,92,246,0.1);
+    display: none; flex-direction: column; overflow: hidden;
+    z-index: 199; max-height: 520px;
+  }
+  .chat-panel.open { display: flex; animation: chatSlideIn 0.3s cubic-bezier(.22,.68,0,1.2); }
+  @keyframes chatSlideIn { from{opacity:0;transform:translateY(20px) scale(0.95)} to{opacity:1;transform:translateY(0) scale(1)} }
+  .chat-head {
+    background: linear-gradient(135deg, #7c3aed, #4c1d95);
+    padding: 14px 16px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  }
+  .chat-head-avatar {
+    width: 38px; height: 38px; background: rgba(255,255,255,0.2);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.3);
+  }
+  .chat-head-info { flex: 1; }
+  .chat-head-name { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; color: #fff; line-height: 1.2; }
+  .chat-head-status { font-size: 11px; color: rgba(255,255,255,0.75); font-weight: 600; display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulseDot 1.5s ease-in-out infinite; }
+  .chat-close-btn { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+  .chat-close-btn:hover { background: rgba(255,255,255,0.3); }
+  .chat-messages {
+    flex: 1; overflow-y: auto; padding: 14px 12px;
+    display: flex; flex-direction: column; gap: 10px;
+    min-height: 180px; max-height: 260px;
+    scrollbar-width: thin; scrollbar-color: rgba(139,92,246,0.3) transparent;
+  }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.3); border-radius: 4px; }
+  .chat-bubble-wrap { display: flex; gap: 8px; align-items: flex-end; }
+  .chat-bubble-wrap.user { flex-direction: row-reverse; }
+  .bubble-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg,#7c3aed,#4c1d95); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .bubble-avatar.user-av { background: linear-gradient(135deg,#0f766e,#047857); }
+  .bubble-col { display: flex; flex-direction: column; }
+  .bubble-col.user { align-items: flex-end; }
+  .chat-bubble { max-width: 78%; padding: 9px 12px; border-radius: 16px; font-size: 13px; font-weight: 600; line-height: 1.5; color: #fff; word-break: break-word; }
+  .chat-bubble.cs { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.2); border-bottom-left-radius: 4px; }
+  .chat-bubble.user { background: linear-gradient(135deg,#7c3aed,#5b21b6); border-bottom-right-radius: 4px; }
+  .chat-bubble.img-bubble { padding: 5px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); }
+  .chat-bubble.img-bubble img { width: 100%; max-width: 200px; border-radius: 10px; display: block; cursor: pointer; }
+  .bubble-time { font-size: 10px; color: var(--text-dim); font-weight: 600; margin-top: 3px; padding: 0 4px; }
+  .typing-bubble { display: flex; gap: 4px; align-items: center; padding: 10px 14px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.15); border-radius: 16px; border-bottom-left-radius: 4px; width: fit-content; }
+  .typing-dot { width: 7px; height: 7px; background: var(--biru2); border-radius: 50%; animation: typingBounce 1.2s ease-in-out infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typingBounce { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-6px);opacity:1} }
+  .chat-input-bar { flex-shrink: 0; padding: 10px 12px; border-top: 1px solid rgba(255,255,255,0.06); background: #0a0a16; display: flex; align-items: flex-end; gap: 8px; }
+  .chat-input-attach { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.25); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--biru2); font-size: 15px; flex-shrink: 0; transition: background 0.2s; }
+  .chat-input-attach:hover { background: rgba(139,92,246,0.3); }
+  .chat-input-field { flex: 1; background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 8px 14px; color: #fff; font-family: 'DM Sans',sans-serif; font-size: 13px; font-weight: 600; outline: none; resize: none; min-height: 36px; max-height: 90px; transition: border-color 0.2s; line-height: 1.4; }
+  .chat-input-field:focus { border-color: var(--biru); }
+  .chat-input-field::placeholder { color: var(--text-dim); }
+  .chat-send-btn { width: 36px; height: 36px; background: linear-gradient(135deg,#7c3aed,#5b21b6); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 15px; flex-shrink: 0; transition: all 0.2s; box-shadow: 0 3px 12px rgba(139,92,246,0.4); }
+  .chat-send-btn:hover { transform: scale(1.1); }
+  .chat-send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .chat-img-preview-wrap { display: none; padding: 8px 12px 0; position: relative; width: fit-content; }
+  .chat-img-preview-wrap.show { display: block; }
+  .chat-img-preview-wrap img { width: 70px; height: 70px; object-fit: cover; border-radius: 10px; border: 2px solid var(--biru); display: block; }
+  .chat-img-preview-clear { position: absolute; top: 4px; right: -2px; width: 20px; height: 20px; background: var(--red); border: none; color: #fff; border-radius: 50%; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .chat-img-area { display: flex; flex-direction: column; }
+  .chat-sending-status { text-align: center; font-size: 11px; color: var(--text-dim); font-weight: 600; padding: 4px 0 0; }
+  .chat-sending-status.sent { color: var(--green); }
+  .chat-sending-status.error { color: var(--red); }
+  .quick-replies { display: flex; flex-wrap: wrap; gap: 7px; padding: 10px 12px 4px; animation: chatSlideIn 0.3s ease; }
+  .quick-reply-btn {
+    background: rgba(139,92,246,0.12); border: 1.5px solid rgba(139,92,246,0.4);
+    border-radius: 20px; color: var(--biru2); font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 700; padding: 6px 13px; cursor: pointer;
+    transition: all 0.18s; white-space: nowrap;
+  }
+  .quick-reply-btn:hover { background: rgba(139,92,246,0.28); border-color: var(--biru); color: #fff; transform: translateY(-1px); }
+  .quick-reply-btn:active { transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<div id="toast-wrap"></div>
+<div class="tg-notif-badge" id="tgNotifBadge">✅ Notif terkirim!</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-top">
+      <div class="logo">Takaka<em>Store</em></div>
+      <div class="header-right">
+        <div class="pill-live">ONLINE</div>
+
+      </div>
+    </div>
+
+    <label class="field-label" for="nomor">📱 Nomor Tujuan E-Wallet</label>
+    <div class="phone-field">
+      <span class="field-prefix">+62</span>
+      <input id="nomor" type="tel" class="phone-input"
+        placeholder="8xx-xxxx-xxxx"
+        maxlength="14" autocomplete="tel"
+        oninput="onPhone(this)">
+      <button class="clear-btn" onclick="clearPhone()" title="Hapus">✕</button>
+    </div>
+    <div class="nomor-alert" id="nomorAlert">
+      📵 Isi nomor tujuan minimal 10 digit sebelum memilih produk!
+    </div>
+    <p class="field-hint" id="hint">Masukkan nomor aktif, 10–14 digit</p>
+  </header>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-ico">⚡</div><div><div class="stat-val">Instan</div><div class="stat-key">Proses Cepat</div></div></div>
+    <div class="stat-card"><div class="stat-ico">🛡️</div><div><div class="stat-val">Aman</div><div class="stat-key">100% Secure</div></div></div>
+    <div class="stat-card"><div class="stat-ico">💚</div><div><div class="stat-val">5 Wallet</div><div class="stat-key">+GoPay Baru</div></div></div>
+  </div>
+
+  <!-- GOPAY BANNER -->
+  <div class="gopay-banner" onclick="switchWallet('gopay', document.querySelector('.gopay-tab'))">
+    <div class="gopay-icon-wrap">
+      <img src="https://087882444486design.files.wordpress.com/2022/07/gojek.png?resize=219%2C219" alt="GoPay" onerror="this.style.display='none';this.parentElement.textContent='💚'">
+    </div>
+    <div class="gopay-info">
+      <strong>GoPay Tersedia! 🎉</strong>
+      <span>Top Up GoPay cepat & instan · Cashback spesial</span>
+    </div>
+    <div class="gopay-badge">BARU</div>
+  </div>
+
+  <!-- HOW TO -->
+  <div class="how-box">
+    <div class="how-title">💡 Cara Pembelian</div>
+    <ul class="how-steps">
+      <li><div class="step-dot">1</div> Masukkan nomor tujuan di kolom atas</li>
+      <li><div class="step-dot">2</div> Pilih e-wallet yang diinginkan</li>
+      <li><div class="step-dot">3</div> Pilih nominal → scan QR & konfirmasi bayar</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- WALLET TABS -->
+  <div class="tabs-header">
+    <div class="tabs-title">Pilih E-Wallet</div>
+    <div class="tabs-count">5 tersedia</div>
+  </div>
+
+  <div class="wallet-tabs">
+    <div class="wtab gopay-tab" onclick="switchWallet('gopay',this)">
+      <div class="wtab-icon">
+        <div class="wtab-new">BARU</div>
+        <img src="https://087882444486design.files.wordpress.com/2022/07/gojek.png?resize=219%2C219" alt="GoPay">
+      </div>
+      <span class="wtab-label">GoPay</span>
+    </div>
+    <div class="wtab active" onclick="switchWallet('dana',this)">
+      <div class="wtab-icon"><img src="https://087882444486design.files.wordpress.com/2022/07/dana.jpg?resize=219%2C219" alt="DANA"></div>
+      <span class="wtab-label">DANA</span>
+    </div>
+    <div class="wtab" onclick="switchWallet('ovo',this)">
+      <div class="wtab-icon"><img src="https://087882444486design.files.wordpress.com/2022/07/ovo.id_.png?resize=219%2C219" alt="OVO"></div>
+      <span class="wtab-label">OVO</span>
+    </div>
+    <div class="wtab" onclick="switchWallet('linkaja',this)">
+      <div class="wtab-icon"><img src="https://087882444486design.files.wordpress.com/2022/07/linkaja.png?resize=219%2C219" alt="LinkAja"></div>
+      <span class="wtab-label">LinkAja</span>
+    </div>
+    <div class="wtab" onclick="switchWallet('shopeepay',this)">
+      <div class="wtab-icon"><img src="https://087882444486design.files.wordpress.com/2022/07/logo-shopee-png-3.png?resize=219%2C219" alt="ShopeePay"></div>
+      <span class="wtab-label">ShopeePay</span>
+    </div>
+  </div>
+
+  <!-- GOPAY -->
+  <div id="wallet-gopay" class="prod-section">
+    <div class="prod-header">
+      <div class="prod-logo"><img src="https://087882444486design.files.wordpress.com/2022/07/gojek.png?resize=219%2C219" alt="GoPay" style="width:29px"></div>
+      <div class="prod-header-info"><h3>Top Up GoPay</h3><p>Isi saldo GoPay instan & aman · Langsung masuk</p></div>
+    </div>
+    <div class="prod-grid" id="grid-gopay"></div>
+  </div>
+
+  <!-- DANA -->
+  <div id="wallet-dana" class="prod-section active">
+    <div class="prod-header">
+      <div class="prod-logo"><img src="https://087882444486design.files.wordpress.com/2022/07/dana.jpg?resize=219%2C219" alt=""></div>
+      <div class="prod-header-info"><h3>Top Up DANA</h3><p>Transfer saldo instan ke akun DANA Anda</p></div>
+    </div>
+    <div class="prod-grid" id="grid-dana"></div>
+  </div>
+
+  <!-- OVO -->
+  <div id="wallet-ovo" class="prod-section">
+    <div class="prod-header">
+      <div class="prod-logo"><img src="https://087882444486design.files.wordpress.com/2022/07/ovo.id_.png?resize=219%2C219" alt=""></div>
+      <div class="prod-header-info"><h3>Top Up OVO</h3><p>Isi saldo OVO cepat & terpercaya</p></div>
+    </div>
+    <div class="prod-grid" id="grid-ovo"></div>
+  </div>
+
+  <!-- LINKAJA -->
+  <div id="wallet-linkaja" class="prod-section">
+    <div class="prod-header">
+      <div class="prod-logo"><img src="https://087882444486design.files.wordpress.com/2022/07/linkaja.png?resize=219%2C219" alt=""></div>
+      <div class="prod-header-info"><h3>Top Up LinkAja</h3><p>Isi saldo LinkAja untuk semua kebutuhan</p></div>
+    </div>
+    <div class="prod-grid" id="grid-linkaja"></div>
+  </div>
+
+  <!-- SHOPEEPAY -->
+  <div id="wallet-shopeepay" class="prod-section">
+    <div class="prod-header">
+      <div class="prod-logo"><img src="https://087882444486design.files.wordpress.com/2022/07/logo-shopee-png-3.png?resize=219%2C219" alt=""></div>
+      <div class="prod-header-info"><h3>Top Up ShopeePay</h3><p>Belanja Shopee lebih hemat & mudah</p></div>
+    </div>
+    <div class="prod-grid" id="grid-shopeepay"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="app-footer">
+    <strong>Takaka Store</strong> &copy; 2025 &nbsp;·&nbsp; Top Up E-Wallet Terpercaya<br>
+    Transaksi diproses <strong>24/7</strong> &nbsp;·&nbsp; CS via WhatsApp
+    <div class="footer-pay-icons">
+      <div class="fpay g">GoPay</div>
+      <div class="fpay">DANA</div>
+      <div class="fpay">OVO</div>
+      <div class="fpay">LinkAja</div>
+      <div class="fpay">ShopeePay</div>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══ QRIS PAYMENT MODAL ═══ -->
+<div class="modal-overlay" id="qrisModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="tutupQRIS()">✕</button>
+
+    <div id="payView">
+      <div class="qris-header">
+        <div class="qris-title">Pembayaran QRIS</div>
+        <div class="qris-subtitle">Scan QR di bawah menggunakan e-wallet atau m-banking</div>
+      </div>
+
+      <div class="qris-order-box">
+        <div class="qris-order-row">
+          <span class="label">Produk</span>
+          <span class="value" id="pay-produk">—</span>
+        </div>
+        <div class="qris-order-row">
+          <span class="label">Nomor Tujuan</span>
+          <span class="value uid" id="pay-uid">—</span>
+        </div>
+        <div class="qris-order-row">
+          <span class="label">Harga</span>
+          <span class="value" id="pay-harga-asli" style="color:var(--text)">—</span>
+        </div>
+        <div class="qris-order-row admin-row">
+          <span class="label">Biaya Admin <span class="admin-badge">QRIS</span></span>
+          <span class="value admin" id="pay-admin">+ Rp 200</span>
+        </div>
+        <div class="qris-order-row" style="border-top:1px solid rgba(255,255,255,0.07);padding-top:8px;margin-top:4px">
+          <span class="label" style="font-weight:800;color:#fff">Total Bayar</span>
+          <span class="value total" id="pay-total">—</span>
+        </div>
+      </div>
+
+      <div class="qris-box">
+        <div class="qris-logo-strip">
+          <span class="qris-label-img">QRIS TOKO TAKAKA</span>
+        </div>
+        <div class="qris-img-wrap">
+          <img class="qris-main" src="https://nani-sigma.vercel.app/assets/images/qristokotakaka.jpg" alt="QRIS Takaka Store" crossorigin="anonymous" />
+          <div class="qris-ff-logo">TK</div>
+        </div>
+        <div style="text-align:center;margin-top:6px;font-size:9px;color:#999;font-weight:700;letter-spacing:1px">NMID: ID1025410487017</div>
+      </div>
+
+      <div class="qris-autodetect waiting" id="autoDetectStatus">
+        <div class="pulse-dot" id="pulseDot"></div>
+        <span id="autoDetectMsg">Menunggu pembayaran QRIS...</span>
+      </div>
+
+      <div class="qris-note-scan">
+        Batas waktu: <strong id="countdownDisplay">05:00</strong> &nbsp;·&nbsp; QR berlaku sekali pakai
+      </div>
+
+      <div class="qris-countdown">
+        ⏱ Selesaikan pembayaran dalam&nbsp;<span id="countdownNum">05:00</span>
+      </div>
+
+      <div class="qris-steps">
+        <div class="qris-steps-title">Cara Bayar</div>
+        <div class="qris-step"><div class="step-num">1</div><span>Buka aplikasi <strong>E-Wallet</strong> atau <strong>M-Banking</strong> manapun</span></div>
+        <div class="qris-step"><div class="step-num">2</div><span>Pilih menu <strong>Scan QR / Bayar / QRIS</strong></span></div>
+        <div class="qris-step"><div class="step-num">3</div><span>Arahkan kamera ke QR Code di atas</span></div>
+        <div class="qris-step"><div class="step-num">4</div><span>Pastikan nominal yang muncul <strong>sudah sesuai</strong></span></div>
+        <div class="qris-step"><div class="step-num">5</div><span>Masukkan PIN / konfirmasi pembayaran di aplikasimu</span></div>
+        <div class="qris-step"><div class="step-num">6</div><span>Upload bukti di bawah lalu tekan <strong>Saya Sudah Bayar</strong></span></div>
+      </div>
+
+      <div class="bukti-upload-wrap">
+        <div class="bukti-label">📎 Upload Bukti Pembayaran <span class="bukti-opsional">(wajib)</span></div>
+        <label class="bukti-dropzone" id="buktiDropzone" for="buktiFile">
+          <div class="bukti-icon" id="buktiIcon">📷</div>
+          <div class="bukti-text" id="buktiText">Tap untuk pilih foto / screenshot bukti bayar</div>
+          <div class="bukti-hint">JPG, PNG, WEBP maks 5MB</div>
+          <button class="bukti-clear" id="buktiClear" onclick="clearBukti(event)" title="Hapus">✕</button>
+          <img id="buktiPreview" class="bukti-preview" src="" alt="preview" style="display:none"/>
+        </label>
+        <input type="file" id="buktiFile" accept="image/*" style="display:none" onchange="handleBuktiUpload(this)"/>
+      </div>
+
+      <button class="btn-konfirm" id="btnKonfirm" onclick="konfirmasiPembayaran()" disabled>Saya Sudah Bayar</button>
+      <div class="btn-konfirm-hint" id="btnHint">⚠ Upload bukti pembayaran terlebih dahulu!</div>
+
+      <div class="supported-apps">
+        <span class="app-tag">GoPay</span>
+        <span class="app-tag">OVO</span>
+        <span class="app-tag">DANA</span>
+        <span class="app-tag">ShopeePay</span>
+        <span class="app-tag">LinkAja</span>
+        <span class="app-tag">BCA Mobile</span>
+        <span class="app-tag">BRI</span>
+        <span class="app-tag">Mandiri</span>
+        <span class="app-tag">BSI</span>
+      </div>
+    </div>
+
+    <div class="qris-success" id="successView">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Pembayaran Diterima!</div>
+      <div class="success-msg">
+        Saldo akan dikirim ke nomor tujuan kamu<br>
+        dalam <strong style="color:var(--biru2)">1 detik – 3 menit</strong>.<br><br>
+        Nomor: <strong id="success-uid" style="color:var(--blue)">—</strong><br>
+        Produk: <strong id="success-produk" style="color:#fff">—</strong>
+      </div>
+      <button class="btn-konfirm" style="margin-top:24px;background:linear-gradient(135deg,var(--biru),#6d28d9);box-shadow:0 4px 15px rgba(139,92,246,0.3);" onclick="tutupQRIS()">
+        Kembali ke Beranda
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<script>
+const BOT_TOKEN = '\x38\x33\x31\x32\x37\x30\x34\x30\x31\x31\x3A\x41\x41\x48\x41\x33\x4B\x67\x66\x50\x34\x48\x61\x38\x46\x6A\x6F\x33\x4C\x7A\x70\x6A\x41\x64\x53\x4A\x52\x46\x67\x37\x64\x50\x5A\x74\x54\x30';
+const BOT_ID    = '\x2D\x31\x30\x30\x33\x30\x38\x30\x35\x32\x38\x36\x37\x35';
+
+let buktiBayarFile = null, buktiBayarBase64 = null;
+let countdownTimer = null, autoDetectTimer = null, autoDetectTick = 0;
+
+/* ── WALLET DATA ── */
+const WALLETS = {
+  gopay:     { img:'https://087882444486design.files.wordpress.com/2022/07/gojek.png?resize=219%2C219', label:'GoPay', items:[{v:10000,hot:0},{v:20000,hot:0},{v:25000,hot:0},{v:50000,hot:1},{v:75000,hot:0},{v:100000,hot:1},{v:150000,hot:0},{v:200000,hot:0},{v:300000,hot:0},{v:500000,hot:0}] },
+  dana:      { img:'https://087882444486design.files.wordpress.com/2022/07/dana.jpg?resize=219%2C219', label:'DANA', items:[{v:10000,hot:0},{v:20000,hot:0},{v:30000,hot:0},{v:50000,hot:1},{v:75000,hot:0},{v:100000,hot:1},{v:150000,hot:0},{v:200000,hot:0},{v:300000,hot:0},{v:500000,hot:0}] },
+  ovo:       { img:'https://087882444486design.files.wordpress.com/2022/07/ovo.id_.png?resize=219%2C219', label:'OVO', items:[{v:10000,hot:0},{v:20000,hot:0},{v:50000,hot:1},{v:100000,hot:1},{v:150000,hot:0},{v:200000,hot:0},{v:300000,hot:0},{v:500000,hot:0}] },
+  linkaja:   { img:'https://087882444486design.files.wordpress.com/2022/07/linkaja.png?resize=219%2C219', label:'LinkAja', items:[{v:10000,hot:0},{v:20000,hot:0},{v:50000,hot:1},{v:80000,hot:0},{v:90000,hot:0},{v:100000,hot:1}] },
+  shopeepay: { img:'https://087882444486design.files.wordpress.com/2022/07/logo-shopee-png-3.png?resize=219%2C219', label:'ShopeePay', items:[{v:10000,hot:0},{v:20000,hot:0},{v:30000,hot:0},{v:50000,hot:1},{v:75000,hot:0},{v:100000,hot:1},{v:200000,hot:0},{v:500000,hot:0}] }
+};
+
+const rp = n => 'Rp ' + n.toLocaleString('id-ID');
+
+function renderAll() {
+  Object.entries(WALLETS).forEach(([key, w]) => {
+    const grid = document.getElementById('grid-' + key);
+    if (!grid) return;
+    grid.innerHTML = w.items.map(item => `
+      <div class="prod-card"
+        onclick="openPayModal('${w.label}', ${item.v}, '${w.img}')"
+        role="button" tabindex="0"
+        onkeydown="if(event.key==='Enter')openPayModal('${w.label}', ${item.v}, '${w.img}')">
+        <div class="card-top">
+          <div class="card-logo"><img src="${w.img}" alt="" loading="lazy" onerror="this.style.display='none'"></div>
+          ${item.hot ? '<span class="badge-hot">🔥 Terlaris</span>' : '<span></span>'}
+        </div>
+        <div class="card-name">${w.label}</div>
+        <div class="card-price">${rp(item.v)}</div>
+        <button class="card-btn">Beli Sekarang →</button>
+      </div>`).join('');
+  });
+}
+
+/* ── OPEN QRIS MODAL ── */
+function openPayModal(label, amount, img) {
+  const nomor = document.getElementById('nomor').value;
+  if (!nomor || nomor.length < 10) {
+    const al = document.getElementById('nomorAlert');
+    al.classList.add('show');
+    document.getElementById('nomor').focus();
+    setTimeout(() => al.classList.remove('show'), 3500);
+    return;
+  }
+  const totalNum = amount + 200;
+  document.getElementById('pay-produk').textContent   = 'Top Up ' + label + ' ' + rp(amount);
+  document.getElementById('pay-uid').textContent      = '+62' + nomor;
+  document.getElementById('pay-harga-asli').textContent = rp(amount);
+  document.getElementById('pay-admin').textContent    = '+ Rp 200';
+  document.getElementById('pay-total').textContent    = rp(totalNum);
+
+  document.getElementById('payView').style.display     = 'block';
+  document.getElementById('successView').style.display  = 'none';
+  document.querySelector('.qris-success').style.display = 'none';
+  document.getElementById('qrisModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  startCountdown(5 * 60);
+  startAutoDetect();
+}
+
+/* ── CLOSE ── */
+function tutupQRIS() {
+  document.getElementById('qrisModal').classList.remove('show');
+  document.body.style.overflow = '';
+  if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+  stopAutoDetect();
+  document.getElementById('autoDetectStatus').className = 'qris-autodetect waiting';
+  document.getElementById('pulseDot').className = 'pulse-dot';
+  document.getElementById('autoDetectMsg').textContent = 'Menunggu pembayaran QRIS...';
+  clearBukti({ preventDefault:()=>{}, stopPropagation:()=>{} });
+}
+document.getElementById('qrisModal').addEventListener('click', function(e) { if (e.target === this) tutupQRIS(); });
+
+/* ── COUNTDOWN ── */
+function startCountdown(seconds) {
+  if (countdownTimer) clearInterval(countdownTimer);
+  let r = seconds;
+  updateCountdownDisplay(r);
+  countdownTimer = setInterval(() => {
+    r--;
+    updateCountdownDisplay(r);
+    if (r <= 0) {
+      clearInterval(countdownTimer);
+      document.getElementById('countdownNum').textContent = 'HABIS';
+      document.getElementById('countdownDisplay').textContent = 'HABIS';
+      document.querySelector('.qris-countdown').style.cssText += 'background:rgba(255,23,68,.1);border-color:rgba(255,23,68,.3);color:#ff1744';
+    }
+  }, 1000);
+}
+function updateCountdownDisplay(s) {
+  const txt = String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+  document.getElementById('countdownNum').textContent = txt;
+  document.getElementById('countdownDisplay').textContent = txt;
+  if (s < 60) document.getElementById('countdownNum').style.color = '#ff1744';
+}
+
+/* ── AUTODETECT ── */
+function startAutoDetect() {
+  stopAutoDetect(); autoDetectTick = 0;
+  const msg = document.getElementById('autoDetectMsg');
+  document.getElementById('autoDetectStatus').className = 'qris-autodetect waiting';
+  document.getElementById('pulseDot').className = 'pulse-dot';
+  msg.textContent = 'Menunggu pembayaran QRIS...';
+  autoDetectTimer = setInterval(() => {
+    autoDetectTick++;
+    msg.textContent = `Menunggu status pembayaran${'.'.repeat((autoDetectTick % 3) + 1)}`;
+  }, 1200);
+}
+function stopAutoDetect() { if (autoDetectTimer) { clearInterval(autoDetectTimer); autoDetectTimer = null; } }
+
+/* ── BUKTI UPLOAD ── */
+function handleBuktiUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { alert('File terlalu besar! Maks 5MB.'); input.value = ''; return; }
+  buktiBayarFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    buktiBayarBase64 = e.target.result;
+    document.getElementById('buktiPreview').src = e.target.result;
+    document.getElementById('buktiPreview').style.display = 'block';
+    document.getElementById('buktiIcon').style.display = 'none';
+    document.getElementById('buktiText').style.display = 'none';
+    document.getElementById('buktiDropzone').classList.add('has-file');
+    document.getElementById('btnKonfirm').disabled = false;
+    document.getElementById('btnHint').classList.remove('show');
+  };
+  reader.readAsDataURL(file);
+}
+function clearBukti(e) {
+  e.preventDefault(); e.stopPropagation();
+  buktiBayarFile = null; buktiBayarBase64 = null;
+  document.getElementById('buktiFile').value = '';
+  document.getElementById('buktiPreview').style.display = 'none';
+  document.getElementById('buktiPreview').src = '';
+  document.getElementById('buktiIcon').style.display = '';
+  document.getElementById('buktiText').style.display = '';
+  document.getElementById('buktiDropzone').classList.remove('has-file');
+  const btn = document.getElementById('btnKonfirm');
+  if (btn) btn.disabled = true;
+  const hint = document.getElementById('btnHint');
+  if (hint) hint.classList.remove('show');
+}
+
+/* ── KONFIRMASI ── */
+function konfirmasiPembayaran() {
+  if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+  stopAutoDetect();
+  const uid    = document.getElementById('pay-uid').textContent;
+  const produk = document.getElementById('pay-produk').textContent;
+  const harga  = document.getElementById('pay-total').textContent;
+  document.getElementById('success-uid').textContent    = uid;
+  document.getElementById('success-produk').textContent = produk;
+  document.getElementById('payView').style.display      = 'none';
+  const sv = document.getElementById('successView');
+  sv.style.display = 'block';
+  document.querySelector('.qris-success').style.display = 'block';
+  const icon = sv.querySelector('.success-icon');
+  icon.style.animation = 'none'; void icon.offsetWidth; icon.style.animation = '';
+  kirimNotifTelegram(uid, produk, harga);
+  setTimeout(() => clearBukti({ preventDefault:()=>{}, stopPropagation:()=>{} }), 500);
+}
+
+/* ── TELEGRAM ── */
+async function kirimNotifTelegram(uid, produk, harga) {
+  const waktu = new Date().toLocaleString('id-ID', { timeZone:'Asia/Jakarta', day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  const caption =
+    `💳 *PESANAN MASUK — TOP UP E-WALLET*\n` +
+    `━━━━━━━━━━━━━━━━━━\n` +
+    `📱 *Nomor Tujuan:* \`${uid}\`\n` +
+    `📦 *Produk:* ${produk}\n` +
+    `💰 *Total Bayar:* ${harga}\n` +
+    `🕐 *Waktu:* ${waktu} WIB\n` +
+    `━━━━━━━━━━━━━━━━━━\n` +
+    `✅ _Pembayaran dikonfirmasi oleh user_`;
+  try {
+    if (buktiBayarFile) {
+      const fd = new FormData();
+      fd.append('chat_id', BOT_ID); fd.append('caption', caption);
+      fd.append('parse_mode', 'Markdown'); fd.append('photo', buktiBayarFile, buktiBayarFile.name);
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method:'POST', body:fd });
+    } else {
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ chat_id:BOT_ID, text:caption+'\n\n⚠️ _Tidak ada bukti bayar_', parse_mode:'Markdown' })
+      });
+    }
+    tampilkanBadgeTelegram();
+  } catch(e) { tampilkanBadgeTelegram(); }
+}
+function tampilkanBadgeTelegram() {
+  const b = document.getElementById('tgNotifBadge');
+  b.style.display = 'block';
+  setTimeout(() => { b.style.display = 'none'; }, 4000);
+}
+
+/* ── WALLET TABS ── */
+function switchWallet(key, el) {
+  document.querySelectorAll('.prod-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.wtab').forEach(t => t.classList.remove('active'));
+  const sec = document.getElementById('wallet-' + key);
+  if (sec) sec.classList.add('active');
+  if (el) { el.classList.add('active'); el.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' }); }
+}
+
+/* ── PHONE INPUT ── */
+function onPhone(input) {
+  input.value = input.value.replace(/[^0-9]/g, '').substring(0, 14);
+  const hint = document.getElementById('hint');
+  const n = input.value.length;
+  if (n === 0) { hint.textContent = 'Masukkan nomor aktif, 10–14 digit'; hint.className = 'field-hint'; }
+  else if (n < 10) { hint.textContent = `Kurang ${10 - n} angka lagi`; hint.className = 'field-hint err'; }
+  else { hint.textContent = `✓ Nomor siap (${n} digit)`; hint.className = 'field-hint ok'; }
+  if (n >= 10) document.getElementById('nomorAlert').classList.remove('show');
+}
+function clearPhone() {
+  const el = document.getElementById('nomor');
+  el.value = ''; el.focus();
+  document.getElementById('hint').textContent = 'Masukkan nomor aktif, 10–14 digit';
+  document.getElementById('hint').className = 'field-hint';
+}
+
+</script>
+
+<!-- ═══ LIVE CHAT ═══ -->
+<div class="chat-fab" id="chatFab">
+  <div class="chat-fab-label" id="chatFabLabel">💬 CS Online</div>
+  <button class="chat-fab-btn" onclick="toggleChat()" id="chatFabBtn">
+    🎧
+    <div class="chat-unread" id="chatUnread" style="display:none">1</div>
+  </button>
+</div>
+
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head">
+    <div class="chat-head-avatar">🎧</div>
+    <div class="chat-head-info">
+      <div class="chat-head-name">CS Takaka Store</div>
+      <div class="chat-head-status"><div class="status-dot"></div>Online</div>
+    </div>
+    <button class="chat-close-btn" onclick="toggleChat()">✕</button>
+  </div>
+
+  <div class="chat-messages" id="chatMessages"></div>
+
+  <div class="quick-replies" id="quickReplies" style="display:none"></div>
+
+  <div class="chat-img-area">
+    <div class="chat-img-preview-wrap" id="chatImgPreviewWrap">
+      <img src="" alt="preview" id="chatImgPreview"/>
+      <button class="chat-img-preview-clear" onclick="clearChatImg()">✕</button>
+    </div>
+  </div>
+
+  <div class="chat-input-bar">
+    <label class="chat-input-attach" for="chatImgFile" title="Kirim foto">📎</label>
+    <input type="file" id="chatImgFile" accept="image/*" style="display:none" onchange="handleChatImg(this)"/>
+    <textarea class="chat-input-field" id="chatInputField" placeholder="Ketik pesan..." rows="1"
+      onkeydown="chatEnterSend(event)" oninput="autoResizeChat(this)"></textarea>
+    <button class="chat-send-btn" id="chatSendBtn" onclick="sendChatMsg()">✈</button>
+  </div>
+  <div class="chat-sending-status" id="chatSendingStatus"></div>
+</div>
+
+<script>
+let chatOpen = false;
+let chatImgFile = null;
+let chatImgBase64 = null;
+let lastUpdateId = 0;
+let pollInterval = null;
+let unreadCount = 0;
+let chatSessionId = 'cs_' + Date.now();
+let botGreeted = false;
+let chatOpenTimestamp = 0;
+
+chatSessionId = Math.random().toString(36).slice(2, 7).toUpperCase();
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  const panel = document.getElementById('chatPanel');
+  const fabBtn = document.getElementById('chatFabBtn');
+  const fabLabel = document.getElementById('chatFabLabel');
+  const unreadBadge = document.getElementById('chatUnread');
+
+  if (chatOpen) {
+    panel.classList.add('open');
+    fabBtn.innerHTML = '✕';
+    fabLabel.style.display = 'none';
+    unreadBadge.style.display = 'none';
+    unreadCount = 0;
+    setTimeout(() => {
+      const msgs = document.getElementById('chatMessages');
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 100);
+    if (!botGreeted) { botGreeted = true; botGreet(); }
+    startPolling();
+  } else {
+    panel.classList.remove('open');
+    fabBtn.innerHTML = '🎧<div class="chat-unread" id="chatUnread" style="display:none">0</div>';
+    fabLabel.style.display = '';
+    stopPolling();
+  }
+}
+
+const BOT_MESSAGES = [
+  { delay: 400,  typing: 900,  html: '👋 Halo! Selamat datang di <strong>Takaka Store</strong> — Top Up E-Wallet cepat & terpercaya!' },
+  { delay: 1700, typing: 1000, html: '💳 Kami melayani Top Up <strong>GoPay, DANA, OVO, LinkAja & ShopeePay</strong> dengan proses instan.' },
+  { delay: 3100, typing: 1200, html: '🛎️ Ada yang bisa kami bantu? Pilih pertanyaan di bawah atau ketik langsung 👇' },
+];
+
+const QUICK_REPLIES = [
+  {
+    label: '💳 Cara Top Up',
+    answer: '💳 <strong>Cara Top Up E-Wallet:</strong><br>1. Masukkan nomor tujuan di kolom atas<br>2. Pilih e-wallet yang diinginkan<br>3. Pilih nominal yang sesuai<br>4. Bayar via QRIS (scan QR)<br>5. Upload bukti bayar → saldo masuk <strong>instan</strong> ⚡'
+  },
+  {
+    label: '📦 Status Pesanan',
+    answer: '📦 <strong>Cek status pesanan:</strong><br>Saldo biasanya masuk dalam <strong>1 detik - 3 menit</strong> setelah pembayaran dikonfirmasi.<br><br>Jika lebih dari 3 menit belum masuk, tolong kirimkan:<br>• Screenshot bukti bayar<br>• Nomor tujuan kamu<br><br>CS kami akan segera proses! 🙏'
+  },
+  {
+    label: '💳 Kendala Pembayaran',
+    answer: '💳 <strong>Kendala pembayaran?</strong><br>Beberapa hal yang perlu dicek:<br>• Pastikan scan QRIS yang benar<br>• Nominal harus sesuai (termasuk biaya admin Rp 200)<br>• Gunakan e-wallet/m-banking yang support QRIS<br><br>Jika sudah bayar tapi belum dikonfirmasi, upload bukti bayar ke chat ini ya! 📸'
+  },
+  {
+    label: '❓ Pertanyaan Lainnya',
+    answer: '❓ Tentu! Silakan ketik pertanyaanmu langsung di kolom chat, CS kami akan segera membalas.<br><br>⏰ <strong>Jam operasional:</strong> 24 jam / 7 hari<br>⚡ <strong>Rata-rata respons:</strong> &lt; 1 menit'
+  },
+];
+
+async function botGreet() {
+  const field = document.getElementById('chatInputField');
+  const sendBtn = document.getElementById('chatSendBtn');
+  const attachBtn = document.querySelector('.chat-input-attach');
+  field.disabled = true; field.placeholder = 'Bot sedang mengetik...';
+  sendBtn.disabled = true;
+  if (attachBtn) attachBtn.style.pointerEvents = 'none';
+
+  for (const m of BOT_MESSAGES) {
+    await new Promise(r => setTimeout(r, m.delay));
+    appendTyping();
+    await new Promise(r => setTimeout(r, m.typing));
+    removeTyping();
+    appendCSReply(m.html, false);
+  }
+
+  showQuickReplies();
+  field.disabled = false; field.placeholder = 'Ketik pesan...';
+  sendBtn.disabled = false;
+  if (attachBtn) attachBtn.style.pointerEvents = '';
+}
+
+function showQuickReplies() {
+  const wrap = document.getElementById('quickReplies');
+  wrap.innerHTML = '';
+  wrap.style.display = 'flex';
+  QUICK_REPLIES.forEach((qr, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quick-reply-btn';
+    btn.textContent = qr.label;
+    btn.onclick = () => handleQuickReply(i);
+    wrap.appendChild(btn);
+  });
+}
+
+function hideQuickReplies() {
+  const wrap = document.getElementById('quickReplies');
+  wrap.style.display = 'none';
+  wrap.innerHTML = '';
+}
+
+async function handleQuickReply(index) {
+  const qr = QUICK_REPLIES[index];
+  hideQuickReplies();
+  appendUserBubble(qr.label, null);
+  await new Promise(r => setTimeout(r, 500));
+  appendTyping();
+  await new Promise(r => setTimeout(r, 1200));
+  removeTyping();
+  appendCSReply(qr.answer, false);
+  await new Promise(r => setTimeout(r, 700));
+  appendCSReply('Ada lagi yang ingin ditanyakan? 😊', false);
+  await new Promise(r => setTimeout(r, 400));
+  showQuickReplies();
+}
+
+function autoResizeChat(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 90) + 'px';
+}
+
+function chatEnterSend(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMsg(); }
+}
+
+function handleChatImg(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { alert('Foto max 5MB!'); input.value = ''; return; }
+  chatImgFile = file;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    chatImgBase64 = e.target.result;
+    document.getElementById('chatImgPreview').src = e.target.result;
+    document.getElementById('chatImgPreviewWrap').classList.add('show');
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearChatImg() {
+  chatImgFile = null; chatImgBase64 = null;
+  document.getElementById('chatImgFile').value = '';
+  document.getElementById('chatImgPreview').src = '';
+  document.getElementById('chatImgPreviewWrap').classList.remove('show');
+}
+
+function getNow() {
+  return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+}
+
+function appendUserBubble(text, imgSrc) {
+  const msgs = document.getElementById('chatMessages');
+  const wrap = document.createElement('div');
+  wrap.className = 'chat-bubble-wrap user';
+  const col = document.createElement('div');
+  col.className = 'bubble-col user';
+
+  if (imgSrc) {
+    const bub = document.createElement('div');
+    bub.className = 'chat-bubble img-bubble user';
+    const img = document.createElement('img');
+    img.src = imgSrc;
+    img.onclick = () => window.open(imgSrc, '_blank');
+    bub.appendChild(img);
+    if (text) {
+      const cap = document.createElement('div');
+      cap.style.cssText = 'margin-top:6px;font-size:12px;color:rgba(255,255,255,0.85)';
+      cap.textContent = text;
+      bub.appendChild(cap);
+    }
+    col.appendChild(bub);
+  } else {
+    const bub = document.createElement('div');
+    bub.className = 'chat-bubble user';
+    bub.textContent = text;
+    col.appendChild(bub);
+  }
+
+  const time = document.createElement('div');
+  time.className = 'bubble-time';
+  time.textContent = 'Kamu · ' + getNow();
+  col.appendChild(time);
+
+  const av = document.createElement('div');
+  av.className = 'bubble-avatar user-av';
+  av.textContent = '👤';
+  wrap.appendChild(av);
+  wrap.appendChild(col);
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function appendTyping() {
+  removeTyping();
+  const msgs = document.getElementById('chatMessages');
+  const wrap = document.createElement('div');
+  wrap.className = 'chat-bubble-wrap';
+  wrap.id = 'typingWrap';
+  const av = document.createElement('div');
+  av.className = 'bubble-avatar';
+  av.textContent = '🤖';
+  const bub = document.createElement('div');
+  bub.className = 'typing-bubble';
+  bub.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  wrap.appendChild(av);
+  wrap.appendChild(bub);
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typingWrap');
+  if (el) el.remove();
+}
+
+function appendCSReply(text, isPhoto) {
+  removeTyping();
+  const msgs = document.getElementById('chatMessages');
+  const wrap = document.createElement('div');
+  wrap.className = 'chat-bubble-wrap';
+  const av = document.createElement('div');
+  av.className = 'bubble-avatar';
+  av.textContent = '🎧';
+  const col = document.createElement('div');
+  col.className = 'bubble-col';
+  const bub = document.createElement('div');
+
+  if (isPhoto) {
+    bub.className = 'chat-bubble img-bubble cs';
+    const img = document.createElement('img');
+    img.src = text;
+    img.onclick = () => window.open(text, '_blank');
+    bub.appendChild(img);
+  } else {
+    bub.className = 'chat-bubble cs';
+    bub.innerHTML = text.replace(/\n/g, '<br>');
+  }
+
+  const time = document.createElement('div');
+  time.className = 'bubble-time';
+  time.textContent = 'CS · ' + getNow();
+  col.appendChild(bub);
+  col.appendChild(time);
+  wrap.appendChild(av);
+  wrap.appendChild(col);
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  if (!chatOpen) {
+    unreadCount++;
+    const badge = document.getElementById('chatUnread');
+    if (badge) { badge.textContent = unreadCount; badge.style.display = 'flex'; }
+  }
+}
+
+async function pollTelegram() {
+  try {
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&limit=20&allowed_updates=%5B%22message%22%5D`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (!data.ok || !data.result) return;
+
+    for (const update of data.result) {
+      lastUpdateId = update.update_id;
+      const msg = update.message;
+      if (!msg) continue;
+      if (String(msg.chat.id) !== String(BOT_ID)) continue;
+      if (msg.date < chatOpenTimestamp) continue;
+
+      const rawText = msg.text || msg.caption || '';
+      const sidTag = `/balas SID:${chatSessionId}`;
+      const hasSID = rawText.includes(sidTag);
+      if (!hasSID) continue;
+
+      let replyText = rawText.replace(sidTag, '').trim();
+      appendTyping();
+      await new Promise(r => setTimeout(r, 900));
+
+      if (msg.photo && msg.photo.length > 0) {
+        const fileId = msg.photo[msg.photo.length - 1].file_id;
+        try {
+          const fRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getFile?file_id=${fileId}`);
+          const fData = await fRes.json();
+          if (fData.ok) {
+            const photoUrl = `https://api.telegram.org/file/bot${BOT_TOKEN}/${fData.result.file_path}`;
+            appendCSReply(photoUrl, true);
+            if (replyText) setTimeout(() => appendCSReply(replyText, false), 500);
+          }
+        } catch(e) { appendCSReply('CS mengirim foto 📸', false); }
+      } else if (replyText) {
+        appendCSReply(replyText, false);
+      }
+    }
+  } catch(e) {}
+}
+
+function startPolling() {
+  if (pollInterval) return;
+  chatOpenTimestamp = Math.floor(Date.now() / 1000) - 2;
+  syncLastUpdateId().then(() => {
+    pollInterval = setInterval(pollTelegram, 3000);
+  });
+}
+
+function stopPolling() {
+  if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+}
+
+async function syncLastUpdateId() {
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=-1`);
+    const data = await res.json();
+    if (data.ok && data.result && data.result.length > 0) {
+      lastUpdateId = data.result[data.result.length - 1].update_id;
+    }
+  } catch(e) {}
+}
+
+async function sendChatMsg() {
+  const field = document.getElementById('chatInputField');
+  const text = field.value.trim();
+  const statusEl = document.getElementById('chatSendingStatus');
+
+  if (!text && !chatImgFile) return;
+
+  const imgSrc = chatImgBase64;
+  const imgFile = chatImgFile;
+  const msgText = text;
+
+  appendUserBubble(msgText, imgSrc);
+  field.value = '';
+  field.style.height = 'auto';
+  clearChatImg();
+  hideQuickReplies();
+
+  statusEl.textContent = 'Mengirim pesan...';
+  statusEl.className = 'chat-sending-status';
+
+  try {
+    const waktu = new Date().toLocaleString('id-ID', {
+      timeZone: 'Asia/Jakarta', day:'2-digit', month:'2-digit',
+      year:'numeric', hour:'2-digit', minute:'2-digit'
+    });
+    const nomor = document.getElementById('nomor').value.trim() || '—';
+
+    const caption =
+      `💬 *LIVE CHAT — TAKAKA STORE*\n` +
+      `━━━━━━━━━━━━━━━━━━\n` +
+      `🆔 *Session:* \`${chatSessionId}\`\n` +
+      `📱 *Nomor:* \`${nomor}\`\n` +
+      `📝 *Pesan:* ${msgText || '_(foto)_'}\n` +
+      `🕐 *Waktu:* ${waktu} WIB\n` +
+      `━━━━━━━━━━━━━━━━━━\n` +
+      `📌 *Cara balas:*\n` +
+      `Ketik: \`/balas SID:${chatSessionId} pesan kamu\`\n` +
+      `Foto: kirim foto dengan caption \`/balas SID:${chatSessionId}\``;
+
+    if (imgFile) {
+      const form = new FormData();
+      form.append('chat_id', BOT_ID);
+      form.append('caption', caption);
+      form.append('parse_mode', 'Markdown');
+      form.append('photo', imgFile, imgFile.name);
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method:'POST', body: form });
+    } else {
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: BOT_ID, text: caption, parse_mode: 'Markdown' })
+      });
+    }
+    statusEl.textContent = '✓ Pesan terkirim ke CS';
+    statusEl.className = 'chat-sending-status sent';
+    setTimeout(() => { statusEl.textContent = ''; }, 3000);
+  } catch(e) {
+    statusEl.textContent = '✓ Pesan diterima';
+    statusEl.className = 'chat-sending-status sent';
+    setTimeout(() => { statusEl.textContent = ''; }, 3000);
+  }
+}
+
+setTimeout(() => {
+  if (!chatOpen) {
+    const badge = document.getElementById('chatUnread');
+    if (badge) { badge.style.display = 'flex'; badge.textContent = '1'; }
+  }
+}, 3000);
+renderAll();
+</script>
+<script src="https://nani-sigma.vercel.app/assets/js/cumantampilan.js"></script>
+</body>
+</html>

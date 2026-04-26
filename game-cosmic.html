@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Cosmic Blaster - Sarviola Adnan </title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap');
+
+  /* COSMIC BLASTER 
+     Copyright by Dev Nan 
+  */
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --neon-cyan: #00f5ff;
+    --neon-pink: #ff006e;
+    --neon-yellow: #ffd60a;
+    --neon-green: #39ff14;
+    --dark-bg: #020409;
+    --dark-mid: #050d1a;
+    --panel-bg: rgba(0, 245, 255, 0.04);
+    --panel-border: rgba(0, 245, 255, 0.2);
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--dark-bg);
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--neon-cyan);
+    touch-action: none;
+    user-select: none;
+  }
+
+  #game-wrapper {
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  #canvas-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    border-left: 1px solid rgba(0, 245, 255, 0.1);
+    border-right: 1px solid rgba(0, 245, 255, 0.1);
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+  }
+
+  /* HUD Overlay */
+  #hud {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .hud-panel {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    backdrop-filter: blur(4px);
+  }
+
+  .hud-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(0,245,255,0.5);
+    text-transform: uppercase;
+  }
+
+  .hud-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px var(--neon-cyan);
+    line-height: 1;
+  }
+
+  #lives-display {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin-top: 2px;
+  }
+
+  .life-heart {
+    width: 12px; height: 12px;
+    background: var(--neon-pink);
+    clip-path: polygon(50% 0%, 100% 35%, 100% 70%, 50% 100%, 0% 70%, 0% 35%);
+    box-shadow: 0 0 6px var(--neon-pink);
+    transition: opacity 0.3s;
+  }
+
+  .life-heart.empty {
+    background: rgba(255,0,110,0.15);
+    box-shadow: none;
+    opacity: 0.3;
+  }
+
+  /* Bars */
+  #shield-bar-container {
+    position: absolute;
+    bottom: 100px; left: 16px; right: 16px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .bar-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(0,245,255,0.5);
+    width: 46px;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    border: 1px solid rgba(0,245,255,0.1);
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.2s ease-out, background 0.3s;
+  }
+
+  #shield-fill { background: linear-gradient(90deg, #00b4d8, #00f5ff); box-shadow: 0 0 8px #00f5ff; }
+  #heat-fill   { background: linear-gradient(90deg, #ffd60a, #ff6b35); box-shadow: 0 0 8px #ff6b35; }
+
+  /* Controls */
+  #mobile-controls {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 90px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px 15px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .ctrl-btn {
+    pointer-events: all;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 50%;
+    color: var(--neon-cyan);
+    font-family: 'Orbitron', monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #btn-fire {
+    width: 70px; height: 70px;
+    border-color: rgba(255,0,110,0.5);
+    color: var(--neon-pink);
+    font-size: 9px;
+    box-shadow: 0 0 15px rgba(255,0,110,0.3);
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .d-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 44px);
+    grid-template-rows: repeat(3, 44px);
+    gap: 4px;
+  }
+
+  .d-btn {
+    pointer-events: all;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+
+  .d-btn:active, .ctrl-btn:active { background: rgba(0, 245, 255, 0.2); transform: scale(0.95); }
+
+  /* Screens */
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    background: rgba(2,4,9,0.95);
+    backdrop-filter: blur(8px);
+    text-align: center;
+    padding: 24px;
+  }
+
+  .screen.hidden { display: none; }
+
+  .screen-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(28px, 8vw, 48px);
+    font-weight: 900;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 20px var(--neon-cyan);
+    margin-bottom: 5px;
+  }
+
+  .game-btn {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    letter-spacing: 3px;
+    padding: 15px 40px;
+    border: 1px solid var(--neon-cyan);
+    background: rgba(0,245,255,0.06);
+    color: var(--neon-cyan);
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    transition: 0.2s;
+  }
+
+  .game-btn:hover { background: rgba(0,245,255,0.2); box-shadow: 0 0 20px var(--neon-cyan); }
+
+  /* Copyright Footer */
+  .copyright-text {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(0, 245, 255, 0.3);
+    text-transform: uppercase;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  #wave-announce {
+    position: absolute;
+    top: 40%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Orbitron', monospace;
+    font-size: 32px;
+    color: var(--neon-yellow);
+    text-shadow: 0 0 20px var(--neon-yellow);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.5s;
+  }
+  #wave-announce.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div id="game-wrapper">
+  <div id="canvas-container">
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="hud">
+      <div class="hud-panel">
+        <div class="hud-label">Score</div>
+        <div class="hud-value" id="score-hud">0</div>
+      </div>
+      <div class="hud-panel" style="text-align:right;">
+        <div class="hud-label">Lives</div>
+        <div id="lives-display">
+          <div class="life-heart" id="h1"></div>
+          <div class="life-heart" id="h2"></div>
+          <div class="life-heart" id="h3"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="shield-bar-container">
+      <div class="bar-row">
+        <div class="bar-label">SHIELD</div>
+        <div class="bar-track"><div class="bar-fill" id="shield-fill" style="width:100%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">HEAT</div>
+        <div class="bar-track"><div class="bar-fill" id="heat-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div id="wave-announce">WAVE 1</div>
+    <div class="copyright-text">© 2024 Dev Nan</div>
+
+    <div id="mobile-controls">
+      <div class="d-pad">
+        <div></div><div class="d-btn" id="d-up">▲</div><div></div>
+        <div class="d-btn" id="d-left">◀</div><div></div><div class="d-btn" id="d-right">▶</div>
+        <div></div><div class="d-btn" id="d-down">▼</div><div></div>
+      </div>
+      <button id="btn-fire" class="ctrl-btn">
+        <span style="font-size: 20px;">⚡</span>
+        <span>FIRE</span>
+      </button>
+    </div>
+
+    <div class="screen" id="screen-start">
+      <div class="screen-title">COSMIC<br>BLASTER</div>
+      <div style="font-size: 12px; color: var(--neon-pink); margin-bottom: 20px; letter-spacing: 2px;">BY DEV NAN</div>
+      <button class="game-btn" id="btn-start">MULAI MISI</button>
+      <div style="font-size: 10px; color: rgba(0,245,255,0.4); line-height: 1.6;">
+        WASD / Arrow untuk Gerak<br>Space untuk Menembak
+      </div>
+    </div>
+
+    <div class="screen hidden" id="screen-gameover">
+      <div class="screen-title" style="color: var(--neon-pink);">DEFEATED</div>
+      <div style="margin: 20px 0;">
+        <div style="font-size: 12px; color: gray;">SCORE AKHIR</div>
+        <div id="final-score" style="font-family: Orbitron; font-size: 30px; color: var(--neon-yellow);">0</div>
+      </div>
+      <button class="game-btn" id="btn-restart">COBA LAGI</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/**
+ * COSMIC BLASTER
+ * Optimized & Integrated Version
+ * Copyright by Dev Nan
+ */
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const container = document.getElementById('canvas-container');
+
+let G = {};
+const isMobile = /Android|iPhone|iPad|iPod|Touch/i.test(navigator.userAgent) || ('ontouchstart' in window);
+
+function resize() {
+  const rect = container.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function initGame() {
+  G = {
+    running: true, over: false,
+    score: 0, wave: 1, lives: 3,
+    shield: 100, maxShield: 100,
+    heat: 0, maxHeat: 100, overheated: false,
+    player: { x: canvas.width/2, y: canvas.height-120, w: 28, h: 34, speed: 5, invincible: 0, powerup: null, powerupTimer: 0 },
+    bullets: [], enemies: [], particles: [], powerups: [], stars: [],
+    enemyTimer: 0, enemyInterval: 90, waveKills: 0, waveKillTarget: 8,
+    keys: {}, dpad: { up: false, down: false, left: false, right: false, fire: false }
+  };
+
+  for (let i = 0; i < 80; i++) {
+    G.stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5, s: Math.random()*0.5 + 0.2 });
+  }
+
+  updateHUD();
+  announceWave();
+}
+
+function updateHUD() {
+  document.getElementById('score-hud').textContent = G.score.toLocaleString();
+  const sFill = document.getElementById('shield-fill');
+  const hFill = document.getElementById('heat-fill');
+  
+  sFill.style.width = (G.shield / G.maxShield * 100) + '%';
+  hFill.style.width = (G.heat / G.maxHeat * 100) + '%';
+  hFill.style.background = G.overheated ? 'var(--neon-pink)' : 'linear-gradient(90deg, #ffd60a, #ff6b35)';
+
+  [1,2,3].forEach(i => {
+    const el = document.getElementById('h' + i);
+    if(el) el.classList.toggle('empty', i > G.lives);
+  });
+}
+
+function announceWave() {
+  const el = document.getElementById('wave-announce');
+  el.textContent = 'WAVE ' + G.wave;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+function takeDamage(amount) {
+  if (G.player.invincible > 0) return;
+  if (G.shield > 0) {
+    G.shield = Math.max(0, G.shield - amount);
+    explode(G.player.x, G.player.y, '#fff', 5, 2);
+  } else {
+    G.lives--;
+    G.shield = G.maxShield;
+    G.player.invincible = 120;
+    explode(G.player.x, G.player.y, '#ff006e', 20, 4);
+    if (G.lives <= 0) endGame();
+  }
+  updateHUD();
+}
+
+function explode(x, y, color, count, speed) {
+  for (let i = 0; i < count; i++) {
+    G.particles.push({
+      x, y, 
+      vx: (Math.random()-0.5)*speed, vy: (Math.random()-0.5)*speed,
+      life: 1, decay: 0.02, color, r: Math.random()*3
+    });
+  }
+}
+
+function spawnEnemy() {
+  const x = Math.random() * (canvas.width - 40) + 20;
+  G.enemies.push({ x, y: -30, hp: 2 + Math.floor(G.wave/2), speed: 1.5 + (G.wave*0.1), w: 24, h: 24, color: '#ff006e' });
+}
+
+function collectPowerup(pu) {
+  if (pu.type === 'shield') G.shield = G.maxShield;
+  else if (pu.type === 'nuke') {
+    G.enemies.forEach(e => { explode(e.x, e.y, e.color, 15, 4); G.score += 20; G.waveKills++; });
+    G.enemies = [];
+  } else {
+    G.player.powerup = pu.type;
+    G.player.powerupTimer = 480;
+  }
+  updateHUD();
+}
+
+function update() {
+  if (!G.running || G.over) return;
+
+  const p = G.player;
+  // Bergerak
+  let mx = 0, my = 0;
+  if (G.keys['ArrowLeft'] || G.keys['a'] || G.dpad.left) mx = -1;
+  if (G.keys['ArrowRight'] || G.keys['d'] || G.dpad.right) mx = 1;
+  if (G.keys['ArrowUp'] || G.keys['w'] || G.dpad.up) my = -1;
+  if (G.keys['ArrowDown'] || G.keys['s'] || G.dpad.down) my = 1;
+
+  p.x = Math.max(p.w/2, Math.min(canvas.width - p.w/2, p.x + mx * p.speed));
+  p.y = Math.max(p.h/2 + 60, Math.min(canvas.height - 110, p.y + my * p.speed));
+
+  if (p.invincible > 0) p.invincible--;
+
+  // Menembak
+  if ((G.keys[' '] || G.dpad.fire) && !G.overheated) {
+    G.bullets.push({ x: p.x, y: p.y - 20, vy: -10, w: 4, h: 12, owner: 'player' });
+    G.heat += 4;
+    if (G.heat >= G.maxHeat) { G.overheated = true; }
+  }
+  
+  if (G.overheated) {
+    G.heat -= 0.5;
+    if (G.heat <= 0) G.overheated = false;
+  } else {
+    G.heat = Math.max(0, G.heat - 0.3);
+  }
+
+  // Musuh
+  G.enemyTimer++;
+  if (G.enemyTimer > G.enemyInterval) {
+    spawnEnemy();
+    G.enemyTimer = 0;
+  }
+
+  G.enemies.forEach((e, ei) => {
+    e.y += e.speed;
+    if (rectHit(p.x, p.y, p.w, p.h, e.x, e.y, e.w, e.h)) {
+      takeDamage(20);
+      G.enemies.splice(ei, 1);
+    }
+    G.bullets.forEach((b, bi) => {
+      if (b.owner === 'player' && rectHit(b.x, b.y, b.w, b.h, e.x, e.y, e.w, e.h)) {
+        e.hp--;
+        G.bullets.splice(bi, 1);
+        if (e.hp <= 0) {
+          G.score += 50;
+          G.waveKills++;
+          explode(e.x, e.y, e.color, 10, 3);
+          G.enemies.splice(ei, 1);
+          if (G.waveKills >= G.waveKillTarget) {
+            G.wave++; G.waveKills = 0; G.waveKillTarget += 2;
+            announceWave();
+          }
+          if (Math.random() < 0.1) G.powerups.push({ x: e.x, y: e.y, type: 'nuke', vy: 2, r: 10, color: '#ffd60a' });
+        }
+      }
+    });
+  });
+
+  G.bullets.forEach((b, bi) => {
+    b.y += b.vy;
+    if (b.y < 0 || b.y > canvas.height) G.bullets.splice(bi, 1);
+  });
+
+  G.powerups.forEach((pu, pi) => {
+    pu.y += pu.vy;
+    if (circleHit(p.x, p.y, p.w, pu.x, pu.y, pu.r)) {
+      collectPowerup(pu);
+      G.powerups.splice(pi, 1);
+    }
+  });
+
+  G.particles.forEach((pt, pi) => {
+    pt.x += pt.vx; pt.y += pt.vy; pt.life -= pt.decay;
+    if (pt.life <= 0) G.particles.splice(pi, 1);
+  });
+
+  G.stars.forEach(s => {
+    s.y += s.s;
+    if (s.y > canvas.height) s.y = 0;
+  });
+
+  updateHUD();
+}
+
+function rectHit(ax, ay, aw, ah, bx, by, bw, bh) {
+  return ax - aw/2 < bx + bw/2 && ax + aw/2 > bx - bw/2 && ay - ah/2 < by + bh/2 && ay + ah/2 > by - bh/2;
+}
+
+function circleHit(ax, ay, ar, bx, by, br) {
+  const dx = ax - bx, dy = ay - by;
+  return dx*dx + dy*dy < (ar+br)*(ar+br);
+}
+
+function draw() {
+  ctx.fillStyle = '#020409';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  G.stars.forEach(s => {
+    ctx.fillStyle = `rgba(255,255,255,${Math.random()})`;
+    ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+  });
+
+  if (G.player.invincible % 10 < 5) {
+    ctx.fillStyle = G.player.invincible > 0 ? '#fff' : '#00f5ff';
+    ctx.beginPath();
+    ctx.moveTo(G.player.x, G.player.y - 17);
+    ctx.lineTo(G.player.x + 14, G.player.y + 17);
+    ctx.lineTo(G.player.x - 14, G.player.y + 17);
+    ctx.closePath(); ctx.fill();
+  }
+
+  G.enemies.forEach(e => {
+    ctx.fillStyle = e.color;
+    ctx.fillRect(e.x - e.w/2, e.y - e.h/2, e.w, e.h);
+  });
+
+  G.bullets.forEach(b => {
+    ctx.fillStyle = '#00f5ff';
+    ctx.fillRect(b.x - b.w/2, b.y - b.h/2, b.w, b.h);
+  });
+
+  G.powerups.forEach(pu => {
+    ctx.fillStyle = pu.color;
+    ctx.beginPath(); ctx.arc(pu.x, pu.y, pu.r, 0, Math.PI*2); ctx.fill();
+  });
+
+  G.particles.forEach(pt => {
+    ctx.globalAlpha = pt.life;
+    ctx.fillStyle = pt.color;
+    ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI*2); ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+}
+
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+function endGame() {
+  G.over = true;
+  document.getElementById('final-score').textContent = G.score;
+  document.getElementById('screen-gameover').classList.remove('hidden');
+}
+
+// Controls
+function setupCtrl(id, key, target) {
+  const el = document.getElementById(id);
+  const start = (e) => { e.preventDefault(); G.dpad[target] = true; };
+  const end = (e) => { e.preventDefault(); G.dpad[target] = false; };
+  el.addEventListener('touchstart', start); el.addEventListener('touchend', end);
+  el.addEventListener('mousedown', () => G.dpad[target] = true); el.addEventListener('mouseup', () => G.dpad[target] = false);
+}
+
+setupCtrl('d-up', null, 'up'); setupCtrl('d-down', null, 'down');
+setupCtrl('d-left', null, 'left'); setupCtrl('d-right', null, 'right');
+setupCtrl('btn-fire', null, 'fire');
+
+window.addEventListener('keydown', e => G.keys[e.key] = true);
+window.addEventListener('keyup', e => G.keys[e.key] = false);
+
+document.getElementById('btn-start').onclick = () => {
+  document.getElementById('screen-start').classList.add('hidden');
+  initGame();
+};
+document.getElementById('btn-restart').onclick = () => {
+  document.getElementById('screen-gameover').classList.add('hidden');
+  initGame();
+};
+
+loop();
+</script>
+</body>
+</html>

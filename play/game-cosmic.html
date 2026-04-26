@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>COSMIC BLASTER - Sarviola Adnan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap');
+
+  /* COSMIC BLASTER - Copyright by Dev Nan */
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --neon-cyan: #00f5ff;
+    --neon-pink: #ff006e;
+    --dark-bg: #020409;
+    --panel-bg: rgba(0, 245, 255, 0.1);
+    --panel-border: rgba(0, 245, 255, 0.3);
+  }
+
+  body {
+    width: 100vw; height: 100vh;
+    overflow: hidden;
+    background: var(--dark-bg);
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--neon-cyan);
+    touch-action: none;
+  }
+
+  #game-container {
+    position: relative;
+    width: 100%; height: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    background: #000;
+  }
+
+  canvas { display: block; width: 100%; height: 100%; }
+
+  /* HUD */
+  #hud {
+    position: absolute;
+    top: 10px; left: 10px; right: 10px;
+    display: flex; justify-content: space-between;
+    z-index: 10;
+  }
+
+  .stat-group { display: flex; gap: 8px; pointer-events: none; }
+  .stat-box {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    padding: 5px 10px;
+    border-radius: 5px;
+    backdrop-filter: blur(5px);
+  }
+
+  /* MENU TITIK TIGA (DROPDOWN) */
+  .menu-wrapper { position: relative; }
+  
+  .dots-btn {
+    width: 35px; height: 35px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    color: var(--neon-cyan);
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    line-height: 0;
+  }
+
+  .dropdown-content {
+    position: absolute;
+    top: 45px; right: 0;
+    background: rgba(5, 13, 26, 0.95);
+    border: 1px solid var(--neon-cyan);
+    border-radius: 8px;
+    min-width: 120px;
+    display: none; /* Sembunyi secara default */
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+    z-index: 100;
+  }
+
+  .dropdown-content.show { display: flex; }
+
+  .menu-item {
+    padding: 12px 15px;
+    color: white;
+    font-family: 'Orbitron';
+    font-size: 11px;
+    text-align: left;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(0, 245, 255, 0.1);
+    cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .menu-item:last-child { border-bottom: none; }
+  .menu-item:active { background: var(--neon-cyan); color: black; }
+
+  .label { font-size: 9px; color: rgba(0,245,255,0.6); letter-spacing: 1px; }
+  .val { font-family: 'Orbitron'; font-size: 13px; font-weight: bold; }
+
+  /* UI & Controls */
+  #bars { position: absolute; bottom: 120px; left: 20px; right: 20px; pointer-events: none; }
+  .bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); margin-top: 4px; border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; width: 0%; transition: width 0.1s; }
+  #s-fill { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+  #h-fill { background: #ffcc00; }
+
+  #controls { position: absolute; bottom: 20px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 20px; z-index: 15; }
+  .dpad { display: grid; grid-template-columns: repeat(3, 45px); gap: 5px; }
+  .btn { width: 45px; height: 45px; background: var(--panel-bg); border: 1px solid var(--panel-border); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  #btn-fire { width: 80px; height: 80px; border-radius: 50%; background: rgba(255, 0, 110, 0.1); border: 2px solid var(--neon-pink); color: var(--neon-pink); font-family: 'Orbitron'; font-weight: bold; }
+
+  /* Screens */
+  .screen { position: absolute; inset: 0; background: rgba(0,0,0,0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 200; backdrop-filter: blur(10px); }
+  .hidden { display: none !important; }
+  h1 { font-family: 'Orbitron'; font-size: 30px; color: var(--neon-cyan); text-align: center; margin-bottom: 15px; }
+  .start-btn { padding: 12px 25px; border: 1px solid var(--neon-cyan); background: none; color: var(--neon-cyan); font-family: 'Orbitron'; cursor: pointer; letter-spacing: 1px; }
+
+  .copyright { position: absolute; bottom: 5px; width: 100%; text-align: center; font-size: 9px; opacity: 0.4; letter-spacing: 2px; pointer-events: none; }
+</style>
+</head>
+<body>
+
+<div id="game-container">
+  <canvas id="gameCanvas"></canvas>
+
+  <div id="hud">
+    <div class="stat-group">
+      <div class="stat-box">
+        <div class="label">SCORE</div>
+        <div id="score" class="val">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="label">WAVE</div>
+        <div id="wave" class="val">1</div>
+      </div>
+    </div>
+
+    <div class="menu-wrapper">
+      <button class="dots-btn" onclick="toggleDropdown()">⋮</button>
+      <div id="myDropdown" class="dropdown-content">
+        <button class="menu-item" onclick="togglePause()">PAUSE</button>
+        <button class="menu-item" onclick="location.reload()">RESTART</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="bars">
+    <div class="label">SHIELD</div>
+    <div class="bar-bg"><div id="s-fill" class="bar-fill" style="width:100%"></div></div>
+    <div class="label" style="margin-top:5px">HEAT</div>
+    <div class="bar-bg"><div id="h-fill" class="bar-fill"></div></div>
+  </div>
+
+  <div id="controls">
+    <div class="dpad">
+      <div></div><div class="btn" id="u">▲</div><div></div>
+      <div class="btn" id="l">◀</div><div></div><div class="btn" id="r">▶</div>
+      <div></div><div class="btn" id="d">▼</div><div></div>
+    </div>
+    <button id="btn-fire">FIRE</button>
+  </div>
+
+  <div class="copyright">BY DEV NAN</div>
+
+  <div id="start-screen" class="screen">
+    <h1>COSMIC<br>BLASTER</h1>
+    <p style="margin-bottom: 20px; color: var(--neon-pink)">CREATION BY DEV NAN</p>
+    <button class="start-btn" onclick="startGame()">START MISSION</button>
+  </div>
+
+  <div id="pause-screen" class="screen hidden">
+    <h1>PAUSED</h1>
+    <button class="start-btn" onclick="togglePause()">RESUME</button>
+  </div>
+
+  <div id="over-screen" class="screen hidden">
+    <h1 style="color: var(--neon-pink)">FAILED</h1>
+    <button class="start-btn" onclick="location.reload()">RETRY</button>
+  </div>
+</div>
+
+<script>
+  /**
+   * COSMIC BLASTER - Integrated Dropdown Menu
+   * Dev Nan
+   */
+
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const sFill = document.getElementById('s-fill');
+  const hFill = document.getElementById('h-fill');
+
+  let gameActive = false;
+  let isPaused = false;
+  let score = 0;
+  let wave = 1;
+  let enemies = [];
+  let bullets = [];
+  let particles = [];
+  let stars = [];
+
+  const player = {
+    x: 0, y: 0, w: 30, h: 30,
+    speed: 5, shield: 100,
+    heat: 0, overheated: false,
+    input: { u: false, d: false, l: false, r: false, f: false }
+  };
+
+  // DROPDOWN LOGIC
+  function toggleDropdown() {
+    document.getElementById("myDropdown").classList.toggle("show");
+  }
+
+  // Klik di luar menu untuk menutup
+  window.onclick = function(event) {
+    if (!event.target.matches('.dots-btn')) {
+      const dropdowns = document.getElementsByClassName("dropdown-content");
+      for (let i = 0; i < dropdowns.length; i++) {
+        let openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+          openDropdown.classList.remove('show');
+        }
+      }
+    }
+  }
+
+  function init() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    player.x = canvas.width / 2;
+    player.y = canvas.height - 150;
+    stars = [];
+    for(let i=0; i<50; i++) {
+      stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2+1});
+    }
+  }
+
+  function startGame() {
+    document.getElementById('start-screen').classList.add('hidden');
+    gameActive = true;
+    init();
+    spawnEnemy();
+    loop();
+  }
+
+  function togglePause() {
+    if(!gameActive) return;
+    isPaused = !isPaused;
+    document.getElementById('pause-screen').classList.toggle('hidden', !isPaused);
+  }
+
+  function spawnEnemy() {
+    if(!gameActive || isPaused) {
+      setTimeout(spawnEnemy, 500);
+      return;
+    }
+    enemies.push({
+      x: Math.random() * (canvas.width - 30) + 15,
+      y: -50, w: 30, h: 30,
+      speed: 1.5 + (wave * 0.2),
+      hp: Math.ceil(wave/2)
+    });
+    setTimeout(spawnEnemy, Math.max(600, 2000 - (wave * 150)));
+  }
+
+  function update() {
+    if(!gameActive || isPaused) return;
+
+    if(player.input.u && player.y > 60) player.y -= player.speed;
+    if(player.input.d && player.y < canvas.height - 130) player.y += player.speed;
+    if(player.input.l && player.x > 20) player.x -= player.speed;
+    if(player.input.r && player.x < canvas.width - 20) player.x += player.speed;
+
+    if(player.input.f && !player.overheated) {
+      bullets.push({x: player.x, y: player.y - 20, v: -9});
+      player.heat += 3.5;
+      if(player.heat >= 100) player.overheated = true;
+    }
+    player.heat = Math.max(0, player.heat - 0.6);
+    if(player.heat <= 0) player.overheated = false;
+
+    bullets.forEach((b, i) => {
+      b.y += b.v;
+      if(b.y < 0) bullets.splice(i, 1);
+    });
+
+    enemies.forEach((e, i) => {
+      e.y += e.speed;
+      if(Math.abs(e.x - player.x) < 28 && Math.abs(e.y - player.y) < 28) {
+        player.shield -= 25;
+        enemies.splice(i, 1);
+        if(player.shield <= 0) gameOver();
+      }
+      bullets.forEach((b, bi) => {
+        if(Math.abs(e.x - b.x) < 20 && Math.abs(e.y - b.y) < 20) {
+          e.hp--; bullets.splice(bi, 1);
+          if(e.hp <= 0) { score += 10; enemies.splice(i, 1); if(score % 100 === 0) wave++; }
+        }
+      });
+      if(e.y > canvas.height) { enemies.splice(i, 1); player.shield -= 10; if(player.shield <= 0) gameOver(); }
+    });
+
+    document.getElementById('score').innerText = score;
+    document.getElementById('wave').innerText = wave;
+    sFill.style.width = player.shield + '%';
+    hFill.style.width = player.heat + '%';
+  }
+
+  function draw() {
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0,0,canvas.width, canvas.height);
+    ctx.fillStyle = "white";
+    stars.forEach(s => {
+      ctx.fillRect(s.x, s.y, 2, 2);
+      if(!isPaused) s.y += s.s;
+      if(s.y > canvas.height) s.y = 0;
+    });
+
+    ctx.fillStyle = player.overheated ? "#333" : "#00f5ff";
+    ctx.beginPath();
+    ctx.moveTo(player.x, player.y - 20);
+    ctx.lineTo(player.x - 18, player.y + 15);
+    ctx.lineTo(player.x + 18, player.y + 15);
+    ctx.fill();
+
+    ctx.fillStyle = "#ff006e";
+    enemies.forEach(e => ctx.fillRect(e.x - 15, e.y - 15, 30, 30));
+
+    ctx.fillStyle = "yellow";
+    bullets.forEach(b => ctx.fillRect(b.x-2, b.y-5, 4, 12));
+  }
+
+  function loop() {
+    if(!gameActive) return;
+    update(); draw();
+    requestAnimationFrame(loop);
+  }
+
+  function gameOver() {
+    gameActive = false;
+    document.getElementById('over-screen').classList.remove('hidden');
+  }
+
+  function bind(id, prop) {
+    const el = document.getElementById(id);
+    const start = (e) => { e.preventDefault(); player.input[prop] = true; };
+    const end = (e) => { e.preventDefault(); player.input[prop] = false; };
+    el.addEventListener('touchstart', start, {passive: false});
+    el.addEventListener('touchend', end, {passive: false});
+    el.addEventListener('mousedown', start);
+    el.addEventListener('mouseup', end);
+  }
+
+  bind('u', 'u'); bind('d', 'd'); bind('l', 'l'); bind('r', 'r'); bind('btn-fire', 'f');
+  window.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowUp' || e.key === 'w') player.input.u = true;
+    if(e.key === 'ArrowDown' || e.key === 's') player.input.d = true;
+    if(e.key === 'ArrowLeft' || e.key === 'a') player.input.l = true;
+    if(e.key === 'ArrowRight' || e.key === 'd') player.input.r = true;
+    if(e.key === ' ') player.input.f = true;
+  });
+  window.addEventListener('keyup', (e) => {
+    if(e.key === 'ArrowUp' || e.key === 'w') player.input.u = false;
+    if(e.key === 'ArrowDown' || e.key === 's') player.input.d = false;
+    if(e.key === 'ArrowLeft' || e.key === 'a') player.input.l = false;
+    if(e.key === 'ArrowRight' || e.key === 'd') player.input.r = false;
+    if(e.key === ' ') player.input.f = false;
+  });
+
+  init();
+</script>
+<script src="https://nani-sigma.vercel.app/assets/js/cumantampilan.js"></script>
+</body>
+</html>

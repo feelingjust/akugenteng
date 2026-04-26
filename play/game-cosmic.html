@@ -136,6 +136,30 @@
     x: 0, y: 0, speed: 7, shield: 200, heat: 0, overheated: false,
     input: { u: false, d: false, l: false, r: false, f: false }
   };
+  
+    // KONTROL KEYBOARD (WASD & ARROW KEYS)
+  const keyMap = {
+    'w': 'u', 'W': 'u', 'ArrowUp': 'u',
+    's': 'd', 'S': 'd', 'ArrowDown': 'd',
+    'a': 'l', 'A': 'l', 'ArrowLeft': 'l',
+    'd': 'r', 'D': 'r', 'ArrowRight': 'r',
+    ' ': 'f', 'Enter': 'f'
+  };
+
+  window.addEventListener('keydown', (e) => {
+    if (keyMap[e.key]) {
+      e.preventDefault();
+      player.input[keyMap[e.key]] = true;
+    }
+    if (e.key.toLowerCase() === 'p') togglePause();
+  });
+
+  window.addEventListener('keyup', (e) => {
+    if (keyMap[e.key]) {
+      e.preventDefault();
+      player.input[keyMap[e.key]] = false;
+    }
+  });
 
   // DROPDOWN & PAUSE LOGIC
   const menuBtn = document.getElementById('menuBtn');

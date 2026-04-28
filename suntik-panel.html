@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSM Panel — BuzzerPanel Integrated</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Share+Tech+Mono&family=Exo+2:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #f5c518; --bg: #0a0a07; --bg2: #0f0f09; --bg3: #141410;
+    --text: #f0e6b2; --border: rgba(245,197,24,0.18);
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Exo 2', sans-serif; margin: 0; padding: 15px; }
+  .container { max-width: 500px; margin: auto; }
+  .card { background: var(--bg3); border: 1px solid var(--border); padding: 25px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  h2 { font-family: 'Rajdhani'; color: var(--gold); text-align: center; margin-bottom: 25px; letter-spacing: 2px; }
+  label { display: block; font-size: 11px; color: var(--gold); margin-bottom: 5px; font-family: 'Share Tech Mono'; text-transform: uppercase; }
+  select, input { width: 100%; padding: 12px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 4px; margin-bottom: 15px; box-sizing: border-box; font-family: 'Share Tech Mono'; outline: none; }
+  .qris-box { background: #fff; padding: 15px; border-radius: 6px; text-align: center; margin-bottom: 15px; }
+  .qris-box img { width: 160px; }
+  .btn-submit { width: 100%; padding: 16px; background: var(--gold); color: #000; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; font-family: 'Rajdhani'; font-size: 16px; transition: 0.3s; }
+  .btn-submit:disabled { background: #444; cursor: not-allowed; }
+  #imgPreview { width: 100%; border-radius: 4px; display: none; margin-bottom: 15px; border: 1px solid var(--gold); object-fit: contain; max-height: 250px; }
+  .loader { text-align: center; font-size: 12px; color: var(--gold); display: none; margin-bottom: 10px; font-family: 'Share Tech Mono'; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card">
+    <h2>⚡ SSM DASHBOARD</h2>
+    
+    <div id="loader" class="loader">Menghubungkan ke API...</div>
+
+    <form id="orderForm">
+      <label>Kategori Layanan</label>
+      <select id="category" onchange="updateServices()">
+        <option value="">-- Memuat Data --</option>
+      </select>
+
+      <label>Pilih Layanan</label>
+      <select id="service" required>
+        <option value="">-- Pilih Kategori Dahulu --</option>
+      </select>
+
+      <label>Target (URL / Username)</label>
+      <input type="text" id="target" placeholder="Contoh: https://www.instagram.com/p/..." required>
+
+      <label>Jumlah (Qty)</label>
+      <input type="number" id="qty" placeholder="Masukkan jumlah pesanan" required>
+
+      <div class="qris-box">
+        <p style="color:#000; font-size:12px; font-weight:bold; margin-bottom:10px; font-family: sans-serif;">PEMBAYARAN QRIS</p>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=PAYMENT_SSM_PANEL" alt="QRIS">
+      </div>
+
+      <label>Upload Bukti Pembayaran</label>
+      <input type="file" id="proof" accept="image/*" required onchange="previewFile()">
+      <img id="imgPreview">
+
+      <button type="submit" id="btnSubmit" class="btn-submit">⚡ KIRIM PESANAN KE ADMIN</button>
+    </form>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   KONFIGURASI API (GitHub Pages Ready)
+============================================================ */
+const CONFIG = {
+  buzzer_key: 'h/YPSBt741Vtpfge6wOiWQ==',
+  buzzer_url: 'https://buzzerpanel.id/api/json.php',
+  // SANGAT DISARANKAN: Ganti dengan Token & Chat ID Anda
+  tg_token: 'YOUR_TELEGRAM_BOT_TOKEN', 
+  tg_chat_id: 'YOUR_TELEGRAM_CHAT_ID',
+  // Menggunakan AllOrigins Proxy untuk menembus CORS di GitHub Pages
+  proxy: 'https://api.allorigins.win/raw?url='
+};
+
+let allServices = [];
+
+// 1. Ambil Data dari BuzzerPanel via Proxy
+async function fetchServices() {
+  const loader = document.getElementById('loader');
+  loader.style.display = 'block';
+  
+  try {
+    const targetUrl = `${CONFIG.buzzer_url}?api_key=${encodeURIComponent(CONFIG.buzzer_key)}&action=services`;
+    
+    // Fetch via Proxy AllOrigins agar tidak terkena CORS
+    const response = await fetch(CONFIG.proxy + encodeURIComponent(targetUrl));
+    
+    if (!response.ok) throw new Error('Network response was not ok');
+    
+    const data = await response.json();
+    
+    if (Array.isArray(data)) {
+      allServices = data;
+      const catSelect = document.getElementById('category');
+      const categories = [...new Set(data.map(s => s.category))];
+      
+      catSelect.innerHTML = '<option value="">-- Pilih Kategori --</option>';
+      categories.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.innerText = c;
+        catSelect.appendChild(opt);
+      });
+    }
+  } catch (err) {
+    console.error("Fetch Error:", err);
+    alert("Gagal mengambil layanan. Coba refresh halaman atau cek koneksi.");
+  } finally {
+    loader.style.display = 'none';
+  }
+}
+
+// 2. Update Dropdown Layanan
+function updateServices() {
+  const cat = document.getElementById('category').value;
+  const servSelect = document.getElementById('service');
+  servSelect.innerHTML = '<option value="">-- Pilih Layanan --</option>';
+  
+  const filtered = allServices.filter(s => s.category === cat);
+  filtered.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id;
+    opt.innerText = `[ID:${s.id}] ${s.name} - Rp${s.price}`;
+    servSelect.appendChild(opt);
+  });
+}
+
+// 3. Preview Gambar Bukti Transfer
+function previewFile() {
+  const preview = document.getElementById('imgPreview');
+  const file = document.getElementById('proof').files[0];
+  const reader = new FileReader();
+  reader.onloadend = () => { 
+    preview.src = reader.result; 
+    preview.style.display = 'block'; 
+  }
+  if (file) reader.readAsDataURL(file);
+}
+
+// 4. Submit Order ke Telegram
+document.getElementById('orderForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('btnSubmit');
+  const proofFile = document.getElementById('proof').files[0];
+
+  if (!CONFIG.tg_token || CONFIG.tg_token === 'YOUR_TELEGRAM_BOT_TOKEN') {
+    alert("Bot Telegram belum dikonfigurasi!");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerText = "MENGIRIM...";
+
+  const caption = `
+🚀 *ORDER BARU MASUK*
+━━━━━━━━━━━━━━
+🆔 *ID Layanan:* ${document.getElementById('service').value}
+📦 *Layanan:* ${document.getElementById('service').selectedOptions[0].text}
+🔗 *Target:* \`${document.getElementById('target').value}\`
+🔢 *Jumlah:* ${document.getElementById('qty').value}
+━━━━━━━━━━━━━━
+*Mohon cek bukti transfer di atas!*
+  `;
+
+  const tgData = new FormData();
+  tgData.append('chat_id', CONFIG.tg_chat_id);
+  tgData.append('photo', proofFile);
+  tgData.append('caption', caption);
+  tgData.append('parse_mode', 'Markdown');
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${CONFIG.tg_token}/sendPhoto`, {
+      method: 'POST',
+      body: tgData
+    });
+
+    if (res.ok) {
+      alert("Pesanan berhasil dikirim ke Admin!");
+      location.reload();
+    } else {
+      alert("Gagal kirim ke Telegram. Cek Token & Chat ID Anda.");
+    }
+  } catch (err) {
+    alert("Terjadi kesalahan koneksi saat mengirim.");
+  } finally {
+    btn.disabled = false;
+    btn.innerText = "⚡ KIRIM PESANAN KE ADMIN";
+  }
+});
+
+// Jalankan saat halaman dibuka
+fetchServices();
+</script>
+</body>
+</html>

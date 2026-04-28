@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSM Panel Suntik — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   VARIABLES & RESET
+============================================================ */
+:root {
+  --gold:         #f5c518;
+  --gold-dim:     #c9991a;
+  --gold-glow:    rgba(245,197,24,0.15);
+  --gold-line:    rgba(245,197,24,0.35);
+  --bg:           #0a0a07;
+  --bg2:          #0f0f09;
+  --bg3:          #141410;
+  --bg4:          #1a1a12;
+  --text:         #f0e6b2;
+  --text-dim:     #8a7d4a;
+  --text-muted:   #4a4428;
+  --green:        #39ff14;
+  --green-dim:    rgba(57,255,20,0.12);
+  --red:          #ff4444;
+  --blue:         #4a9eff;
+  --border:       rgba(245,197,24,0.18);
+  --border-bright:rgba(245,197,24,0.50);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.35}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer}
+
+/* ============================================================
+   SCROLLBAR
+============================================================ */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:rgba(245,197,24,.35);border-radius:3px}
+
+/* ============================================================
+   LOGIN
+============================================================ */
+#loginScreen{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:var(--bg);z-index:200;flex-direction:column;
+}
+.login-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.login-bg::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 39px,var(--border) 40px),
+             repeating-linear-gradient(90deg,transparent,transparent 39px,var(--border) 40px);
+  opacity:.3;
+}
+.login-bg::after{
+  content:'';position:absolute;width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(245,197,24,.06) 0%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+}
+.login-box{
+  position:relative;z-index:2;background:var(--bg3);
+  border:1px solid var(--border-bright);border-radius:6px;
+  padding:48px 44px 40px;width:420px;max-width:94vw;
+  box-shadow:0 0 70px rgba(245,197,24,.1),inset 0 1px 0 rgba(245,197,24,.12);
+  animation:loginIn .55s ease both;
+}
+@keyframes loginIn{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none}}
+.lc{position:absolute;width:16px;height:16px;border-color:var(--gold);border-style:solid}
+.lc.tl{top:-1px;left:-1px;border-width:2px 0 0 2px}
+.lc.tr{top:-1px;right:-1px;border-width:2px 2px 0 0}
+.lc.bl{bottom:-1px;left:-1px;border-width:0 0 2px 2px}
+.lc.br{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+.login-logo{text-align:center;margin-bottom:36px}
+.login-logo .ico{font-size:42px;display:block;margin-bottom:10px;filter:drop-shadow(0 0 16px var(--gold))}
+.login-logo h1{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;letter-spacing:7px;color:var(--gold);text-shadow:0 0 24px rgba(245,197,24,.5);text-transform:uppercase}
+.login-logo p{font-size:11px;letter-spacing:3px;color:var(--text-dim);margin-top:5px;text-transform:uppercase;font-family:'Share Tech Mono',monospace}
+.fgroup{margin-bottom:18px}
+.fgroup label{display:block;font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-bottom:7px;text-transform:uppercase;font-family:'Share Tech Mono',monospace}
+.fgroup input{
+  width:100%;background:var(--bg);border:1px solid var(--border);border-radius:3px;
+  color:var(--text);font-family:'Share Tech Mono',monospace;font-size:14px;
+  padding:12px 16px;outline:none;transition:border-color .2s,box-shadow .2s;letter-spacing:1px;
+}
+.fgroup input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,197,24,.1)}
+.fgroup input::placeholder{color:var(--text-muted)}
+.btn-login{
+  width:100%;background:var(--gold);color:#0a0a07;border:none;border-radius:3px;
+  padding:14px;font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;
+  letter-spacing:4px;text-transform:uppercase;transition:all .2s;margin-top:8px;
+}
+.btn-login:hover{background:#ffe050;box-shadow:0 0 28px rgba(245,197,24,.5)}
+.btn-login:active{transform:scale(.98)}
+.login-err{
+  background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.35);color:#ff8080;
+  border-radius:3px;padding:10px 14px;font-size:12px;margin-top:14px;display:none;
+  font-family:'Share Tech Mono',monospace;
+}
+.login-reg{text-align:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim)}
+.login-reg a{color:var(--gold);font-weight:600}
+.login-reg a:hover{text-decoration:underline}
+
+/* ============================================================
+   LAYOUT
+============================================================ */
+#dashboard{display:none}
+.layout{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{
+  width:256px;background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50;
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+}
+.sb-head{padding:24px 22px 18px;border-bottom:1px solid var(--border)}
+.sb-logo{font-family:'Rajdhani',sans-serif;font-size:21px;font-weight:700;letter-spacing:4px;color:var(--gold);text-shadow:0 0 14px rgba(245,197,24,.4);text-transform:uppercase}
+.sb-logo span{font-size:10px;display:block;letter-spacing:2.5px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-weight:400;margin-top:3px}
+.sb-user{padding:14px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px}
+.u-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),var(--gold));display:flex;align-items:center;justify-content:center;font-size:15px;color:#0a0a07;font-weight:700;font-family:'Rajdhani',sans-serif;flex-shrink:0;box-shadow:0 0 10px rgba(245,197,24,.3)}
+.u-info{flex:1;min-width:0}
+.u-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.u-role{font-size:9px;letter-spacing:2px;color:var(--gold-dim);font-family:'Share Tech Mono',monospace;text-transform:uppercase;margin-top:1px}
+.sb-nav{flex:1;padding:14px 0;overflow-y:auto}
+.nav-sec{font-size:9px;letter-spacing:2.5px;color:var(--text-muted);padding:10px 22px 5px;text-transform:uppercase;font-family:'Share Tech Mono',monospace}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 22px;cursor:pointer;color:var(--text-dim);font-size:13px;font-weight:500;transition:all .15s;border-left:2px solid transparent;letter-spacing:.3px}
+.nav-item:hover{color:var(--text);background:var(--gold-glow);border-left-color:var(--gold-dim)}
+.nav-item.active{color:var(--gold);background:var(--gold-glow);border-left-color:var(--gold)}
+.nav-icon{width:18px;text-align:center;font-size:14px;flex-shrink:0}
+.sb-bottom{padding:14px;border-top:1px solid var(--border)}
+.btn-logout{width:100%;background:transparent;border:1px solid rgba(255,68,68,.3);color:#ff7070;border-radius:3px;padding:9px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;transition:all .2s}
+.btn-logout:hover{background:rgba(255,68,68,.1);border-color:rgba(255,68,68,.6)}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:49}
+.sb-overlay.open{display:block}
+
+/* MAIN */
+.main{margin-left:256px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.ticker-bar{background:var(--bg4);border-bottom:1px solid var(--border);padding:7px 28px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--gold-dim);letter-spacing:1px;overflow:hidden;white-space:nowrap}
+.ticker-inner{display:inline-block;animation:ticker 45s linear infinite}
+@keyframes ticker{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-title{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;letter-spacing:2px;color:var(--text)}
+.hamburger{display:none;background:none;border:none;color:var(--text);font-size:20px;padding:4px}
+.status-badge{display:flex;align-items:center;gap:6px;background:var(--green-dim);border:1px solid rgba(57,255,20,.22);border-radius:20px;padding:4px 12px;font-size:10px;color:var(--green);font-family:'Share Tech Mono',monospace;letter-spacing:1px}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pglow 1.8s ease infinite}
+@keyframes pglow{0%,100%{box-shadow:0 0 0 0 rgba(57,255,20,.5)}50%{box-shadow:0 0 0 5px rgba(57,255,20,0)}}
+.content{padding:28px 28px 40px}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
+.stat-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:20px 18px;position:relative;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .2s}
+.stat-card:hover{border-color:var(--gold-dim);box-shadow:0 4px 18px rgba(245,197,24,.07)}
+.stat-card:hover::after{opacity:1}
+.stat-lbl{font-size:9px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:10px;font-family:'Share Tech Mono',monospace}
+.stat-val{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--gold);line-height:1}
+.stat-sub{font-size:11px;color:var(--text-muted);margin-top:5px}
+.stat-ico{position:absolute;top:16px;right:16px;font-size:26px;opacity:.12}
+
+/* SECTION HEADER */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.sec-title{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;letter-spacing:2px;color:var(--text);display:flex;align-items:center;gap:9px}
+.sec-title::before{content:'';width:3px;height:18px;background:var(--gold);border-radius:2px;display:block}
+.search-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.search-input{background:var(--bg);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;padding:8px 14px;outline:none;width:210px;transition:border-color .2s}
+.search-input:focus{border-color:var(--gold)}
+.search-input::placeholder{color:var(--text-muted)}
+
+/* TABLE */
+.table-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:580px}
+thead{background:var(--bg4);border-bottom:1px solid var(--border)}
+th{padding:12px 16px;text-align:left;font-size:9px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;font-family:'Share Tech Mono',monospace;font-weight:400;white-space:nowrap}
+td{padding:13px 16px;font-size:13px;border-bottom:1px solid rgba(245,197,24,.05);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(245,197,24,.025)}
+.oid{font-family:'Share Tech Mono',monospace;color:var(--gold-dim);font-size:11px}
+.oname{font-weight:600;color:var(--text)}
+.otarget{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--blue);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.oqty{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700}
+.empty-row td{text-align:center;padding:40px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;font-size:13px;border-bottom:none}
+
+/* BADGES */
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-family:'Share Tech Mono',monospace;letter-spacing:1px;font-weight:600;text-transform:uppercase;white-space:nowrap}
+.b-process{background:rgba(245,197,24,.14);color:var(--gold);border:1px solid rgba(245,197,24,.28)}
+.b-done{background:var(--green-dim);color:var(--green);border:1px solid rgba(57,255,20,.28)}
+.b-pending{background:rgba(100,100,100,.18);color:#888;border:1px solid rgba(100,100,100,.28)}
+.b-error{background:rgba(255,68,68,.1);color:#ff6666;border:1px solid rgba(255,68,68,.28)}
+.b-lunas{background:var(--green-dim);color:var(--green);border:1px solid rgba(57,255,20,.28)}
+.b-belum{background:rgba(255,68,68,.1);color:#ff8080;border:1px solid rgba(255,68,68,.28)}
+
+.btn-sm{background:transparent;border:1px solid var(--border);color:var(--text-dim);border-radius:3px;padding:5px 12px;font-size:11px;font-family:'Share Tech Mono',monospace;transition:all .15s;white-space:nowrap}
+.btn-sm:hover{border-color:var(--gold-dim);color:var(--gold)}
+.btn-new{background:var(--gold);color:#0a0a07;border:none;border-radius:3px;padding:8px 18px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all .2s}
+.btn-new:hover{background:#ffe050;box-shadow:0 0 16px rgba(245,197,24,.4)}
+
+/* ============================================================
+   NEW ORDER FORM
+============================================================ */
+.order-form-wrap{display:grid;grid-template-columns:1fr 290px;gap:18px;align-items:start}
+.form-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:26px 26px 22px}
+.form-card-title{font-size:10px;letter-spacing:3px;color:var(--gold-dim);font-family:'Share Tech Mono',monospace;text-transform:uppercase;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fgrp{margin-bottom:16px}
+.fgrp:last-child{margin-bottom:0}
+.fgrp label{display:block;font-size:10px;letter-spacing:1.5px;color:var(--text-dim);margin-bottom:7px;text-transform:uppercase;font-family:'Share Tech Mono',monospace;display:flex;align-items:center;gap:6px}
+.lreq{font-size:9px;color:var(--gold-dim);letter-spacing:1px;background:rgba(245,197,24,.1);padding:1px 6px;border-radius:10px}
+.lopt{font-size:9px;color:var(--text-muted);letter-spacing:1px}
+.fi,.fsel{
+  width:100%;background:var(--bg);border:1px solid var(--border);border-radius:3px;
+  color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;
+  padding:11px 13px;outline:none;transition:border-color .2s,box-shadow .2s;letter-spacing:.5px;
+}
+.fi:focus,.fsel:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,197,24,.09)}
+.fi::placeholder{color:var(--text-muted)}
+.fdiv{height:1px;background:var(--border);margin:20px 0}
+.ferr{color:#ff7070;font-size:11px;font-family:'Share Tech Mono',monospace;margin-top:6px;display:none;padding:8px 12px;background:rgba(255,68,68,.07);border:1px solid rgba(255,68,68,.22);border-radius:3px}
+.step-label{font-size:11px;font-weight:700;color:var(--text);letter-spacing:1px;margin-bottom:14px;display:flex;align-items:center;gap:9px}
+.step-num{width:22px;height:22px;background:var(--gold);color:#0a0a07;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;font-family:'Rajdhani',sans-serif;flex-shrink:0}
+
+/* QRIS BOX */
+.qris-box{
+  display:flex;gap:20px;background:var(--bg4);border:1px solid var(--border);
+  border-radius:4px;padding:18px;margin-bottom:16px;
+}
+.qris-left{display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0}
+.qris-img-wrap{
+  background:#fff;border-radius:6px;padding:10px;
+  box-shadow:0 0 20px rgba(245,197,24,.15);
+  border:2px solid var(--gold-dim);
+}
+.qris-svg{width:130px;height:130px;display:block}
+.qris-name{font-size:12px;font-weight:700;color:var(--text);text-align:center;font-family:'Rajdhani',sans-serif;letter-spacing:1px}
+.qris-sub{font-size:10px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;text-align:center}
+.qris-hint{font-size:9px;color:var(--gold-dim);font-family:'Share Tech Mono',monospace;text-align:center;margin-top:2px;letter-spacing:.5px}
+.qris-right{flex:1}
+.qris-steps-title{font-size:9px;letter-spacing:2px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;margin-bottom:10px;text-transform:uppercase}
+.qstep{display:flex;align-items:flex-start;gap:9px;margin-bottom:9px;font-size:12px;color:var(--text-dim);line-height:1.5}
+.qstep:last-child{margin-bottom:0}
+.qn{width:18px;height:18px;background:rgba(245,197,24,.2);color:var(--gold);border:1px solid var(--gold-line);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'Rajdhani',sans-serif;flex-shrink:0;margin-top:1px}
+.qstep strong{color:var(--text)}
+
+/* UPLOAD BUKTI */
+.upload-area{
+  border:2px dashed var(--border);border-radius:4px;padding:22px;
+  text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);
+  position:relative;overflow:hidden;
+}
+.upload-area:hover,.upload-area.dragover{border-color:var(--gold);background:var(--gold-glow)}
+.upload-icon{font-size:30px;margin-bottom:8px;filter:grayscale(.5)}
+.upload-text{font-size:13px;color:var(--text-dim);margin-bottom:4px}
+.upload-hint{font-size:10px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;letter-spacing:.5px}
+.preview-wrap{display:none;align-items:center;gap:14px;text-align:left}
+.preview-img{width:72px;height:72px;object-fit:cover;border-radius:4px;border:1px solid var(--border-bright);flex-shrink:0}
+.preview-info{flex:1;min-width:0}
+.preview-name{font-size:12px;color:var(--text);font-family:'Share Tech Mono',monospace;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:8px}
+.btn-rm-img{background:transparent;border:1px solid rgba(255,68,68,.35);color:#ff7070;border-radius:3px;padding:4px 10px;font-size:11px;font-family:'Share Tech Mono',monospace;transition:all .2s}
+.btn-rm-img:hover{background:rgba(255,68,68,.1)}
+.upload-ok-badge{display:none;align-items:center;gap:6px;background:var(--green-dim);border:1px solid rgba(57,255,20,.3);border-radius:3px;padding:6px 12px;font-size:11px;color:var(--green);font-family:'Share Tech Mono',monospace;margin-top:8px}
+
+.btn-submit{
+  width:100%;background:var(--gold);color:#0a0a07;border:none;border-radius:3px;
+  padding:15px;font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;
+  letter-spacing:4px;text-transform:uppercase;transition:all .2s;
+  box-shadow:0 4px 20px rgba(245,197,24,.18);
+}
+.btn-submit:hover:not(:disabled){background:#ffe050;box-shadow:0 0 30px rgba(245,197,24,.45)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;filter:grayscale(.4)}
+
+/* SIDE INFO */
+.order-side{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:20px 18px;position:sticky;top:72px}
+.side-title{font-size:11px;font-weight:700;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);letter-spacing:1px}
+.side-item{font-size:12px;color:var(--text-dim);line-height:1.6;margin-bottom:10px;display:flex;gap:8px;align-items:flex-start}
+.sdot{width:5px;height:5px;background:var(--gold-dim);border-radius:50%;flex-shrink:0;margin-top:6px}
+.side-item code{background:var(--bg4);color:var(--gold);padding:1px 5px;border-radius:2px;font-family:'Share Tech Mono',monospace;font-size:10px}
+.side-item strong{color:var(--text)}
+.plat-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.plat-tag{font-size:11px;color:var(--text-dim);background:var(--bg4);border:1px solid var(--border);border-radius:3px;padding:5px 7px;text-align:center}
+
+/* ============================================================
+   MODAL
+============================================================ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(4px)}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg3);border:1px solid var(--border-bright);border-radius:5px;padding:32px 32px 26px;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto;position:relative;transform:scale(.95) translateY(14px);transition:transform .2s;box-shadow:0 0 60px rgba(245,197,24,.12)}
+.modal-overlay.open .modal{transform:scale(1) translateY(0)}
+.modal-title{font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:22px}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--text-dim);font-size:20px;transition:color .15s}
+.modal-close:hover{color:var(--gold)}
+.modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
+
+/* MODAL DETAIL TABLE */
+.dtbl{width:100%;border-collapse:collapse}
+.dtbl td{padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+.dtbl tr:last-child td{border-bottom:none}
+.dtbl .dk{color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;width:120px;padding-right:12px}
+.dtbl .dv{color:var(--text);font-weight:500}
+.progress-bar{width:100%;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;margin-top:4px}
+.progress-fill{height:100%;border-radius:2px;transition:width .4s}
+.bukti-thumb{max-width:100%;max-height:200px;border-radius:4px;border:1px solid var(--border);margin-top:8px;display:block}
+
+/* CONTACT MODAL */
+.contact-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.citem{background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:13px 16px;display:flex;align-items:center;gap:13px}
+.cico{font-size:22px}
+.cinfo h4{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.cinfo p{font-size:11px;color:var(--gold-dim);font-family:'Share Tech Mono',monospace}
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media(max-width:1100px){
+  .order-form-wrap{grid-template-columns:1fr}
+  .order-side{position:static}
+}
+@media(max-width:900px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .qris-box{flex-direction:column;align-items:center}
+  .qris-right{width:100%}
+}
+@media(max-width:700px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .hamburger{display:block}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .content{padding:16px 12px 32px}
+  .topbar{padding:0 14px}
+  .search-box{flex-direction:column;align-items:stretch;width:100%}
+  .search-input{width:100%}
+  .sec-hdr{flex-direction:column;align-items:flex-start}
+  .frow2{grid-template-columns:1fr}
+  .form-card{padding:18px 16px}
+  .btn-new{width:100%;text-align:center}
+}
+@media(max-width:440px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .stat-val{font-size:26px}
+  .login-box{padding:30px 18px 26px}
+  .qris-svg{width:110px;height:110px}
+}
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     LOGIN
+================================================================ -->
+<div id="loginScreen">
+  <div class="login-bg"></div>
+  <div class="login-box">
+    <div class="lc tl"></div><div class="lc tr"></div>
+    <div class="lc bl"></div><div class="lc br"></div>
+    <div class="login-logo">
+      <span class="ico">⚡</span>
+      <h1>SSM Panel</h1>
+      <p>Suntik Social Media · System</p>
+    </div>
+    <div class="fgroup">
+      <label>Username</label>
+      <input type="text" id="loginUser" placeholder="masukkan username" autocomplete="off">
+    </div>
+    <div class="fgroup">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="••••••••">
+    </div>
+    <button class="btn-login" onclick="doLogin()">⚡ MASUK SEKARANG</button>
+    <div class="login-err" id="loginErr">❌ Username atau password salah.</div>
+    <div class="login-reg">
+      Belum punya akun? <a href="#" onclick="openContact()">Hubungi Kami</a> untuk daftar.
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     DASHBOARD
+================================================================ -->
+<div id="dashboard">
+  <div class="layout">
+    <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-head">
+        <div class="sb-logo">⚡ SSM Panel<span>Suntik Social Media v2.0</span></div>
+      </div>
+      <div class="sb-user">
+        <div class="u-avatar" id="uAvatar">A</div>
+        <div class="u-info">
+          <div class="u-name" id="uName">Admin</div>
+          <div class="u-role" id="uRole">Administrator</div>
+        </div>
+      </div>
+      <nav class="sb-nav">
+        <div class="nav-sec">Menu Utama</div>
+        <div class="nav-item active" id="navOrders" onclick="goSection('orders',this)">
+          <span class="nav-icon">📋</span> Daftar Order
+        </div>
+        <div class="nav-item" id="navNew" onclick="goSection('new',this)">
+          <span class="nav-icon">➕</span> Buat Order Baru
+        </div>
+        <div class="nav-item" id="navLayanan" onclick="goSection('layanan',this)">
+          <span class="nav-icon">🗂️</span> Daftar Layanan
+        </div>
+        <div class="nav-sec">Filter Platform</div>
+        <div class="nav-item" onclick="filterPlat('whatsapp',this)"><span class="nav-icon">💬</span> WhatsApp Suntik</div>
+        <div class="nav-item" onclick="filterPlat('tiktok',this)"><span class="nav-icon">🎵</span> TikTok Suntik</div>
+        <div class="nav-item" onclick="filterPlat('instagram',this)"><span class="nav-icon">📸</span> Instagram Suntik</div>
+        <div class="nav-item" onclick="filterPlat('youtube',this)"><span class="nav-icon">▶️</span> YouTube Suntik</div>
+        <div class="nav-item" onclick="filterPlat('twitter',this)"><span class="nav-icon">🐦</span> Twitter / X Suntik</div>
+        <div class="nav-sec">Lainnya</div>
+        <div class="nav-item" onclick="openContact()"><span class="nav-icon">📞</span> Hubungi Admin</div>
+      </nav>
+      <div class="sb-bottom">
+        <button class="btn-logout" onclick="doLogout()">⏻ &nbsp;LOGOUT</button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+      <div class="ticker-bar">
+        <span class="ticker-inner">⚡ SELAMAT DATANG DI SSM PANEL SUNTIK &nbsp;|&nbsp; ✅ PROSES CEPAT &amp; AMAN &nbsp;|&nbsp; 💬 WhatsApp &nbsp;|&nbsp; 🎵 TikTok &nbsp;|&nbsp; 📸 Instagram &nbsp;|&nbsp; ▶️ YouTube &nbsp;|&nbsp; 🐦 Twitter/X &nbsp;|&nbsp; 📞 CS Online 24 Jam &nbsp;|&nbsp; ⚡ PROSES OTOMATIS &nbsp;|&nbsp;</span>
+      </div>
+      <div class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger" onclick="toggleSb()">☰</button>
+          <div class="topbar-title" id="topbarTitle">📋 &nbsp;Daftar Order</div>
+        </div>
+        <div class="status-badge"><div class="status-dot"></div> SISTEM AKTIF</div>
+      </div>
+
+      <div class="content">
+        <!-- STATS -->
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-lbl">Total Order</div><div class="stat-val" id="stTotal">0</div><div class="stat-sub">Semua platform</div><div class="stat-ico">📋</div></div>
+          <div class="stat-card"><div class="stat-lbl">Sedang Proses</div><div class="stat-val" id="stProc">0</div><div class="stat-sub">Sedang berjalan</div><div class="stat-ico">⚡</div></div>
+          <div class="stat-card"><div class="stat-lbl">Selesai</div><div class="stat-val" id="stDone">0</div><div class="stat-sub">Berhasil</div><div class="stat-ico">✅</div></div>
+          <div class="stat-card"><div class="stat-lbl">Pending</div><div class="stat-val" id="stPend">0</div><div class="stat-sub">Menunggu antrian</div><div class="stat-ico">⏳</div></div>
+        </div>
+
+        <!-- ======================== ORDER LIST ======================== -->
+        <div id="secOrders">
+          <div class="sec-hdr">
+            <div class="sec-title">Daftar Order</div>
+            <div class="search-box">
+              <input type="text" class="search-input" id="searchQ" placeholder="🔍 Cari order atau ID..." oninput="renderTable()">
+              <button class="btn-new" onclick="goSection('new', document.getElementById('navNew'))">➕ ORDER BARU</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID Order</th>
+                  <th>Nama Order</th>
+                  <th>Platform</th>
+                  <th>Target URL</th>
+                  <th>Qty</th>
+                  <th>Pembayaran</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="orderTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ======================== NEW ORDER ======================== -->
+        <div id="secNew" style="display:none">
+          <div class="sec-hdr">
+            <div class="sec-title">Buat Order Baru</div>
+          </div>
+          <div class="order-form-wrap">
+
+            <!-- FORM CARD -->
+            <div class="form-card">
+
+              <!-- STEP 1: DETAIL ORDER -->
+              <div class="form-card-title"><span class="step-num">1</span> Detail Order</div>
+              <div class="frow2">
+                <div class="fgrp">
+                  <label>Nama Order</label>
+                  <input type="text" id="fName" class="fi" placeholder="contoh: WA Followers +1000">
+                </div>
+                <div class="fgrp">
+                  <label>Platform</label>
+                  <select id="fPlatform" class="fsel" onchange="updatePlaceholder(); filterServices()">
+                    <option value="whatsapp">💬 WhatsApp</option>
+                    <option value="tiktok">🎵 TikTok</option>
+                    <option value="instagram">📸 Instagram</option>
+                    <option value="youtube">▶️ YouTube</option>
+                    <option value="twitter">🐦 Twitter / X</option>
+                    <option value="facebook">📘 Facebook</option>
+                    <option value="telegram">✈️ Telegram</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- LAYANAN DARI BUZZER API -->
+              <div class="fgrp">
+                <label>Layanan <span class="lreq">dari Buzzer Panel</span></label>
+                <select id="fService" class="fsel" onchange="onServiceChange()">
+                  <option value="">⏳ Memuat layanan...</option>
+                </select>
+                <div id="serviceDetail" style="display:none;margin-top:8px;background:var(--bg4);border:1px solid var(--border);border-radius:3px;padding:10px 13px;font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text-dim);line-height:1.9"></div>
+              </div>
+
+              <div class="fgrp">
+                <label>Target URL <span class="lreq">wajib https://</span></label>
+                <input type="url" id="fTarget" class="fi" placeholder="https://whatsapp.com/...">
+                <div class="ferr" id="errTarget">⚠ Target harus diawali dengan https://</div>
+              </div>
+              <div class="frow2">
+                <div class="fgrp">
+                  <label>Jumlah (Qty)</label>
+                  <input type="number" id="fQty" class="fi" placeholder="contoh: 1000" min="1">
+                </div>
+                <div class="fgrp">
+                  <label>Catatan <span class="lopt">opsional</span></label>
+                  <input type="text" id="fNote" class="fi" placeholder="catatan tambahan...">
+                </div>
+              </div>
+
+              <div class="fdiv"></div>
+
+              <!-- STEP 2: PEMBAYARAN -->
+              <div class="form-card-title" style="margin-bottom:16px"><span class="step-num">2</span> Pembayaran via QRIS</div>
+
+              <div class="qris-box">
+                <!-- QRIS IMAGE — ganti src img di bawah dengan QRIS asli Anda -->
+                <div class="qris-left">
+                  <div class="qris-img-wrap">
+                    <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" class="qris-svg">
+                      <rect width="160" height="160" fill="#fff" rx="4"/>
+                      <!-- Finder TL -->
+                      <rect x="10" y="10" width="50" height="50" fill="none" stroke="#111" stroke-width="5"/>
+                      <rect x="20" y="20" width="30" height="30" fill="#111"/>
+                      <!-- Finder TR -->
+                      <rect x="100" y="10" width="50" height="50" fill="none" stroke="#111" stroke-width="5"/>
+                      <rect x="110" y="20" width="30" height="30" fill="#111"/>
+                      <!-- Finder BL -->
+                      <rect x="10" y="100" width="50" height="50" fill="none" stroke="#111" stroke-width="5"/>
+                      <rect x="20" y="110" width="30" height="30" fill="#111"/>
+                      <!-- Data modules (decorative) -->
+                      <rect x="72" y="10" width="7" height="7" fill="#111"/><rect x="82" y="10" width="7" height="7" fill="#111"/>
+                      <rect x="72" y="20" width="7" height="7" fill="#111"/><rect x="92" y="20" width="7" height="7" fill="#111"/>
+                      <rect x="82" y="30" width="7" height="7" fill="#111"/><rect x="72" y="40" width="7" height="7" fill="#111"/>
+                      <rect x="92" y="40" width="7" height="7" fill="#111"/><rect x="72" y="50" width="7" height="7" fill="#111"/>
+                      <rect x="10" y="72" width="7" height="7" fill="#111"/><rect x="20" y="82" width="7" height="7" fill="#111"/>
+                      <rect x="30" y="72" width="7" height="7" fill="#111"/><rect x="50" y="72" width="7" height="7" fill="#111"/>
+                      <rect x="40" y="82" width="7" height="7" fill="#111"/><rect x="10" y="92" width="7" height="7" fill="#111"/>
+                      <rect x="72" y="72" width="7" height="7" fill="#111"/><rect x="82" y="82" width="7" height="7" fill="#111"/>
+                      <rect x="92" y="72" width="7" height="7" fill="#111"/><rect x="72" y="82" width="7" height="7" fill="#111"/>
+                      <rect x="102" y="72" width="7" height="7" fill="#111"/><rect x="112" y="82" width="7" height="7" fill="#111"/>
+                      <rect x="122" y="72" width="7" height="7" fill="#111"/><rect x="132" y="82" width="7" height="7" fill="#111"/>
+                      <rect x="142" y="72" width="7" height="7" fill="#111"/><rect x="102" y="92" width="7" height="7" fill="#111"/>
+                      <rect x="72" y="102" width="7" height="7" fill="#111"/><rect x="82" y="112" width="7" height="7" fill="#111"/>
+                      <rect x="92" y="102" width="7" height="7" fill="#111"/><rect x="112" y="102" width="7" height="7" fill="#111"/>
+                      <rect x="122" y="112" width="7" height="7" fill="#111"/><rect x="132" y="102" width="7" height="7" fill="#111"/>
+                      <rect x="142" y="112" width="7" height="7" fill="#111"/><rect x="72" y="122" width="7" height="7" fill="#111"/>
+                      <rect x="92" y="132" width="7" height="7" fill="#111"/><rect x="112" y="122" width="7" height="7" fill="#111"/>
+                      <rect x="142" y="132" width="7" height="7" fill="#111"/>
+                      <text x="80" y="155" text-anchor="middle" font-size="9" font-family="Arial" fill="#c00" font-weight="bold">⬛ QRIS</text>
+                    </svg>
+                  </div>
+                  <div class="qris-name">SSM Panel Suntik</div>
+                  <div class="qris-sub">Semua Bank &amp; E-Wallet</div>
+                  <div class="qris-hint">💡 Ganti QRIS di kode</div>
+                </div>
+                <div class="qris-right">
+                  <div class="qris-steps-title">Cara Pembayaran</div>
+                  <div class="qstep"><span class="qn">1</span><span>Buka m-Banking / GoPay / OVO / Dana / dll</span></div>
+                  <div class="qstep"><span class="qn">2</span><span>Pilih menu <strong>Scan QR / QRIS</strong></span></div>
+                  <div class="qstep"><span class="qn">3</span><span>Arahkan ke kode QRIS di sebelah kiri</span></div>
+                  <div class="qstep"><span class="qn">4</span><span>Masukkan nominal, konfirmasi pembayaran</span></div>
+                  <div class="qstep"><span class="qn">5</span><span>Screenshot bukti struk pembayaran</span></div>
+                  <div class="qstep"><span class="qn">6</span><span>Upload bukti di bawah, lalu klik <strong>Kirim Order</strong></span></div>
+                </div>
+              </div>
+
+              <!-- STATUS PEMBAYARAN + NOMINAL -->
+              <div class="frow2">
+                <div class="fgrp">
+                  <label>Status Pembayaran</label>
+                  <select id="fBayar" class="fsel">
+                    <option value="pending">⏳ Belum Dibayar</option>
+                    <option value="lunas">✅ Sudah Dibayar</option>
+                  </select>
+                </div>
+                <div class="fgrp">
+                  <label>Nominal Transfer <span class="lopt">opsional</span></label>
+                  <input type="text" id="fNominal" class="fi" placeholder="contoh: Rp 50.000">
+                </div>
+              </div>
+
+              <!-- UPLOAD BUKTI -->
+              <div class="fgrp">
+                <label>Bukti Pembayaran <span class="lreq">wajib sebelum kirim</span></label>
+                <div class="upload-area" id="uploadArea"
+                  onclick="document.getElementById('fileInput').click()"
+                  ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+                  <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="onFileChange(event)">
+                  <div id="uploadPH">
+                    <div class="upload-icon">📎</div>
+                    <div class="upload-text">Klik atau drag &amp; drop foto bukti transfer</div>
+                    <div class="upload-hint">JPG · PNG · WEBP — maks 5 MB</div>
+                  </div>
+                  <div class="preview-wrap" id="previewWrap">
+                    <img id="previewImg" src="" alt="" class="preview-img">
+                    <div class="preview-info">
+                      <span class="preview-name" id="previewName"></span>
+                      <button type="button" class="btn-rm-img" onclick="removeBukti(event)">✕ Hapus</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="upload-ok-badge" id="uploadOkBadge">
+                  <span>✅</span> Bukti pembayaran terlampir
+                </div>
+                <div class="ferr" id="errBukti">⚠ Bukti pembayaran wajib dilampirkan sebelum mengirim order.</div>
+              </div>
+
+              <div class="fdiv"></div>
+              <button class="btn-submit" id="submitBtn" onclick="submitOrder()">
+                <span id="btnTxt">⚡ &nbsp;KIRIM ORDER SEKARANG</span>
+                <span id="btnLoad" style="display:none">⏳ &nbsp;Memproses...</span>
+              </button>
+            </div>
+
+            <!-- SIDE INFO -->
+            <div class="order-side">
+              <div class="side-title">ℹ️ Panduan Order</div>
+              <div class="side-item"><span class="sdot"></span>Isi semua field yang wajib diisi</div>
+              <div class="side-item"><span class="sdot"></span>Target URL wajib dimulai <code>https://</code></div>
+              <div class="side-item"><span class="sdot"></span>Scan QRIS, lalu screenshot struk bayar</div>
+              <div class="side-item"><span class="sdot"></span>Upload bukti — <strong>order tidak bisa dikirim tanpa bukti</strong></div>
+              <div class="side-item"><span class="sdot"></span>Notifikasi otomatis dikirim ke Telegram Admin</div>
+              <div class="plat-grid">
+                <span class="plat-tag">💬 WhatsApp</span>
+                <span class="plat-tag">🎵 TikTok</span>
+                <span class="plat-tag">📸 Instagram</span>
+                <span class="plat-tag">▶️ YouTube</span>
+                <span class="plat-tag">🐦 Twitter/X</span>
+                <span class="plat-tag">📘 Facebook</span>
+                <span class="plat-tag">✈️ Telegram</span>
+              </div>
+            </div>
+
+          </div><!-- /order-form-wrap -->
+        </div><!-- /secNew -->
+
+        <!-- ======================== LAYANAN API ======================== -->
+        <div id="secLayanan" style="display:none">
+          <div class="sec-hdr">
+            <div class="sec-title">🗂️ Daftar Layanan Buzzer Panel</div>
+            <div class="search-box">
+              <input type="text" class="search-input" id="layananQ" placeholder="🔍 Cari nama layanan..." oninput="renderLayanan()">
+              <select id="layananPlatFilter" class="fsel" style="width:160px;font-size:12px" onchange="renderLayanan()">
+                <option value="">Semua Platform</option>
+                <option value="whatsapp">💬 WhatsApp</option>
+                <option value="tiktok">🎵 TikTok</option>
+                <option value="instagram">📸 Instagram</option>
+                <option value="youtube">▶️ YouTube</option>
+                <option value="twitter">🐦 Twitter/X</option>
+                <option value="facebook">📘 Facebook</option>
+                <option value="telegram">✈️ Telegram</option>
+              </select>
+              <button class="btn-sm" style="border-color:rgba(245,197,24,.4);color:var(--gold)" onclick="loadServices().then(renderLayanan)">⟳ Refresh</button>
+            </div>
+          </div>
+          <div id="layananLoading" style="text-align:center;padding:40px;font-family:'Share Tech Mono',monospace;color:var(--text-dim);font-size:13px">⏳ Memuat layanan dari Buzzer Panel...</div>
+          <div class="table-wrap" id="layananTableWrap" style="display:none">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:60px">ID</th>
+                  <th>Nama Layanan</th>
+                  <th style="width:100px">Kategori</th>
+                  <th style="width:70px">Min</th>
+                  <th style="width:70px">Max</th>
+                  <th style="width:90px">Harga/1000</th>
+                  <th style="width:80px">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="layananTbody"></tbody>
+            </table>
+          </div>
+          <div id="layananEmpty" style="display:none;text-align:center;padding:40px;font-family:'Share Tech Mono',monospace;color:var(--text-muted);font-size:13px">— Tidak ada layanan ditemukan —</div>
+        </div><!-- /secLayanan -->
+
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /layout -->
+</div><!-- /dashboard -->
+
+<!-- ======================== MODAL DETAIL ======================== -->
+<div class="modal-overlay" id="modalDetail">
+  <div class="modal">
+    <div class="modal-title">🔍 Detail Order</div>
+    <button class="modal-close" onclick="closeModal('modalDetail')">✕</button>
+    <div id="detailContent"></div>
+    <div class="modal-actions">
+      <button class="btn-sm" onclick="closeModal('modalDetail')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== MODAL KONTAK ======================== -->
+<div class="modal-overlay" id="modalContact">
+  <div class="modal">
+    <div class="modal-title">📞 Hubungi Admin</div>
+    <button class="modal-close" onclick="closeModal('modalContact')">✕</button>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:16px;line-height:1.7">
+      Untuk <strong style="color:var(--gold)">mendaftar akun baru</strong> atau pertanyaan layanan, hubungi admin kami:
+    </p>
+    <div class="contact-list">
+      <div class="citem"><div class="cico">💬</div><div class="cinfo"><h4>WhatsApp Admin</h4><p>+62 812-3456-7890</p></div></div>
+      <div class="citem"><div class="cico">✈️</div><div class="cinfo"><h4>Telegram</h4><p>@ssmpanel_admin</p></div></div>
+      <div class="citem"><div class="cico">📧</div><div class="cinfo"><h4>Email</h4><p>admin@ssmpanel.id</p></div></div>
+    </div>
+    <p style="font-size:10px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;letter-spacing:.5px">
+      ⏰ RESPON 1×24 JAM · PROSES CEPAT &amp; AMAN
+    </p>
+    <div class="modal-actions">
+      <button class="btn-sm" onclick="closeModal('modalContact')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SCRIPT
+================================================================ -->
+<script>
+/* ============================================================
+   BUZZER PANEL API — ambil layanan & service
+   Menggunakan allorigins.win sebagai CORS proxy
+============================================================ */
+const apiBuzzer    = 'h/YPSBt741Vtpfge6wOiWQ==';
+const secretBuzzer = 'r464nwbkqo67ah35cvidtmu9p7x822ekqbdx8ft5amzjfizs3n';
+const apiUrlBuzzer = 'https://buzzerpanel.id/api/json.php';
+
+let allServices      = [];
+let platformServices = [];
+
+/* Kirim POST ke Buzzer Panel lewat CORS proxy */
+async function buzzerPost(params) {
+  const formBody = new URLSearchParams({
+    api   : apiBuzzer,
+    secret: secretBuzzer,
+    ...params
+  }).toString();
+
+  /* allorigins: bungkus URL target + body sebagai GET */
+  const target  = encodeURIComponent(apiUrlBuzzer);
+  const proxyUrl= `https://api.allorigins.win/post?url=${target}`;
+
+  const res  = await fetch(proxyUrl, {
+    method : 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body   : formBody
+  });
+  const wrap = await res.json();          // { contents: "...", status: {...} }
+  return JSON.parse(wrap.contents);
+}
+
+async function loadServices() {
+  const sel = document.getElementById('fService');
+  sel.innerHTML = '<option value="">⏳ Memuat layanan dari Buzzer Panel...</option>';
+  try {
+    const data = await buzzerPost({ action: 'services' });
+    if (!Array.isArray(data) || !data.length) throw new Error('empty');
+    allServices = data;
+    filterServices();
+  } catch(e) {
+    console.warn('[BuzzerAPI]', e);
+    sel.innerHTML = '<option value="">⚠ Gagal memuat layanan — coba refresh halaman</option>';
+  }
+}
+
+/* Keyword per platform untuk filter nama layanan dari API */
+const PLAT_KW = {
+  whatsapp : ['whatsapp','wa'],
+  tiktok   : ['tiktok','tik tok'],
+  instagram: ['instagram','ig'],
+  youtube  : ['youtube','yt'],
+  twitter  : ['twitter','x.com','tweet'],
+  facebook : ['facebook','fb'],
+  telegram : ['telegram']
+};
+
+function filterServices() {
+  const plat = document.getElementById('fPlatform').value;
+  const kw   = PLAT_KW[plat] || [plat];
+  platformServices = allServices.filter(s =>
+    kw.some(k => (s.name || '').toLowerCase().includes(k))
+  );
+
+  const sel = document.getElementById('fService');
+  document.getElementById('serviceDetail').style.display = 'none';
+
+  if (!platformServices.length) {
+    sel.innerHTML = `<option value="">— Tidak ada layanan untuk platform ini —</option>`;
+    return;
+  }
+
+  sel.innerHTML = '<option value="">— Pilih layanan —</option>' +
+    platformServices.map(s =>
+      `<option value="${s.service}" data-name="${s.name}" data-min="${s.min}" data-max="${s.max}" data-rate="${s.rate||''}" data-category="${s.category||''}">[${s.service}] ${s.name}</option>`
+    ).join('');
+}
+
+function onServiceChange() {
+  const sel = document.getElementById('fService');
+  const opt = sel.options[sel.selectedIndex];
+  const box = document.getElementById('serviceDetail');
+
+  if (!sel.value) { box.style.display = 'none'; return; }
+
+  const name     = opt.dataset.name     || '';
+  const min      = opt.dataset.min      || '—';
+  const max      = opt.dataset.max      || '—';
+  const rate     = opt.dataset.rate     || '';
+  const category = opt.dataset.category || '';
+
+  // Auto-isi nama order dari nama layanan
+  const fName = document.getElementById('fName');
+  if (!fName.value) fName.value = name;
+
+  // Set min qty otomatis
+  const fQty = document.getElementById('fQty');
+  fQty.min = min;
+  if (!fQty.value || parseInt(fQty.value) < parseInt(min)) fQty.value = min;
+
+  box.style.display = '';
+  box.innerHTML =
+    `<span style="color:var(--gold);font-size:12px">📦 ${name}</span><br>` +
+    (category ? `<span style="color:var(--text-muted)">🗂 ${category}</span><br>` : '') +
+    `Min qty: <strong style="color:var(--text)">${Number(min).toLocaleString('id-ID')}</strong> &nbsp;·&nbsp; ` +
+    `Max qty: <strong style="color:var(--text)">${Number(max).toLocaleString('id-ID')}</strong>` +
+    (rate ? ` &nbsp;·&nbsp; Harga: <strong style="color:var(--green)">Rp ${Number(rate).toLocaleString('id-ID')}/1000</strong>` : '');
+}
+
+/* ============================================================
+   ✏️ DATA JSON — USERS
+============================================================ */
+const DB = {
+  users: [
+    { username:"admin",    password:"admin123",    name:"Admin Utama",   role:"Administrator", email:"admin@ssmpanel.id",  wa:"+62 812-0000-0001", joined:"2024-01-01", aktif:true },
+    { username:"operator", password:"op456",       name:"Budi Santoso",  role:"Operator",      email:"budi@ssmpanel.id",   wa:"+62 812-0000-0002", joined:"2024-03-15", aktif:true },
+    { username:"reseller", password:"reseller789", name:"Citra Lestari", role:"Reseller",      email:"citra@ssmpanel.id",  wa:"+62 812-0000-0003", joined:"2024-06-10", aktif:true }
+  ]
+};
+
+/* ============================================================
+   ✏️ TELEGRAM BOT CONFIG
+============================================================ */
+const TG = {
+  token   : 'ISI_BOT_TOKEN_DISINI',
+  chat_id : 'ISI_CHAT_ID_DISINI',
+  enabled : true
+};
+
+/* ============================================================
+   PLATFORM DATA
+============================================================ */
+const PLAT_URL = {
+  whatsapp:'https://whatsapp.com/',  tiktok:'https://tiktok.com/',
+  instagram:'https://instagram.com/',youtube:'https://youtube.com/',
+  twitter:'https://twitter.com/',    facebook:'https://facebook.com/',
+  telegram:'https://t.me/'
+};
+const PLAT_ICON = {
+  whatsapp:'💬',tiktok:'🎵',instagram:'📸',youtube:'▶️',
+  twitter:'🐦',facebook:'📘',telegram:'✈️'
+};
+
+/* ============================================================
+   ORDERS DATA — kosong, diisi dari order masuk
+============================================================ */
+let ORDERS = [];
+
+/* ============================================================
+   STATE
+============================================================ */
+const USERS       = DB.users.filter(u => u.aktif);
+let currentUser   = null;
+let currentFilter = null;
+let orderCounter  = 9;
+
+/* ============================================================
+   AUTH
+============================================================ */
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const found = USERS.find(x => x.username === u && x.password === p);
+  if (!found) { document.getElementById('loginErr').style.display = 'block'; return; }
+  currentUser = found;
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  document.getElementById('uName').textContent = found.name;
+  document.getElementById('uRole').textContent = found.role;
+  document.getElementById('uAvatar').textContent = found.name[0].toUpperCase();
+  renderTable(); updateStats();
+  loadServices(); // ambil layanan dari Buzzer Panel
+}
+document.getElementById('loginUser').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('loginPass').focus(); });
+document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+function doLogout() {
+  currentUser = null; currentFilter = null;
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginErr').style.display = 'none';
+}
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+function goSection(sec, el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('secOrders').style.display = sec === 'orders' ? 'block' : 'none';
+  document.getElementById('secNew').style.display    = sec === 'new'    ? 'block' : 'none';
+  document.getElementById('topbarTitle').innerHTML   = sec === 'orders' ? '📋 &nbsp;Daftar Order' : '➕ &nbsp;Buat Order Baru';
+  closeSb();
+  if (sec === 'orders') { currentFilter = null; renderTable(); }
+}
+function filterPlat(p, el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  currentFilter = p;
+  document.getElementById('secOrders').style.display = 'block';
+  document.getElementById('secNew').style.display    = 'none';
+  document.getElementById('topbarTitle').innerHTML   = '📋 &nbsp;Daftar Order';
+  document.getElementById('searchQ').value = '';
+  closeSb(); renderTable();
+}
+
+/* ============================================================
+   TABLE RENDER
+============================================================ */
+function renderTable() {
+  const q  = document.getElementById('searchQ').value.toLowerCase();
+  let data = ORDERS;
+  if (currentFilter) data = data.filter(o => o.platform === currentFilter);
+  if (q) data = data.filter(o =>
+    o.id.toLowerCase().includes(q) || o.name.toLowerCase().includes(q) || o.platform.includes(q)
+  );
+  const tb = document.getElementById('orderTbody');
+  if (!data.length) {
+    tb.innerHTML = '<tr class="empty-row"><td colspan="8">— Tidak ada order ditemukan —</td></tr>';
+    return;
+  }
+  tb.innerHTML = data.map(o => `
+    <tr>
+      <td><span class="oid">${o.id}</span></td>
+      <td><span class="oname">${o.name}</span></td>
+      <td>${PLAT_ICON[o.platform]||'🌐'} ${cap(o.platform)}</td>
+      <td><a href="${o.target}" target="_blank" class="otarget" title="${o.target}">${o.target}</a></td>
+      <td><span class="oqty">${o.qty.toLocaleString()}</span></td>
+      <td>${bayarBadge(o.bayar)}</td>
+      <td>${statusBadge(o.status)}</td>
+      <td><button class="btn-sm" onclick="showDetail('${o.id}')">Detail</button></td>
+    </tr>`).join('');
+}
+
+function statusBadge(s) {
+  const M = { process:'b-process ⚡ Proses', done:'b-done ✅ Selesai', pending:'b-pending ⏳ Pending', error:'b-error ❌ Error' };
+  const [cls, ...lbl] = (M[s]||'b-pending ⏳ Pending').split(' ');
+  return `<span class="badge ${cls}">${lbl.join(' ')}</span>`;
+}
+function bayarBadge(b) {
+  if (b === 'lunas') return '<span class="badge b-lunas">✅ Lunas</span>';
+  return '<span class="badge b-belum">❌ Belum Bayar</span>';
+}
+function cap(s) { return s.charAt(0).toUpperCase()+s.slice(1); }
+
+function updateStats() {
+  document.getElementById('stTotal').textContent = ORDERS.length;
+  document.getElementById('stProc').textContent  = ORDERS.filter(o=>o.status==='process').length;
+  document.getElementById('stDone').textContent  = ORDERS.filter(o=>o.status==='done').length;
+  document.getElementById('stPend').textContent  = ORDERS.filter(o=>o.status==='pending').length;
+}
+
+/* ============================================================
+   DETAIL MODAL
+============================================================ */
+function showDetail(id) {
+  const o = ORDERS.find(x => x.id === id); if (!o) return;
+  const pct = o.status==='done'?100:o.status==='process'?Math.floor(Math.random()*55+25):o.status==='error'?100:0;
+  const isErr = o.status === 'error';
+  const hasBukti = o.bukti && o.bukti !== 'demo';
+  document.getElementById('detailContent').innerHTML = `
+    <table class="dtbl">
+      <tr><td class="dk">ID Order</td><td class="dv" style="color:var(--gold);font-family:'Share Tech Mono',monospace">${o.id}</td></tr>
+      <tr><td class="dk">Nama</td><td class="dv">${o.name}</td></tr>
+      <tr><td class="dk">Platform</td><td class="dv">${PLAT_ICON[o.platform]||'🌐'} ${cap(o.platform)}</td></tr>
+      <tr><td class="dk">Target</td><td class="dv"><a href="${o.target}" target="_blank" style="color:var(--blue);font-family:'Share Tech Mono',monospace;font-size:11px;word-break:break-all">${o.target}</a></td></tr>
+      <tr><td class="dk">Jumlah</td><td class="dv" style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold)">${o.qty.toLocaleString()}</td></tr>
+      <tr><td class="dk">Pembayaran</td><td class="dv">${bayarBadge(o.bayar)}</td></tr>
+      ${o.nominal ? `<tr><td class="dk">Nominal</td><td class="dv" style="color:var(--green)">${o.nominal}</td></tr>` : ''}
+      ${o.service ? `<tr><td class="dk">Layanan</td><td class="dv" style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim)">${o.service}</td></tr>` : ''}
+      <tr><td class="dk">Status</td><td class="dv">${statusBadge(o.status)}</td></tr>
+      ${o.note ? `<tr><td class="dk">Catatan</td><td class="dv" style="color:var(--text-dim)">${o.note}</td></tr>` : ''}
+      <tr><td class="dk">Bukti Bayar</td><td class="dv">${hasBukti ? `<img src="${o.bukti}" class="bukti-thumb" alt="Bukti">` : (o.bukti==='demo' ? '<span style="color:var(--text-muted);font-size:11px;font-family:\'Share Tech Mono\',monospace">Demo order</span>' : '<span style="color:#ff8080;font-size:11px;font-family:\'Share Tech Mono\',monospace">❌ Belum dilampirkan</span>')}</td></tr>
+    </table>
+    <div style="margin-top:16px">
+      <div style="font-size:9px;letter-spacing:2px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;margin-bottom:6px">PROGRES PENYELESAIAN</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${isErr?100:pct}%;background:${isErr?'linear-gradient(90deg,#ff4444,#ff8888)':'linear-gradient(90deg,var(--gold-dim),var(--gold))'}"></div></div>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:4px;font-family:'Share Tech Mono',monospace">${isErr?'GAGAL':pct+'% selesai'}</div>
+    </div>`;
+  openModal('modalDetail');
+}
+
+/* ============================================================
+   NEW ORDER FORM
+============================================================ */
+function updatePlaceholder() {
+  const p = document.getElementById('fPlatform').value;
+  document.getElementById('fTarget').placeholder = PLAT_URL[p] || 'https://';
+}
+
+/* Upload bukti */
+let buktiDataUrl = null;
+
+function onFileChange(e) { handleFile(e.target.files[0]); }
+function onDragOver(e)   { e.preventDefault(); document.getElementById('uploadArea').classList.add('dragover'); }
+function onDragLeave(e)  { document.getElementById('uploadArea').classList.remove('dragover'); }
+function onDrop(e)       { e.preventDefault(); document.getElementById('uploadArea').classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); }
+
+function handleFile(file) {
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { showToast('⚠ File harus berupa gambar (JPG/PNG/WEBP)', 'err'); return; }
+  if (file.size > 5 * 1024 * 1024)    { showToast('⚠ Ukuran file maks 5 MB', 'err'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    buktiDataUrl = ev.target.result;
+    document.getElementById('previewImg').src   = buktiDataUrl;
+    document.getElementById('previewName').textContent = file.name;
+    document.getElementById('uploadPH').style.display     = 'none';
+    document.getElementById('previewWrap').style.display  = 'flex';
+    document.getElementById('uploadOkBadge').style.display= 'flex';
+    document.getElementById('errBukti').style.display     = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeBukti(e) {
+  e.stopPropagation();
+  buktiDataUrl = null;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('previewImg').src = '';
+  document.getElementById('uploadPH').style.display     = 'block';
+  document.getElementById('previewWrap').style.display  = 'none';
+  document.getElementById('uploadOkBadge').style.display= 'none';
+}
+
+/* Submit order — kirim ke Telegram */
+async function submitOrder() {
+  const name      = document.getElementById('fName').value.trim();
+  const plat      = document.getElementById('fPlatform').value;
+  const target    = document.getElementById('fTarget').value.trim();
+  const qty       = parseInt(document.getElementById('fQty').value);
+  const note      = document.getElementById('fNote').value.trim();
+  const bayar     = document.getElementById('fBayar').value;
+  const nominal   = document.getElementById('fNominal').value.trim();
+  const btn       = document.getElementById('submitBtn');
+  const btnTxt    = document.getElementById('btnTxt');
+  const btnLoad   = document.getElementById('btnLoad');
+
+  // Ambil data layanan dari option yang dipilih
+  const selSvc    = document.getElementById('fService');
+  const serviceId = selSvc.value;
+  const opt       = selSvc.options[selSvc.selectedIndex];
+  const serviceNm = serviceId ? (opt.dataset.name || opt.text) : '';
+
+  // Validasi
+  if (!name)   { showToast('⚠ Nama Order wajib diisi!', 'err'); return; }
+  if (!serviceId) { showToast('⚠ Pilih layanan terlebih dahulu!', 'err'); return; }
+  if (!target) { showToast('⚠ Target URL wajib diisi!', 'err'); return; }
+  if (!target.startsWith('https://')) {
+    document.getElementById('errTarget').style.display = 'block'; return;
+  }
+  document.getElementById('errTarget').style.display = 'none';
+  if (!qty || qty < 1) { showToast('⚠ Qty wajib diisi!', 'err'); return; }
+
+  // Validasi min/max qty dari layanan
+  const minQty = parseInt(opt.dataset.min) || 1;
+  const maxQty = parseInt(opt.dataset.max) || Infinity;
+  if (qty < minQty) { showToast(`⚠ Qty minimum untuk layanan ini: ${minQty.toLocaleString('id-ID')}`, 'err'); return; }
+  if (qty > maxQty) { showToast(`⚠ Qty maksimum untuk layanan ini: ${maxQty.toLocaleString('id-ID')}`, 'err'); return; }
+
+  // Wajib bukti pembayaran
+  if (!buktiDataUrl) {
+    document.getElementById('errBukti').style.display = 'block';
+    document.getElementById('uploadArea').style.borderColor = 'rgba(255,68,68,.6)';
+    document.getElementById('uploadArea').scrollIntoView({ behavior:'smooth', block:'center' });
+    showToast('⚠ Upload bukti pembayaran terlebih dahulu!', 'err');
+    return;
+  }
+  document.getElementById('errBukti').style.display = 'none';
+  document.getElementById('uploadArea').style.borderColor = '';
+
+  // Loading
+  btn.disabled = true; btnTxt.style.display = 'none'; btnLoad.style.display = 'inline';
+
+  const id  = 'ORD-' + String(orderCounter++).padStart(4,'0');
+  const now = new Date().toLocaleString('id-ID');
+
+  // Kirim ke Telegram
+  await sendTelegram(
+`⚡ <b>ORDER BARU — SSM PANEL</b> ⚡
+
+🆔 <b>ID:</b> <code>${id}</code>
+📋 <b>Nama Order:</b> ${name}
+${PLAT_ICON[plat]||'🌐'} <b>Platform:</b> ${cap(plat)}
+🔧 <b>Layanan:</b> [${serviceId}] ${serviceNm}
+🎯 <b>Target:</b> ${target}
+🔢 <b>Qty:</b> ${qty.toLocaleString('id-ID')}
+💳 <b>Pembayaran:</b> ${bayar === 'lunas' ? '✅ Lunas' : '⏳ Belum Bayar'}${nominal ? ' — ' + nominal : ''}
+📝 <b>Catatan:</b> ${note || '—'}
+👤 <b>Operator:</b> ${currentUser.name} (${currentUser.role})
+🕐 <b>Waktu:</b> ${now}
+📊 <b>Status:</b> ⏳ Pending
+📎 <b>Bukti:</b> Terlampir
+
+— SSM Suntik Panel v2.0`
+  );
+
+  // Simpan order lokal
+  ORDERS.unshift({
+    id, name, platform: plat, target, qty,
+    status: 'pending', bayar, nominal,
+    bukti: buktiDataUrl, note,
+    service: `[${serviceId}] ${serviceNm}`
+  });
+  updateStats();
+
+  btn.disabled = false; btnTxt.style.display = 'inline'; btnLoad.style.display = 'none';
+  showToast(`✅ Order <strong>${id}</strong> berhasil dikirim!`, 'ok');
+
+  // Reset form
+  ['fName','fTarget','fQty','fNote','fNominal'].forEach(i => document.getElementById(i).value = '');
+  document.getElementById('fBayar').value    = 'pending';
+  document.getElementById('fService').value  = '';
+  document.getElementById('serviceDetail').style.display = 'none';
+  removeBuktiSilent();
+
+  setTimeout(() => goSection('orders', document.getElementById('navOrders')), 1500);
+}
+
+function removeBuktiSilent() {
+  buktiDataUrl = null;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('previewImg').src = '';
+  document.getElementById('uploadPH').style.display     = 'block';
+  document.getElementById('previewWrap').style.display  = 'none';
+  document.getElementById('uploadOkBadge').style.display= 'none';
+}
+
+/* ============================================================
+   TELEGRAM (silent)
+============================================================ */
+async function sendTelegram(msg) {
+  if (!TG.enabled || !TG.token || !TG.chat_id ||
+      TG.token.includes('ISI_') || TG.chat_id.includes('ISI_')) return;
+  try {
+    await fetch(`https://api.telegram.org/bot${TG.token}/sendMessage`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ chat_id:TG.chat_id, text:msg, parse_mode:'HTML' })
+    });
+  } catch(e) { /* silent */ }
+}
+
+/* ============================================================
+   MODALS
+============================================================ */
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function openContact()  { openModal('modalContact'); }
+
+/* ============================================================
+   SIDEBAR MOBILE
+============================================================ */
+function toggleSb() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sbOverlay').classList.toggle('open');
+}
+function closeSb() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sbOverlay').classList.remove('open');
+}
+
+/* ============================================================
+   TOAST
+============================================================ */
+function showToast(html, type) {
+  let t = document.getElementById('ssmToast');
+  if (!t) {
+    t = document.createElement('div'); t.id = 'ssmToast';
+    t.style.cssText = 'position:fixed;bottom:24px;right:20px;z-index:9998;border-radius:4px;padding:13px 18px;font-family:\'Rajdhani\',sans-serif;font-size:14px;box-shadow:0 4px 24px rgba(0,0,0,.5);transition:opacity .35s,transform .35s;max-width:300px;pointer-events:none;line-height:1.5';
+    document.body.appendChild(t);
+  }
+  const ok = type === 'ok';
+  t.style.background = ok ? '#141410' : 'rgba(40,8,8,.96)';
+  t.style.border     = ok ? '1px solid var(--gold)' : '1px solid rgba(255,68,68,.5)';
+  t.style.color      = ok ? 'var(--gold)' : '#ff8080';
+  t.style.opacity = '1'; t.style.transform = 'translateY(0)';
+  t.innerHTML = html;
+  clearTimeout(t._t);
+  t._t = setTimeout(() => { t.style.opacity='0'; t.style.transform='translateY(8px)'; }, 3000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview Video - Sarviola Adnan</title>
+    <meta name="description" content="Website digital Melihat Video Kegabutan saya">
+  <meta name="author" content="Sarviola Adnan SMK 11 Maret Jakarta">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
+        :root {
+            --primary: #FFD700;
+            --primary-glow: rgba(255, 215, 0, 0.2);
+            --bg: #050506;
+            --card: #111113;
+            --border: #222225;
+            --text-dim: #71717a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 50% -20%, #1a1a1a 0%, #050506 80%);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .top-nav {
+            padding: 15px 5%;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(5, 5, 6, 0.9);
+            backdrop-filter: blur(15px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { font-weight: 800; font-size: 1.1rem; letter-spacing: 1px; }
+        .logo span { color: var(--primary); }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: 1fr; 
+            gap: 20px;
+            padding: 20px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) { .video-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1100px) { .video-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        .video-instance {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 18px;
+            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .video-instance.playing {
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px var(--primary-glow);
+            transform: scale(1.02);
+        }
+
+        .screen-container {
+            position: relative;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            pointer-events: none;
+            background-size: cover;
+        }
+
+        .seeker-container { margin-bottom: 12px; }
+        .seeker-bar {
+            width: 100%;
+            -webkit-appearance: none;
+            background: #222;
+            height: 4px;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        .seeker-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .meta { display: flex; justify-content: space-between; align-items: center; }
+        .meta h3 { font-size: 0.8rem; color: #eee; }
+        .meta p { font-size: 0.75rem; color: var(--text-dim); font-family: monospace; }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <div class="logo">SARVI<span>OLA</span></div>
+        <div style="font-size: 0.6rem; color: var(--text-dim); letter-spacing: 2px;">Active</div>
+    </nav>
+
+    <div class="video-grid">
+        <!-- Video 1 -->
+        <div class="video-instance" id="cont-v1">
+            <div class="screen-container" onclick="togglePlay('v1')">
+                <video id="v1" 
+                       src="doku30apr.mp4" 
+                       poster="https://images.unsplash.com/photo-1492691523567-6170f0275df1?q=80&w=1000&auto=format&fit=crop"
+                       playsinline></video>
+            </div>
+            <div class="seeker-container">
+                <input type="range" class="seeker-bar" id="seek-v1" value="0" step="0.1">
+            </div>
+            <div class="meta">
+                <h3>Dokumentasi Gabut Sebelum Pulang Sekolah</h3>
+                <p id="time-v1">00:00 / 00:00</p>
+            </div>
+        </div>
+
+        <!-- Video 2 
+        <div class="video-instance" id="cont-v2">
+            <div class="screen-container" onclick="togglePlay('v2')">
+                <video id="v2" 
+                       src="" 
+                       poster="https://images.unsplash.com/photo-1492691523567-6170f0275df1?q=80&w=1000&auto=format&fit=crop"
+                       playsinline></video>
+            </div>
+            <div class="seeker-container">
+                <input type="range" class="seeker-bar" id="seek-v2" value="0" step="0.1">
+            </div>
+            <div class="meta">
+                <h3>V_PROJECT_02</h3>
+                <p id="time-v2">00:00 / 00:00</p>
+            </div>
+        </div>-->
+
+        <!-- Video 3
+        <div class="video-instance" id="cont-v3">
+            <div class="screen-container" onclick="togglePlay('v3')">
+                <video id="v3" 
+                       src="" 
+                       poster="https://images.unsplash.com/photo-1492691523567-6170f0275df1?q=80&w=1000&auto=format&fit=crop"
+                       playsinline></video>
+            </div>
+            <div class="seeker-container">
+                <input type="range" class="seeker-bar" id="seek-v3" value="0" step="0.1">
+            </div>
+            <div class="meta">
+                <h3>V_PROJECT_03</h3>
+                <p id="time-v3">00:00 / 00:00</p>
+            </div>
+        </div>-->
+        <!-- Batas -->
+    </div>
+
+    <script>
+        const allVideos = document.querySelectorAll('video');
+
+        function togglePlay(id) {
+            const target = document.getElementById(id);
+            if (target.paused) {
+                allVideos.forEach(v => { if(v.id !== id) v.pause(); });
+                target.play();
+            } else {
+                target.pause();
+            }
+        }
+
+        allVideos.forEach(v => {
+            const id = v.id;
+            const container = document.getElementById(`cont-${id}`);
+            const seek = document.getElementById(`seek-${id}`);
+            const timeDisplay = document.getElementById(`time-${id}`);
+
+            const formatTime = (s) => {
+                let m = Math.floor(s/60), sc = Math.floor(s%60);
+                return `${m<10?'0'+m:m}:${sc<10?'0'+sc:sc}`;
+            };
+
+            v.onplay = () => container.classList.add('playing');
+            v.onpause = () => container.classList.remove('playing');
+
+            v.onloadedmetadata = () => {
+                seek.max = v.duration;
+                timeDisplay.innerText = `00:00 / ${formatTime(v.duration)}`;
+            };
+
+            v.ontimeupdate = () => {
+                if(!seek.isDragging) seek.value = v.currentTime;
+                timeDisplay.innerText = `${formatTime(v.currentTime)} / ${formatTime(v.duration)}`;
+            };
+
+            seek.oninput = () => { v.currentTime = seek.value; };
+            seek.onmousedown = () => { seek.isDragging = true; };
+            seek.onmouseup = () => { seek.isDragging = false; };
+        });
+    </script>
+</body>
+</html>

@@ -560,6 +560,7 @@
     @keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(20px,-30px) scale(1.05)}66%{transform:translate(-15px,20px) scale(.97)}}
 
     .hero-left { position:relative; z-index:2; }
+    .hero-link { display:inline-flex; align-items:center; gap:8px; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); border:1px solid rgba(232,255,71,.3); padding:6px 14px; border-radius:2px; margin-bottom:28px; opacity:0; animation:fadeUp .9s 1s ease forwards; }
     .hero-tag { display:inline-flex; align-items:center; gap:8px; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); border:1px solid rgba(232,255,71,.3); padding:6px 14px; border-radius:2px; margin-bottom:28px; opacity:0; animation:fadeUp .8s .2s ease forwards; }
     .hero-tag::before { content:''; width:6px; height:6px; background:var(--accent); border-radius:50%; animation:blink 1.5s infinite; }
     @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}

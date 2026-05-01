@@ -3,873 +3,95 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/x-icon" href="logo-favico.ico">
+  <link rel="icon" type="image/x-icon" href="https://sarviola.my.id/logo-favico.ico">
   <title>Portofolio — Sarviola Adnan</title>
   <meta name="description" content="Website Platform digital Portofolio yang di buat oleh seorang mahasiswa smk 11 maret jakarta">
   <meta name="author" content="Sarviola Adnan SMK 11 Maret Jakarta">
   <meta name="keywords" content="Sarviola Adnan Siswa SMK 11 Maret Jakarta">
+  <script src="https://api.sarviola.sarviola.my.id/app.js" defer></script>
   <link rel="canonical" href="https://sarviola.my.id">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet"akUu rel KkkReta rel="NgoK.css" enakIns Aja hhref="EpEPnaEn.css" "abcDefghiakuganteng.css" epep ijo tdkhod href="QolaxnoviP.css"akU Gesganteng "PeCinta.css" coy waas href="OlaXNovi.css" anjayy dhref="mantapaduh.css" hrof="LegendPsd.css" hUuHuuu Aww azXns Znn href="siid.css" href="huhu.css" dfIAPMado ngAPaInNaSisness rell="stylehet" jtaw dha g eneak kpo d lao epep enak aduh css href="style.css" href="stylenan.css" ahhh mantap kali enak es nya namanya juga es coklat LSaAlAsT adDezcDevSiINeati AwWhHw/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10,10,15,.7);
+      color: #e2e8f0;
+    }
+
+    .container {
+      text-align: center;
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255,255,255,0.1);
+      border-top: 4px solid #e8ff47;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    h1 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: #94a3b8;
+    }
+
+    .progress {
+      margin-top: 20px;
+      height: 6px;
+      width: 100%;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #e8ff47;
+      animation: load 3s linear forwards;
+    }
+
+    @keyframes load {
+      to { width: 100%; }
+    }
+  </style>
 </head>
 <body>
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-<nav id="navbar">
-  <a href="ngapainpencet" class="nav-logo">const="Nan"</a>
-  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-    <span class="bar"></span>
-    <span class="bar"></span>
-    <span class="bar"></span>
-  </button>
-  <ul class="nav-links" id="navLinks">
-    <li><a href="#skills">Keahlian</a></li>
-    <li><a href="#projects">Proyek</a></li>
-    <li><a href="#education">Riwayat</a></li>
-    <li><a href="#contact">Kontak</a></li>
-  </ul>
-  <div class="mobile-menu" id="mobileMenu">
-    <ul class="mobile-links">
-      <li><a href="#skills" onclick="closeMenu()">Keahlian</a></li>
-      <li><a href="#projects" onclick="closeMenu()">Proyek</a></li>
-      <li><a href="#education" onclick="closeMenu()">Riwayat</a></li>
-      <li><a href="#contact" onclick="closeMenu()">Kontak</a></li>
-    </ul>
-  </div>
-</nav>
-<section class="hero" id="home">
-  <div class="hero-bg-grid"></div>
-  <div class="hero-orb hero-orb-1"></div>
-  <div class="hero-orb hero-orb-2"></div>
-  <div class="hero-left">
-    <div class="hero-tag">Siswa Aktif · 2026</div>
-    <h1 class="hero-name">Sarviola<br><span>Adnan</span></h1>
-    <p class="hero-title">Web Developer &amp; UI Designer</p>
-    <p class="hero-desc">Siswa jurusan Teknik Komputer Jaringan di SMK 11 Maret Jakarta. Bersemangat belajar dan membangun generasi kita yang baru dan menyediakan produk digital yang fungsional, estetik, dan berdampak nyata.</p>
-    <div class="hero-link"><a href="https://sarviola.my.id" style="color:var(--accent); text-decoration:none;">https://sarviola.my.id</a></div>
-    <div class="hero-cta">
-      <a href="#projects" class="btn btn-primary">Lihat Proyek →</a>
-      <a href="#contact" class="btn btn-outline">Hubungi Saya</a>
-    </div>
-  </div>
-  <div class="hero-right">
-    <div class="photo-frame">
-      <div class="photo-inner">
-        <img class="photo-img" src="https://xtkj.my.id/list/picture/30.jpg" alt="Foto Profil"/>
-      </div>
-      <div class="photo-badge">TKJ • Kelas XI</div>
-    </div>
-  </div>
-</section>
-<div class="marquee-wrapper">
-  <div class="marquee-track">
-    <span class="marquee-item">HTML &amp; CSS</span><span class="marquee-item">JavaScript</span>
-    <span class="marquee-item">PHP &amp; MySQL</span><span class="marquee-item">UI/UX Design</span>
-    <span class="marquee-item">Figma</span><span class="marquee-item">Bootstrap</span>
-    <span class="marquee-item">React</span><span class="marquee-item">Git &amp; GitHub</span>
-    <span class="marquee-item">HTML &amp; CSS</span><span class="marquee-item">JavaScript</span>
-    <span class="marquee-item">PHP &amp; MySQL</span><span class="marquee-item">UI/UX Design</span>
-    <span class="marquee-item">Figma</span><span class="marquee-item">Bootstrap</span>
-    <span class="marquee-item">React</span><span class="marquee-item">Git &amp; GitHub</span>
+  <div class="container">
+  <div class="spinner"></div>
+  <h1>Memverifikasi Keamanan</h1>
+  <p>Harap tunggu, kami sedang memastikan koneksi Anda aman...</p>
+
+  <div class="progress">
+    <div class="progress-bar"></div>
   </div>
 </div>
-<div class="stats-bar">
-  <div class="stat-item reveal"><span class="stat-num" data-target="25">0</span><span class="stat-label">Proyek Selesai</span></div>
-  <div class="stat-item reveal"><span class="stat-num" data-target="5">0</span><span class="stat-label">Proyek Belum Selesai</span></div>
-  <div class="stat-item reveal"><span class="stat-num" data-target="1">0</span><span class="stat-label">Proyek Lagi Kerjakan</span></div>
-  <div class="stat-item reveal"><span class="stat-num" data-target="30">0</span><span class="stat-label">Proyek Total</span></div>
-</div>
-<section id="skills">
-  <div class="section-label reveal">— Keahlian</div>
-  <h2 class="section-title reveal">Tech<br>Stack</h2>
-  <div class="skills-grid">
-    <div class="skill-card reveal">
-      <img class="skill-icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="Frontend" />
-      <div class="skill-name">Frontend Dev</div>
-      <p class="skill-desc">Membangun antarmuka web yang responsif, interaktif, dan berorientasi pengguna.</p>
-      <div class="skill-bars">
-        <div><div class="skill-bar-info"><span>HTML/CSS</span><span>90%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="90"></div></div></div>
-        <div><div class="skill-bar-info"><span>JavaScript</span><span>75%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="75"></div></div></div>
-        <div><div class="skill-bar-info"><span>Bootstrap</span><span>85%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="85"></div></div></div>
-      </div>
-    </div>
-    <div class="skill-card reveal">
-      <img class="skill-icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" alt="Backend" />
-      <div class="skill-name">Backend Dev</div>
-      <p class="skill-desc">Mengembangkan logika server, database, dan API untuk aplikasi web dinamis.</p>
-      <div class="skill-bars">
-        <div><div class="skill-bar-info"><span>PHP</span><span>15%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="15"></div></div></div>
-        <div><div class="skill-bar-info"><span>MySQL</span><span>7%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="7"></div></div></div>
-        <div><div class="skill-bar-info"><span>CodeIgniter</span><span>12%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="12"></div></div></div>
-      </div>
-    </div>
-    <div class="skill-card reveal">
-      <img class="skill-icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" alt="UI/UX" />
-      <div class="skill-name">UI/UX Design</div>
-      <p class="skill-desc">Mendesain tampilan produk digital yang estetik, intuitif, dan user-centered.</p>
-      <div class="skill-bars">
-        <div><div class="skill-bar-info"><span>Figma</span><span>60%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="60"></div></div></div>
-        <div><div class="skill-bar-info"><span>Prototyping</span><span>80%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="80"></div></div></div>
-        <div><div class="skill-bar-info"><span>Adobe XD</span><span>70%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="70"></div></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-<section class="projects-section" id="projects">
-  <div class="section-label reveal">— Proyek</div>
-  <h2 class="section-title reveal">Proyek<br>Terbaik</h2>
-  <div class="projects-grid">
-    <div class="project-card reveal">
-      <div class="project-thumb project-thumb-1">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="Web Kelas Sekolah" />
-        <div class="project-overlay"><div class="project-overlay-text"><a href="https://xtkj.my.id/utama" style="text-decoration: none; color:var(--accent);">Lihat Detail</a></div></div>
-      </div>
-      <div class="project-body">
-        <div class="project-tags"><span class="project-tag">PHP</span><span class="project-tag">Bootstrap</span><span class="project-tag">JavaScript</span></div>
-        <div class="project-title">Web Kelas</div>
-        <p class="project-desc">Platform digital Kelas X yang dibuat untuk kebutuhan kelas, berisi informasi siswa, jadwal pelajaran, materi pembelajaran, serta berbagai fitur interaktif untuk memudahkan komunikasi.</p>
-      </div>
-    </div>
-    <div class="project-card reveal">
-      <div class="project-thumb project-thumb-2">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="Berbagi THR" />
-        <div class="project-overlay"><div class="project-overlay-text"><a href="https://sarviola.my.id/thrthr" style="text-decoration: none; color:var(--accent);">Lihat Detail</a></div></div>
-      </div>
-      <div class="project-body">
-        <div class="project-tags"><span class="project-tag">HTML</span><span class="project-tag">CSS</span><span class="project-tag">JavaScript</span></div>
-        <div class="project-title">Berbagi THR</div>
-        <p class="project-desc">Platform sederhana untuk berbagi thr dengan tampilan yang menarik dan fitur toggle yang menarik.</p>
-      </div>
-    </div>
-  </div>
-</section>
-<section class="education-section" id="education">
-  <div class="section-label reveal">— Riwayat</div>
-  <h2 class="section-title reveal">Pendidikan</h2>
-  <div class="timeline">
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-year">2024 — Sekarang</div>
-      <div class="timeline-school">SMK 11 Maret Jakarta</div>
-      <div class="timeline-major">Teknik Komputer Jaringan (TKJ)</div>
-      <p class="timeline-desc">Mempelajari dasar komputer jaringan. Aktif dalam ekstrakurikuler seperti band, volly, pramuka, dan bergabung dalam OSIS bidang 2.</p>
-      <span class="timeline-badge">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-        GPA 8.5 / 10
-      </span>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-year">2023-2024</div>
-      <div class="timeline-school">Administrasi</div>
-      <div class="timeline-major">Web Technology</div>
-      <p class="timeline-desc">Berhasil meraih keberhasilan Administrasi suatu layanan.</p>
-      <span class="timeline-badge">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
-        Terverifikasi
-      </span>
-    </div>
-  </div>
-</section>
-<section class="contact-section" id="contact">
-  <div class="contact-inner">
-    <div class="contact-text">
-      <div class="section-label reveal">— Kontak</div>
-      <h2 class="section-title reveal">Mari<br>Terhubung</h2>
-      <p class="reveal">Ada proyek yang ingin dikerjakan bersama? Atau sekadar ingin bertukar pikiran seputar teknologi atau lain lain? Jangan ragu untuk menghubungi saya.</p>
-      <div class="contact-links reveal">
-        <a href="https://chat.sarviola.my.id" class="contact-link">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5z"/><path d="M12 14c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5z"/></svg>
-          <div><div class="contact-link-label">Live Chat</div><div>Klik Di Sini</div></div>
-        </a>
-        <a href="mailto:sarviola.adnan43@smk.belajar.id" class="contact-link">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
-          <div><div class="contact-link-label">Email</div><div>Klik Di Sini</div></div>
-        </a>
-        <a href="https://www.facebook.com/share/1C8UUtemHf/" class="contact-link">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M22.675 0h-21.35C.595 0 0 .593 0 1.326v21.348C0 23.407.595 24 1.325 24H12.82V14.706h-3.411v-3.622h3.411V8.413c0-3.384 2.066-5.23 5.084-5.23 1.445 0 2.687.108 3.049.156v3.535l-2.093.001c-1.64 0-1.958.78-1.958 1.922v2.52h3.916l-.51 3.622h-3.406V24h6.676C23.405 24 24 23.407 24 22.674V1.326C24 .593 23.405 0 22.675 0z"/></svg>
-          <div><div class="contact-link-label">Facebook</div><div>Klik Di Sini</div></div>
-        </a>
-        <a href="https://instagram.com/lasnanl" class="contact-link">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M7.75 2C4.574 2 2 4.574 2 7.75v8.5C2 19.426 4.574 22 7.75 22h8.5C19.426 22 22 19.426 22 16.25v-8.5C22 4.574 19.426 2 16.25 2h-8.5zm0 2h8.5C18.216 4 20 5.784 20 7.75v8.5c0 1.966-1.784 3.75-3.75 3.75h-8.5C5.784 20 4 18.216 4 16.25v-8.5C4 5.784 5.784 4 7.75 4zm8.75 1.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5zM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
-          <div><div class="contact-link-label">Instagram</div><div>Klik Di Sini</div></div>
-        </a>
-        <a href="https://t.me/Takaka_S" class="contact-link">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M9.993 15.373l-.398 4.682c.57 0 .817-.245 1.113-.539l2.67-2.563 5.533 4.046c1.014.559 1.734.266 1.986-.938l3.602-16.89.001-.001c.295-1.38-.5-1.92-1.48-1.566L1.57 9.11c-1.35.524-1.33 1.276-.23 1.614l5.97 1.865 13.85-8.735c.652-.41 1.246-.183.758.227"/></svg>
-          <div><div class="contact-link-label">Telegram</div><div>Klik Di Sini</div></div>
-        </a>
-      </div>
-    </div>
-    <div class="reveal">
-      <div class="contact-form">
-        <div class="form-group">
-          <lottie-player src="https://assets4.lottiefiles.com/packages/lf20_w51pcehl.json" background="transparent" speed="1" style="height: 180px;" loop autoplay></lottie-player>
-          <label class="form-label">Nama Lengkap</label>
-          <input type="text" class="form-input" id="inputNama" placeholder="Masukkan nama kamu" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" id="inputEmail" placeholder="Email@gmail.com" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Pesan</label>
-          <textarea class="form-textarea" id="inputPesan" placeholder="Tuliskan pesan kamu di sini..."></textarea>
-        </div>
-        <button class="form-btn" id="sendBtn" onclick="handleSend()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg>
-          Kirim Pesan
-        </button>
-      </div>
-    </div>
-  </div>
-</section>
-<footer>
-  <div class="footer-left">© 2026 Sarviola Adnan<br>SMK 11 MARET JAKARTA</div>
-  <div class="footer-right">
-    <a href="#home">↑ Kembali ke Atas</a>
-  </div>
-</footer>
-<button id="mp-bubble" aria-label="Music Player">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3a9 9 0 0 0-9 9v5a4 4 0 0 0 4 4h2v-6H5v-3a7 7 0 0 1 14 0v3h-4v6h2a4 4 0 0 0 4-4v-5a9 9 0 0 0-9-9z"/></svg>
-  <div class="mp-bars-bubble">
-    <span></span><span></span><span></span>
-  </div>
-</button>
-<div id="mp-panel" role="region" aria-label="Music Player">
-  <div class="mp-header">
-    <div class="mp-brand">♪ Now Playing</div>
-    <button class="mp-close-btn" id="mp-close" aria-label="Tutup player">✕</button>
-  </div>
-  <div class="mp-track-row">
-    <div>
-      <div class="mp-track-title" id="mp-title">I'm In Love With You</div>
-      <div class="mp-track-artist" id="mp-artist">The 1975</div>
-    </div>
-    <div class="mp-vis-bars mp-paused" id="mp-vis">
-      <span></span><span></span><span></span><span></span>
-    </div>
-  </div>
-  <div class="mp-progress-row">
-    <span class="mp-time" id="mp-cur">0:00</span>
-    <div class="mp-prog-bg" id="mp-prog-bg">
-      <div class="mp-prog-fill" id="mp-prog-fill"></div>
-    </div>
-    <span class="mp-time" id="mp-dur">3:47</span>
-  </div>
-  <div class="mp-controls">
-    <button class="mp-ctrl-btn mp-side" id="mp-vol" title="Mute">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" xmlns="http://www.w3.org/2000/svg" style="fill:none">
-        <path id="mp-vol-path" d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M18.36 5.64a9 9 0 0 1 0 12.73"/>
-      </svg>
-    </button>
-    <button class="mp-ctrl-btn" id="mp-prev">
-      <svg viewBox="0 0 24 24"><path d="M19 20L9 12l10-8v16zM5 4h2v16H5V4z"/></svg>
-    </button>
-    <button class="mp-play-btn" id="mp-play">
-      <svg class="mp-play-ico" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
-      <svg class="mp-pause-ico" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>
-    </button>
-    <button class="mp-ctrl-btn" id="mp-next">
-      <svg viewBox="0 0 24 24"><path d="M5 4l10 8-10 8V4zm14 0h-2v16h2V4z"/></svg>
-    </button>
-    <button class="mp-ctrl-btn mp-side" id="mp-shuffle" title="Acak">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="fill:none">
-        <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
-        <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
-      </svg>
-    </button>
-  </div>
-  <div class="mp-playlist" id="mp-playlist"></div>
-  <div class="mp-footer-credit">SARVIOLA ADNAN · PORTFOLIO</div>
-</div>
-<style>
-  :root {
-    --mp-gold: #e8ff47;
-    --mp-gold-light: #f5ff8a;
-    --mp-gold-dim: #a0b520;
-    --mp-dark: #0a0a0f;
-    --mp-dark2: #111118;
-    --mp-dark3: #13131c;
-    --mp-dark4: #1e1e2e;
-    --mp-text: #f0ede8;
-    --mp-muted: #6b6b7a;
-  }
-  #mp-bubble {
-    position: fixed;
-    bottom: 28px;
-    right: 20px;
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: var(--mp-gold);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    box-shadow: 0 4px 24px rgba(232,255,71,0.35);
-    transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
-  }
-  #mp-bubble:hover { transform: scale(1.1); box-shadow: 0 6px 32px rgba(232,255,71,0.5); }
-  #mp-bubble:active { transform: scale(0.92); }
-  #mp-bubble::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: var(--mp-gold);
-    opacity: 0;
-    transform: scale(1);
-    transition: none;
-  }
-  #mp-bubble.mp-playing::before {
-    animation: mpRing 1.8s ease-out infinite;
-  }
-  @keyframes mpRing {
-    0%   { transform: scale(1);   opacity: 0.6; }
-    100% { transform: scale(2.2); opacity: 0; }
-  }
-  #mp-bubble svg { width: 22px; height: 22px; fill: #0a0a0f; flex-shrink: 0; }
-  #mp-bubble .mp-bars-bubble {
-    display: none;
-    align-items: flex-end;
-    gap: 3px;
-    height: 20px;
-  }
-  #mp-bubble .mp-bars-bubble span {
-    display: block;
-    width: 3px;
-    background: #0F0E0D;
-    border-radius: 2px;
-    animation: mpBounce .8s ease-in-out infinite;
-  }
-  #mp-bubble .mp-bars-bubble span:nth-child(1){height:8px; animation-delay:0s}
-  #mp-bubble .mp-bars-bubble span:nth-child(2){height:16px;animation-delay:.15s}
-  #mp-bubble .mp-bars-bubble span:nth-child(3){height:6px; animation-delay:.3s}
-  #mp-bubble.mp-playing svg { display: none; }
-  #mp-bubble.mp-playing .mp-bars-bubble { display: flex; }
-  #mp-panel {
-    position: fixed;
-    bottom: 92px;
-    right: 20px;
-    width: 300px;
-    background: var(--mp-dark2);
-    border: 0.5px solid rgba(232,255,71,0.2);
-    border-radius: 20px;
-    overflow: hidden;
-    z-index: 9998;
-    transform: translateY(32px) scale(0.88);
-    opacity: 0;
-    pointer-events: none;
-    filter: blur(6px);
-    transform-origin: bottom right;
-    transition:
-      transform .45s cubic-bezier(.34,1.56,.64,1),
-      opacity .3s cubic-bezier(.4,0,.2,1),
-      filter .3s ease;
-    font-family: 'DM Sans', 'Segoe UI', sans-serif;
-    will-change: transform, opacity, filter;
-  }
-  #mp-panel.mp-open {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-    pointer-events: all;
-    filter: blur(0px);
-  }
-  #mp-panel .mp-header,
-  #mp-panel .mp-track-row,
-  #mp-panel .mp-progress-row,
-  #mp-panel .mp-controls,
-  #mp-panel .mp-pages,
-  #mp-panel .mp-playlist,
-  #mp-panel .mp-footer-credit {
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity .3s ease, transform .3s ease;
-  }
-  #mp-panel.mp-open .mp-header       { opacity:1; transform:none; transition-delay:.08s; }
-  #mp-panel.mp-open .mp-track-row    { opacity:1; transform:none; transition-delay:.13s; }
-  #mp-panel.mp-open .mp-progress-row { opacity:1; transform:none; transition-delay:.17s; }
-  #mp-panel.mp-open .mp-controls     { opacity:1; transform:none; transition-delay:.21s; }
-  #mp-panel.mp-open .mp-pages        { opacity:1; transform:none; transition-delay:.25s; }
-  #mp-panel.mp-open .mp-playlist     { opacity:1; transform:none; transition-delay:.29s; }
-  #mp-panel.mp-open .mp-footer-credit{ opacity:1; transform:none; transition-delay:.33s; }
-  .mp-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: .75rem 1rem .4rem;
-    border-bottom: 0.5px solid rgba(232,255,71,0.1);
-  }
-  .mp-brand {
-    font-size: 9px;
-    letter-spacing: 2.5px;
-    color: var(--mp-gold);
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-  .mp-close-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--mp-muted);
-    font-size: 18px;
-    line-height: 1;
-    padding: 2px 4px;
-    border-radius: 6px;
-    transition: color .15s;
-  }
-  .mp-close-btn:hover { color: var(--mp-text); }
-  .mp-track-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: .75rem 1rem .25rem;
-  }
-  .mp-track-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--mp-text);
-    margin-bottom: 2px;
-    font-family: 'Playfair Display', Georgia, serif;
-  }
-  .mp-track-artist {
-    font-size: 11px;
-    color: var(--mp-muted);
-  }
-  .mp-vis-bars {
-    display: flex;
-    align-items: flex-end;
-    gap: 3px;
-    height: 24px;
-    padding-bottom: 2px;
-  }
-  .mp-vis-bars span {
-    display: block;
-    width: 4px;
-    background: var(--mp-gold);
-    border-radius: 2px;
-    animation: mpBounce .8s ease-in-out infinite;
-  }
-  .mp-vis-bars span:nth-child(1){height:10px;animation-delay:0s}
-  .mp-vis-bars span:nth-child(2){height:20px;animation-delay:.15s}
-  .mp-vis-bars span:nth-child(3){height:7px; animation-delay:.3s}
-  .mp-vis-bars span:nth-child(4){height:16px;animation-delay:.45s}
-  .mp-vis-bars.mp-paused span { animation: none; transform: scaleY(0.45); }
-  @keyframes mpBounce {
-    0%,100%{transform:scaleY(.45)}
-    50%    {transform:scaleY(1)}
-  }
-  .mp-progress-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: .2rem 1rem .6rem;
-  }
-  .mp-time { font-size: 10px; color: var(--mp-muted); min-width: 28px; font-variant-numeric: tabular-nums; }
-  .mp-prog-bg {
-    flex: 1;
-    height: 3px;
-    background: var(--mp-dark4);
-    border-radius: 2px;
-    cursor: pointer;
-    position: relative;
-  }
-  .mp-prog-fill {
-    height: 100%;
-    background: var(--mp-gold);
-    border-radius: 2px;
-    width: 0%;
-    transition: width .5s linear;
-    position: relative;
-  }
-  .mp-prog-fill::after {
-    content: '';
-    position: absolute;
-    right: -5px; top: 50%;
-    transform: translateY(-50%);
-    width: 10px; height: 10px;
-    background: var(--mp-gold);
-    border-radius: 50%;
-  }
-  .mp-controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: .1rem 1rem .9rem;
-  }
-  .mp-ctrl-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--mp-text);
-    padding: 6px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-  }
-  .mp-ctrl-btn svg { width: 20px; height: 20px; fill: currentColor; }
-  .mp-ctrl-btn.mp-side { color: var(--mp-muted); }
-  .mp-play-btn {
-    width: 48px; height: 48px;
-    border-radius: 50%;
-    background: var(--mp-gold);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 18px rgba(232,255,71,.35);
-    transition: transform .15s;
-  }
-  .mp-play-btn:active { transform: scale(.92); }
-  .mp-play-btn svg { width: 18px; height: 18px; fill: #0a0a0f; margin-left: 2px; }
-  .mp-play-btn.mp-playing svg.mp-play-ico { display: none; }
-  .mp-play-btn.mp-playing svg.mp-pause-ico { display: block; margin-left: 0; }
-  .mp-play-btn svg.mp-pause-ico { display: none; }
-  .mp-playlist {
-    border-top: 0.5px solid rgba(232,255,71,0.1);
-    max-height: 170px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--mp-dark4) transparent;
-  }
-  .mp-pl-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 7px 1rem;
-    cursor: pointer;
-    transition: background .18s;
-    border-bottom: 0.5px solid rgba(255,255,255,0.04);
-  }
-  .mp-pl-item:hover { background: rgba(232,255,71,0.06); }
-  .mp-pl-item.mp-active { background: rgba(232,255,71,0.08); }
-  .mp-pl-num { font-size: 10px; color: var(--mp-muted); min-width: 14px; text-align: center; }
-  .mp-pl-num.mp-active-num { color: var(--mp-gold); }
-  .mp-pl-title { font-size: 12px; color: var(--mp-text); flex: 1; }
-  .mp-pl-title.mp-active-title { color: var(--mp-gold); font-weight: 500; }
-  .mp-pl-dur { font-size: 10px; color: var(--mp-muted); }
-  .mp-footer-credit {
-    padding: .45rem 1rem;
-    font-size: 9px;
-    color: var(--mp-muted);
-    letter-spacing: 1px;
-    text-align: center;
-    border-top: 0.5px solid rgba(232,255,71,0.07);
-    opacity: .7;
-  }
-</style>
-<div id="yt-hidden" style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;bottom:0;left:0;overflow:hidden;">
-  <div id="yt-player"></div>
-</div>
-<style>
-  .mp-pages{display:flex;gap:4px;padding:6px 1rem 4px;justify-content:center;}
-  .mp-page-btn{background:none;border:0.5px solid rgba(232,255,71,0.2);color:var(--mp-muted);font-size:9px;letter-spacing:1px;padding:3px 9px;border-radius:6px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
-  .mp-page-btn.active{background:rgba(232,255,71,0.12);border-color:var(--mp-gold);color:var(--mp-gold);}
-  .mp-page-btn:hover{border-color:var(--mp-gold-dim);color:var(--mp-text);}
-</style>
-<script src="https://www.youtube.com/iframe_api"></script>
-<script>
-(function(){
-  const TRACKS = [
-    {title:"Lonely",                    artist:"Akon",            ytId:"6EEW-9NDM5k", page:0},
-    {title:"Don't Matter",               artist:"Akon",            ytId:"JWA5hJl4Dv0",  page:0},
-    {title:"Right Now",      artist:"Akon",            ytId:"vIaH35-MLsk",  page:0},
-    {title:"Smack That",                artist:"Akon", ytId:"bKDdT_nyP54",  page:0},
-    {title:"Sorry Blame It On Me",      artist:"Akon",            ytId:"ynMk2EwRi4Q",  page:0},
-    {title:"About You",                 artist:"The 1975",        ytId:"tGv7CUutzqU",  page:1},
-    {title:"I'm In Love With You",       artist:"The 1975",        ytId:"UVzVUDXoi0Y",  page:1},
-    {title:"Somebody Else",             artist:"The 1975",        ytId:"Bimd2nZirT4",  page:1},
-    {title:"If You're Too Shy",          artist:"The 1975",        ytId:"wYYQpTbBSBM",  page:1},
-    {title:"The Sound",                 artist:"The 1975",        ytId:"4or5BmgdMPY",  page:1},
-    {title:"Bergema Sampai Selamanya",  artist:"Nadhif Basalamah",ytId:"g0c7FeMn5lE",  page:2},
-    {title:"Penjaga Hati",              artist:"Nadhif Basalamah",ytId:"jia3fhBQ8qI",  page:2},
-    {title:"Kota Ini Tak Sama Tanpamu", artist:"Nadhif Basalamah",ytId:"grp6FCnioMM",  page:2},
-    {title:"Jatuh Cinta Lagi",          artist:"Nadhif Basalamah",ytId:"DjMu_4O_EYk",  page:2},
-    {title:"Masih Ada Waktunya",        artist:"Nadhif Basalamah",ytId:"gvunApwKIiY",  page:2},
-    {title:"Satu Bulan",                artist:"Bernadya",        ytId:"7Jm2Il2U-c0",  page:3},
-    {title:"Apa Mungkin",               artist:"Bernadya",        ytId:"YIza-jl2Kcs",  page:3},
-    {title:"Kini Mereka Tahu",          artist:"Bernadya",        ytId:"nXOfv4-tT9o",  page:3},
-    {title:"Kata Mereka Ini Berlebihan",artist:"Bernadya",        ytId:"9hjMIOIysng",  page:3},
-    {title:"Lama-Lama",                 artist:"Bernadya",        ytId:"-HdxWBRV86w",  page:3},
-  ];
-  const PAGE_LABELS = ["Akon","The 1975","Nadhif","Bernadya"];
-
-  let cur=0, curPage=0, playing=false, muted=false, shuffled=false;
-  let ytPlayer=null, ytReady=false, progTicker=null;
-
-  const bubble  = document.getElementById('mp-bubble');
-  const panel   = document.getElementById('mp-panel');
-  const closeBtn= document.getElementById('mp-close');
-  const playBtn = document.getElementById('mp-play');
-  const prevBtn = document.getElementById('mp-prev');
-  const nextBtn = document.getElementById('mp-next');
-  const volBtn  = document.getElementById('mp-vol');
-  const shufBtn = document.getElementById('mp-shuffle');
-  const titleEl = document.getElementById('mp-title');
-  const artistEl= document.getElementById('mp-artist');
-  const curEl   = document.getElementById('mp-cur');
-  const durEl   = document.getElementById('mp-dur');
-  const fill    = document.getElementById('mp-prog-fill');
-  const vis     = document.getElementById('mp-vis');
-  const progBg  = document.getElementById('mp-prog-bg');
-  const plEl    = document.getElementById('mp-playlist');
-
-  function fmt(s){if(isNaN(s)||s<0)s=0;s=Math.floor(s);return Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60;}
-
-  window.onYouTubeIframeAPIReady = function(){
-    ytPlayer = new YT.Player('yt-player',{
-      height:'1', width:'1',
-      videoId: TRACKS[0].ytId,
-      playerVars:{autoplay:0, controls:0, rel:0, playsinline:1},
-      events:{
-        onReady: ()=>{ ytReady=true; renderAll(); },
-        onStateChange: (e)=>{
-          if(e.data === YT.PlayerState.ENDED){ nextTrack(); }
-          if(e.data === YT.PlayerState.PLAYING){ playing=true; updateUI(true); startProgTicker(); }
-          if(e.data === YT.PlayerState.PAUSED){ playing=false; updateUI(false); stopProgTicker(); }
-        }
-      }
-    });
-  };
-
-  function updateUI(isPlaying){
-    playBtn.classList.toggle('mp-playing', isPlaying);
-    vis.classList.toggle('mp-paused', !isPlaying);
-    bubble.classList.toggle('mp-playing', isPlaying);
-    renderPL();
-  }
-
-  function startProgTicker(){
-    stopProgTicker();
-    progTicker=setInterval(()=>{
-      if(!ytPlayer||!ytReady)return;
-      try{
-        const el=ytPlayer.getCurrentTime()||0,tot=ytPlayer.getDuration()||1;
-        fill.style.width=(el/tot*100)+'%';
-        curEl.textContent=fmt(el);
-        durEl.textContent=fmt(tot);
-      }catch(e){}
-    },500);
-  }
-  function stopProgTicker(){clearInterval(progTicker);}
-
-  function loadAndPlay(i,autoplay){
-    cur=i; curPage=TRACKS[i].page;
-    titleEl.textContent=TRACKS[i].title;
-    artistEl.textContent=TRACKS[i].artist;
-    durEl.textContent='–:––'; curEl.textContent='0:00'; fill.style.width='0%';
-    renderAll();
-    if(!ytReady)return;
-    autoplay?ytPlayer.loadVideoById(TRACKS[i].ytId):ytPlayer.cueVideoById(TRACKS[i].ytId);
-  }
-
-  function togglePlay(){
-    if(!ytReady)return;
-    playing?ytPlayer.pauseVideo():ytPlayer.playVideo();
-  }
-
-  function nextTrack(){
-    const next=shuffled?Math.floor(Math.random()*TRACKS.length):(cur+1)%TRACKS.length;
-    loadAndPlay(next,playing);
-    if(!playing){playing=false;updateUI(false);}
-  }
-
-  function prevTrack(){
-    try{const t=ytPlayer.getCurrentTime()||0;if(t>3){ytPlayer.seekTo(0,true);return;}}catch(e){}
-    const prev=(cur-1+TRACKS.length)%TRACKS.length;
-    loadAndPlay(prev,playing);
-  }
-
-  function renderPages(){
-    let pagesEl=document.getElementById('mp-pages');
-    if(!pagesEl){
-      pagesEl=document.createElement('div');
-      pagesEl.id='mp-pages';
-      pagesEl.className='mp-pages';
-      plEl.parentNode.insertBefore(pagesEl,plEl);
-    }
-    pagesEl.innerHTML='';
-    PAGE_LABELS.forEach((lb,pi)=>{
-      const btn=document.createElement('button');
-      btn.className='mp-page-btn'+(pi===curPage?' active':'');
-      btn.textContent=lb;
-      btn.addEventListener('click',()=>{curPage=pi;renderAll();});
-      pagesEl.appendChild(btn);
-    });
-  }
-
-  function renderPL(){
-    plEl.innerHTML='';
-    const pageTracks=TRACKS.filter(t=>t.page===curPage);
-    pageTracks.forEach((t)=>{
-      const i=TRACKS.indexOf(t);
-      const d=document.createElement('div');
-      d.className='mp-pl-item'+(i===cur?' mp-active':'');
-      const num=pageTracks.indexOf(t)+1;
-      d.innerHTML='<div class="mp-pl-num'+(i===cur?' mp-active-num':'')+'">'+(i===cur&&playing?'♪':num)+'</div>'+
-        '<div class="mp-pl-title'+(i===cur?' mp-active-title':'')+'">'+(t.title)+'</div>'+
-        '<div class="mp-pl-dur">'+(t.artist)+'</div>';
-      d.addEventListener('click',()=>{
-        loadAndPlay(i,true);
-        if(!playing){playing=true;updateUI(true);}
-      });
-      plEl.appendChild(d);
-    });
-  }
-
-  function renderAll(){renderPages();renderPL();}
-
-  function openPanel(){ panel.classList.add('mp-open'); }
-  function closePanel(){
-    panel.classList.remove('mp-open');
-  }
-  bubble.addEventListener('click',()=>{
-    panel.classList.contains('mp-open') ? closePanel() : openPanel();
-  });
-  closeBtn.addEventListener('click', closePanel);
-  playBtn.addEventListener('click',togglePlay);
-  nextBtn.addEventListener('click',nextTrack);
-  prevBtn.addEventListener('click',prevTrack);
-  volBtn.addEventListener('click',()=>{muted=!muted;if(ytReady)muted?ytPlayer.mute():ytPlayer.unMute();volBtn.style.opacity=muted?'0.35':'1';});
-  shufBtn.addEventListener('click',()=>{shuffled=!shuffled;shufBtn.style.color=shuffled?'var(--mp-gold)':'';});
-  progBg.addEventListener('click',function(e){
-    if(!ytReady)return;
-    try{const r=this.getBoundingClientRect(),ratio=(e.clientX-r.left)/r.width,tot=ytPlayer.getDuration()||1;ytPlayer.seekTo(ratio*tot,true);}catch(e){}
-  });
-
-  titleEl.textContent=TRACKS[0].title;
-  artistEl.textContent=TRACKS[0].artist;
-  renderAll();
-})();
-</script>
-<script src="https://nani-sigma.vercel.app/assets/js/cumantampilan.js"></script>
-<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-<script>
-  const cursor = document.getElementById('cursor');
-  const ring   = document.getElementById('cursorRing');
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-  (function loop(){
-    cursor.style.left=mx+'px';cursor.style.top=my+'px';
-    rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
-    ring.style.left=rx+'px';ring.style.top=ry+'px';
-    requestAnimationFrame(loop);
-  })();
-  document.querySelectorAll('a,button,.skill-card,.project-card').forEach(el=>{
-    el.addEventListener('mouseenter',()=>{cursor.style.width='20px';cursor.style.height='20px';ring.style.width='60px';ring.style.height='60px';});
-    el.addEventListener('mouseleave',()=>{cursor.style.width='12px';cursor.style.height='12px';ring.style.width='40px';ring.style.height='40px';});
-  });
-  window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>50));
-
-  const io = new IntersectionObserver(entries=>{
-    entries.forEach(e=>{
-      if(!e.isIntersecting)return;
-      setTimeout(()=>{
-        e.target.classList.add('visible');
-        e.target.querySelectorAll('.skill-bar-fill').forEach(b=>b.style.width=b.dataset.width+'%');
-        e.target.querySelectorAll('[data-target]').forEach(el=>{
-          let c=0;const t=parseInt(el.dataset.target),step=Math.ceil(t/60);
-          const ti=setInterval(()=>{c=Math.min(c+step,t);el.textContent=c;if(c>=t)clearInterval(ti);},20);
-        });
-      },120);
-      io.unobserve(e.target);
-    });
-  },{threshold:.2});
-  document.querySelectorAll('.reveal,.timeline-item,.stat-item').forEach(el=>io.observe(el));
-
-  document.querySelectorAll('.skill-card').forEach(c=>{
-    c.addEventListener('mouseenter',()=>c.querySelectorAll('.skill-bar-fill').forEach(b=>b.style.width=b.dataset.width+'%'));
-  });
-  
-const hamburger = document.getElementById('hamburger');
-const mobileMenu = document.getElementById('mobileMenu');
-
-function toggleMenu() {
-  hamburger.classList.toggle('active');
-  mobileMenu.classList.toggle('active');
-}
-
-function closeMenu() {
-  hamburger.classList.remove('active');
-  mobileMenu.classList.remove('active');
-}
-
-hamburger.addEventListener('click', toggleMenu);
-
-document.addEventListener('click', (e) => {
-  if (!mobileMenu.contains(e.target) && !hamburger.contains(e.target)) {
-    closeMenu();
-  }
-});
-
-  const BOBOBOY_MERAH = '\x38\x33\x31\x32\x37\x30\x34\x30\x31\x31\x3A\x41\x41\x48\x41\x33\x4B\x67\x66\x50\x34\x48\x61\x38\x46\x6A\x6F\x33\x4C\x7A\x70\x6A\x41\x64\x53\x4A\x52\x46\x67\x37\x64\x50\x5A\x74\x54\x30';
-
-  const BOBOBOY_BIRU = '\x2D\x31\x30\x30\x33\x30\x38\x30\x35\x32\x38\x36\x37\x35';
-
-  async function handleSend(){
-    const btn   = document.getElementById('sendBtn');
-    const nama  = document.getElementById('inputNama').value.trim();
-    const email = document.getElementById('inputEmail').value.trim();
-    const pesan = document.getElementById('inputPesan').value.trim();
-
-    if(!nama||!email||!pesan)          return setBtn(btn,'warn','Lengkapi semua form!');
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setBtn(btn,'warn','Format email tidak valid!');
-    if(BOBOBOY_MERAH.startsWith('GANTI')||BOBOBOY_BIRU.startsWith('GANTI'))
-                                       return setBtn(btn,'warn','Terjadi Kesalahan Hubungi Owner!');
-
-    setBtn(btn,'loading','Mengirim...');
-
-    const text =
-      `*Pesan Baru dari Portofolio*\n\n`+
-      `*Nama:* ${nama}\n`+
-      `*Email:* ${email}\n\n`+
-      `*Pesan:*\n${pesan}\n\n`+
-      `_${new Date().toLocaleString('id-ID')}_`;
-
-    try {
-      const res  = await fetch(`https://api.telegram.org/bot${BOBOBOY_MERAH}/sendMessage`,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({chat_id:BOBOBOY_BIRU,text,parse_mode:'Markdown'})
-      });
-      const data = await res.json();
-      if(data.ok){
-        setBtn(btn,'success','Pesan Terkirim!');
-        ['inputNama','inputEmail','inputPesan'].forEach(id=>document.getElementById(id).value='');
-      } else throw new Error(data.description);
-    } catch(err){
-      console.error(err);
-      setBtn(btn,'error','Gagal — Coba Lagi');
-    }
-  }
-
-  const SVG = {
-    send:    `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg>`,
-    spin:    `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>`,
-    check:   `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>`,
-    warn:    `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>`,
-    error:   `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>`
-  };
-  const STATE = {
-    loading:{ icon:'spin',  bg:'#333',     color:'#aaa' },
-    success:{ icon:'check', bg:'#47ff8a',  color:'#0a0a0f' },
-    warn:   { icon:'warn',  bg:'#e8ff47',  color:'#0a0a0f' },
-    error:  { icon:'error', bg:'#ff4747',  color:'white' }
-  };
-
-  function setBtn(btn,state,label){
-    const s=STATE[state];
-    btn.innerHTML=`${SVG[s.icon]} ${label}`;
-    btn.style.background=s.bg; btn.style.color=s.color;
-    btn.disabled=state==='loading';
-    if(state!=='loading') setTimeout(()=>{
-      btn.innerHTML=`${SVG.send} Kirim Pesan`;
-      btn.style.background=''; btn.style.color=''; btn.disabled=false;
-    },3000);
-  }
-</script>
 </body>
 </html>

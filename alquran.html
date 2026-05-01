@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Al-Qur'an</title>
+  <meta name="description" content="Website Platform digital membaca Al-Quran yang di buat oleh seorang mahasiswa smk 11 maret jakarta">
+  <meta name="author" content="Sarviola Adnan SMK 11 Maret Jakarta">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+  <style>
+    body {
+      background: #0d0d0d;
+      color: #f5d76e;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .title {
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    /* SEARCH DARK */
+    #searchInput {
+      background: #1a1a1a;
+      border: 1px solid #f5d76e33;
+      color: #f5d76e;
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    #searchInput::placeholder {
+      color: #aaa;
+    }
+
+    #searchInput:focus {
+      border-color: #f5d76e;
+      box-shadow: 0 0 10px #f5d76e55;
+      outline: none;
+    }
+
+    /* CARD */
+    .card-custom {
+      background: linear-gradient(145deg, #1a1a1a, #121212);
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 10px;
+      transition: 0.3s;
+      cursor: pointer;
+      border: 1px solid #ffffff0a;
+    }
+
+    .card-custom:hover {
+      transform: translateY(-5px) scale(1.01);
+      box-shadow: 0 10px 25px rgba(245,215,110,0.15);
+    }
+
+    /* AYAT */
+    .ayah-card {
+      background: #141414;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-left: 3px solid #f5d76e;
+    }
+
+    .arab {
+      font-size: 1.6rem;
+      text-align: right;
+      margin-bottom: 5px;
+    }
+
+    .btn-gold {
+      background: #f5d76e;
+      color: #000;
+      border: none;
+      border-radius: 50px;
+      padding: 6px 14px;
+    }
+
+    .btn-gold:hover {
+      background: #e6c95c;
+    }
+
+    .hidden { display: none; }
+
+    /* RESPONSIVE */
+    @media(max-width: 576px){
+      .arab { font-size: 1.3rem; }
+      .card-custom { padding: 12px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container py-4">
+  <div class="header">
+    <h3 class="title">Al-Qur'an Digital</h3>
+  </div>
+
+  <input type="text" id="searchInput" class="form-control mb-3" placeholder="Cari surah..." onkeyup="searchSurah()">
+
+  <div id="listSurah"></div>
+
+  <div id="detailSurah" class="hidden">
+    <button class="btn btn-gold mb-3" onclick="closeSurah()">
+      <i class="bi bi-arrow-left"></i> Kembali
+    </button>
+
+    <h4 id="surahTitle"></h4>
+    <p id="surahInfo"></p>
+
+    <div class="mb-3">
+      <button class="btn btn-gold" onclick="playAudio()">
+        <i class="bi bi-play-fill"></i>
+      </button>
+      <button class="btn btn-gold" onclick="pauseAudio()">
+        <i class="bi bi-pause-fill"></i>
+      </button>
+    </div>
+
+    <audio id="audio"></audio>
+
+    <div id="ayahList"></div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://api.sarviola.my.id/surah.js"></script>
+
+</body>
+</html>

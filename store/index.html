@@ -104,15 +104,15 @@
       <div class="sec-more">Semua <i class="fas fa-chevron-right"></i></div>
     </div>
     <div class="services-grid">
-      <div class="svc-card" onclick="window.open('layanan-pulsa','_blank')"><div class="svc-icon si1"><i class="fas fa-signal"></i></div><div class="svc-name">Pulsa</div></div>
-      <div class="svc-card" onclick="window.open('layanan-paketdata','_blank')"><div class="svc-icon si2"><i class="fas fa-wifi"></i></div><div class="svc-name">Paket Data</div></div>
-      <div class="svc-card" onclick="window.open('layanan-game','_blank')"><div class="svc-icon si3"><i class="fa fa-gamepad"></i></div><div class="svc-name">Topup Game</div></div>
-      <div class="svc-card" onclick="window.open('layanan-telpsms','_blank')"><div class="svc-icon si4"><i class="fas fa-phone"></i></div><div class="svc-name">Telp & SMS</div></div>
-      <div class="svc-card" onclick="window.open('layanan-vgame','_blank')"><div class="svc-icon si5"><i class="fas fa-ticket"></i></div><div class="svc-name">Voucher Game</div></div>
-      <div class="svc-card" onclick="window.open('layanan-ewallet','_blank')"><div class="svc-icon si6"><i class="fas fa-wallet"></i></div><div class="svc-name">E-Wallet</div></div>
-      <div class="svc-card" onclick="window.open('layanan-tknpln','_blank')"><div class="svc-icon si7"><i class="fas fa-bolt"></i></div><div class="svc-name">Token PLN</div></div>
-      <div class="svc-card" onclick="window.open('layanan-voucherb','_blank')"><div class="svc-icon si8"><i class="fas fa-gift"></i></div><div class="svc-name">Voucher</div></div>
-      <div class="svc-card" onclick="window.open('layanan-internet','_blank')"><div class="svc-icon si9"><i class="fas fa-globe"></i></div><div class="svc-name">ACT Internet</div></div>
+      <div class="svc-card" onclick="window.open('layanan-pulsa')"><div class="svc-icon si1"><i class="fas fa-signal"></i></div><div class="svc-name">Pulsa</div></div>
+      <div class="svc-card" onclick="window.open('layanan-paketdata')"><div class="svc-icon si2"><i class="fas fa-wifi"></i></div><div class="svc-name">Paket Data</div></div>
+      <div class="svc-card" onclick="window.open('layanan-game')"><div class="svc-icon si3"><i class="fa fa-gamepad"></i></div><div class="svc-name">Topup Game</div></div>
+      <div class="svc-card" onclick="window.open('layanan-telpsms')"><div class="svc-icon si4"><i class="fas fa-phone"></i></div><div class="svc-name">Telp & SMS</div></div>
+      <div class="svc-card" onclick="window.open('layanan-vgame')"><div class="svc-icon si5"><i class="fas fa-ticket"></i></div><div class="svc-name">Voucher Game</div></div>
+      <div class="svc-card" onclick="window.open('layanan-ewallet')"><div class="svc-icon si6"><i class="fas fa-wallet"></i></div><div class="svc-name">E-Wallet</div></div>
+      <div class="svc-card" onclick="window.open('layanan-tknpln')"><div class="svc-icon si7"><i class="fas fa-bolt"></i></div><div class="svc-name">Token PLN</div></div>
+      <div class="svc-card" onclick="window.open('layanan-voucherb')"><div class="svc-icon si8"><i class="fas fa-gift"></i></div><div class="svc-name">Voucher</div></div>
+      <div class="svc-card" onclick="window.open('layanan-internet')"><div class="svc-icon si9"><i class="fas fa-globe"></i></div><div class="svc-name">ACT Internet</div></div>
     </div>
   </section>
 
@@ -264,7 +264,7 @@ document.getElementById('notifBtn').addEventListener('click',()=>{
 document.getElementById('qaTopup').addEventListener('click',()=>openModal('topup'));
 document.getElementById('qaTransfer').addEventListener('click',()=>openModal('transfer'));
 document.getElementById('qaHistory').addEventListener('click',()=>openModal('history'));
-document.getElementById('qaBantuan').addEventListener('click',()=>{showToast('Menghubungi CS...');setTimeout(()=>window.open('support-whatsapp','_blank'),700)});
+document.getElementById('qaBantuan').addEventListener('click',()=>{showToast('Menghubungi CS...');setTimeout(()=>window.open('support-whatsapp'),700)});
 
 document.querySelectorAll('.nav-it').forEach(item=>{
   item.addEventListener('click',()=>{

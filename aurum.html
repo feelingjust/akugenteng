@@ -3094,7 +3094,6 @@ function startLocalPoll(depId, secKey) {
 
   // ── AUTO-REJECT: jika admin tidak merespons dalam 5 menit ──
   var countdown = AUTO_REJECT_DELAY / 1000;
-  var countdownEl = document.getElementById('tg-send-status');
   var countdownTg = document.getElementById('tg-countdown-text');
 
   var cdInterval = setInterval(function() {

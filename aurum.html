@@ -1813,7 +1813,71 @@
           <button class="btn-trade btn-buy" id="tg-submit-btn" onclick="submitTelegramDeposit()" style="margin-top:4px;width:100%;font-size:13px;">
             Sudah Transfer — Kirim Bukti ke Admin
           </button>
+
+          <!-- ===== TG SEND STATUS PANEL ===== -->
+          <div id="tg-send-status-panel" style="display:none;margin-top:14px;border-radius:10px;overflow:hidden;border:1px solid var(--border);">
+
+            <!-- WAITING STATE -->
+            <div id="tg-state-waiting" style="display:none;background:linear-gradient(135deg,rgba(212,160,23,0.08),rgba(212,160,23,0.03));padding:18px 16px;text-align:center;">
+              <div style="display:flex;align-items:center;justify-content:center;margin-bottom:10px;">
+                <div id="tg-spinner" style="width:36px;height:36px;border:3px solid rgba(212,160,23,0.2);border-top:3px solid var(--gold);border-radius:50%;animation:tg-spin 0.9s linear infinite;flex-shrink:0;"></div>
+              </div>
+              <div style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold);letter-spacing:0.1em;margin-bottom:6px;">MENUNGGU KONFIRMASI</div>
+              <div style="font-size:11px;color:var(--text-secondary);line-height:1.6;margin-bottom:10px;">Bukti transfer telah dikirim ke admin.<br>Harap tunggu, admin sedang memverifikasi.</div>
+              <div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:8px 14px;display:inline-flex;align-items:center;gap:8px;">
+                <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);animation:tg-pulse-dot 1.2s ease-in-out infinite;"></span>
+                <span id="tg-countdown-text" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);">Batas waktu: 05:00</span>
+              </div>
+            </div>
+
+            <!-- APPROVED STATE -->
+            <div id="tg-state-approved" style="display:none;background:linear-gradient(135deg,rgba(46,204,113,0.12),rgba(46,204,113,0.04));padding:20px 16px;text-align:center;">
+              <div style="width:52px;height:52px;border-radius:50%;background:rgba(46,204,113,0.15);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;animation:tg-pop 0.4s ease;">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div style="font-family:'Cinzel',serif;font-size:14px;color:var(--green);letter-spacing:0.1em;margin-bottom:6px;">DEPOSIT DITERIMA!</div>
+              <div style="font-size:11px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px;">Admin telah memverifikasi transfermu.<br>Penghasilan <strong style="color:var(--green)">Rp 1/detik</strong> kini aktif otomatis! 🎉</div>
+              <div style="background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.3);border-radius:6px;padding:8px 14px;display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--green);">
+                <span>●</span> Investasi Aktif
+              </div>
+            </div>
+
+            <!-- REJECTED STATE -->
+            <div id="tg-state-rejected" style="display:none;background:linear-gradient(135deg,rgba(231,76,60,0.12),rgba(231,76,60,0.04));padding:20px 16px;text-align:center;">
+              <div style="width:52px;height:52px;border-radius:50%;background:rgba(231,76,60,0.15);border:2px solid var(--red);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;animation:tg-pop 0.4s ease;">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+              <div style="font-family:'Cinzel',serif;font-size:14px;color:var(--red);letter-spacing:0.1em;margin-bottom:6px;">DEPOSIT DITOLAK</div>
+              <div id="tg-reject-reason" style="font-size:11px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px;">Transfer tidak terdeteksi atau nominal tidak sesuai.<br>Pastikan transfer tepat <strong style="color:var(--gold)">Rp 2.000</strong> dan coba lagi.</div>
+              <button onclick="resetDepositForm()" style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.4);border-radius:6px;padding:8px 18px;font-size:12px;color:var(--red);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:0.06em;">
+                ↺ Coba Lagi
+              </button>
+            </div>
+
+            <!-- SENT (before admin response) -->
+            <div id="tg-state-sent" style="display:none;background:rgba(0,0,0,0.2);padding:10px 14px;border-top:1px solid var(--border);display:none;">
+              <div style="display:flex;align-items:center;gap:8px;font-size:10px;color:var(--text-dim);">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                <span id="tg-sent-time-label">Terkirim ke admin</span>
+              </div>
+            </div>
+
+          </div>
+
           <div id="tg-send-status" style="font-size:11px;text-align:center;margin-top:8px;min-height:18px;color:var(--text-dim);"></div>
+
+          <style>
+            @keyframes tg-spin { to { transform: rotate(360deg); } }
+            @keyframes tg-pulse-dot {
+              0%,100% { opacity:1; transform:scale(1); }
+              50% { opacity:0.4; transform:scale(0.7); }
+            }
+            @keyframes tg-pop {
+              0% { transform:scale(0.5); opacity:0; }
+              70% { transform:scale(1.15); }
+              100% { transform:scale(1); opacity:1; }
+            }
+          </style>
         </div>
 
         <!-- STATUS PANEL -->
@@ -2814,6 +2878,44 @@ function setStep(n, state) {
 }
 function resetSteps() { for (var i=1;i<=4;i++) setStep(i,''); }
 
+// ── TG STATUS PANEL HELPER ────────────────────────────────────
+function showTgState(state) {
+  // state: 'waiting' | 'approved' | 'rejected' | 'hidden'
+  var panel = document.getElementById('tg-send-status-panel');
+  var waiting  = document.getElementById('tg-state-waiting');
+  var approved = document.getElementById('tg-state-approved');
+  var rejected = document.getElementById('tg-state-rejected');
+  var sentBar  = document.getElementById('tg-state-sent');
+  if (!panel) return;
+
+  if (state === 'hidden') {
+    panel.style.display = 'none';
+    return;
+  }
+  panel.style.display = 'block';
+  if (waiting)  waiting.style.display  = (state === 'waiting')  ? 'block' : 'none';
+  if (approved) approved.style.display = (state === 'approved') ? 'block' : 'none';
+  if (rejected) rejected.style.display = (state === 'rejected') ? 'block' : 'none';
+  if (sentBar)  sentBar.style.display  = (state !== 'hidden')   ? 'flex'  : 'none';
+
+  if (state === 'waiting') {
+    var now = new Date();
+    var sentLabel = document.getElementById('tg-sent-time-label');
+    if (sentLabel) sentLabel.textContent = 'Terkirim ke admin pukul ' + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+  }
+}
+
+function resetDepositForm() {
+  pendingId = null;
+  showTgState('hidden');
+  var btn = document.getElementById('tg-submit-btn');
+  if (btn) { btn.disabled = false; btn.textContent = 'Sudah Transfer — Kirim Bukti ke Admin'; }
+  showStatus('', 'dim');
+  resetSteps();
+  var dbgPanel = document.getElementById('tg-debug-panel');
+  if (dbgPanel) dbgPanel.remove();
+}
+
 // ── SEND TO TELEGRAM — pakai GET (Image trick) ──────────────
 // POST + Content-Type JSON selalu diblokir CORS dari file lokal.
 // Solusi andal: kirim via URL params (GET), Telegram API mendukung ini,
@@ -2838,6 +2940,7 @@ async function submitTelegramDeposit() {
   btn.disabled = true;
   btn.textContent = 'Mengirim...';
   showStatus('Mengirim notifikasi ke admin...', 'gold');
+  showTgState('hidden');
 
   resetSteps();
   setStep(1, 'done');
@@ -2956,6 +3059,7 @@ async function submitTelegramDeposit() {
     setStep(2, 'done');
     setStep(3, 'active');
     showStatus('Terkirim! Menunggu konfirmasi admin...', 'green');
+    showTgState('waiting');
   } else {
     dbg('[!] Semua metode gagal — cek debug di atas');
     updatePanel();
@@ -2993,15 +3097,20 @@ function startLocalPoll(depId, secKey) {
   // ── AUTO-REJECT: jika admin tidak merespons dalam 5 menit ──
   var countdown = AUTO_REJECT_DELAY / 1000;
   var countdownEl = document.getElementById('tg-send-status');
+  var countdownTg = document.getElementById('tg-countdown-text');
 
   var cdInterval = setInterval(function() {
     countdown--;
     if (countdown > 0 && !depositActive) {
       var mnt = Math.floor(countdown / 60);
       var dtk = countdown % 60;
+      var timeStr = mnt + ':' + String(dtk).padStart(2,'0');
       if (countdownEl && !depositActive) {
         countdownEl.style.color = 'var(--gold)';
-        countdownEl.textContent = 'Menunggu konfirmasi admin... (' + mnt + ':' + String(dtk).padStart(2,'0') + ')';
+        countdownEl.textContent = 'Menunggu konfirmasi admin... (' + timeStr + ')';
+      }
+      if (countdownTg && !depositActive) {
+        countdownTg.textContent = 'Batas waktu: ' + timeStr;
       }
     } else {
       clearInterval(cdInterval);
@@ -3024,6 +3133,8 @@ function startLocalPoll(depId, secKey) {
         } catch(e) {}
       }
       showStatus('⏱ Admin tidak merespons — deposit otomatis DITOLAK.', 'red');
+      var reasonEl = document.getElementById('tg-reject-reason');
+      if (reasonEl) reasonEl.innerHTML = 'Admin tidak merespons dalam waktu 5 menit.<br>Silakan hubungi admin langsung atau coba lagi.';
       onRejected();
     }
   }, AUTO_REJECT_DELAY);
@@ -3145,6 +3256,7 @@ function onApproved(depId) {
   var earnSpeedEl = document.getElementById('earn-speed');
   if (earnSpeedEl) earnSpeedEl.textContent = 'Rp 1';
   showStatus('DIKONFIRMASI! Penghasilan Rp 1/detik aktif (hanya saat halaman terbuka).', 'green');
+  showTgState('approved');
 
   var wb = document.getElementById('withdraw-btn');
   if (wb) { wb.disabled = false; wb.style.opacity = '1'; }
@@ -3225,11 +3337,12 @@ function onRejected() {
   badge.textContent = 'Ditolak';
 
   showStatus('Deposit DITOLAK admin. Hubungi admin atau coba lagi.', 'red');
+  showTgState('rejected');
   addHistory({ type:'TOLAK', amount: DEPOSIT_AMT, note: 'Ditolak admin' });
 
   var btn = document.getElementById('tg-submit-btn');
-  btn.disabled    = false;
-  btn.textContent = 'Sudah Transfer — Kirim Bukti ke Admin';
+  btn.disabled    = true;
+  btn.textContent = 'Deposit Ditolak ✗';
   localStorage.removeItem(STORAGE_KEY);
 }
 

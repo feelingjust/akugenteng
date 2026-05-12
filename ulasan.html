@@ -294,7 +294,7 @@ footer{
 </div>
 
 <nav>
-  <a href="#" class="nav-logo">YN.</a>
+  <p class ="nav-logo">Sarviola Adnan</p>
   <a href="#" class="nav-back"><i class="fas fa-arrow-left" style="font-size:11px"></i> Kembali</a>
 </nav>
 
@@ -327,11 +327,11 @@ footer{
         </div>
         <div class="field">
           <label>Email</label>
-          <input type="email" id="inp-email" placeholder="email@kamu.com"/>
+          <input type="email" id="inp-email" placeholder="kamu@gmail.com"/>
         </div>
         <div class="field">
           <label>Pesan / Ulasan</label>
-          <textarea id="inp-msg" placeholder="Ceritakan pengalamanmu..."></textarea>
+          <textarea id="inp-msg" placeholder="Website keren..."></textarea>
         </div>
         <button class="submit-btn" id="btn-send-otp" onclick="sendOTP()">
           <div class="spinner"></div>
@@ -405,7 +405,7 @@ footer{
 </div>
 
 <footer>
-  <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--gold);font-weight:600;">YN.</span>
+  <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--gold);font-weight:600;">Made By sarviola.my.id</span>
   <span>© 2026 · Ulasan diverifikasi via OTP</span>
 </footer>
 
@@ -425,7 +425,7 @@ emailjs.init(EJS.publicKey);
 let pendingOTP = '';
 let otpExpiry = 0;
 let resendTimer = null;
-let reviews = JSON.parse(localStorage.getItem('pf_reviews') || '[]');
+let reviews = [];
 
 // ─── OTP ───
 function generateOTP(){
@@ -496,8 +496,7 @@ function verifyOTP(){
     verified: true,
   };
 
-  reviews.unshift(review);
-  localStorage.setItem('pf_reviews', JSON.stringify(reviews));
+  saveReviewCloud(review);
   clearInterval(resendTimer);
   setStep(3);
   showSuccessState(name);
@@ -662,22 +661,44 @@ function resetForm(){
 // ─── INIT ───
 renderReviews();
 </script>
+<script src="https://nani-sigma.vercel.app/assets/js/cumantampilan.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  push,
+  onValue
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-<!-- 
-═══════════════════════════════════════════════════
-  PANDUAN SETUP EMAILJS
-═══════════════════════════════════════════════════
-  1. Daftar gratis di https://www.emailjs.com
-  2. Buat Email Service (Gmail/Outlook/dsb) → catat SERVICE_ID
-  3. Buat Email Template dengan variabel:
-       {{to_name}}   → nama penerima
-       {{to_email}}  → email tujuan  ← set sebagai "To Email"
-       {{otp_code}}  → kode OTP 6 digit
-       {{message}}   → isi pesan
-     catat TEMPLATE_ID
-  4. Salin Public Key dari Account → API Keys
-  5. Isi di banner konfigurasi di bagian atas halaman
-═══════════════════════════════════════════════════
--->
+const firebaseConfig = {
+    apiKey: "AIzaSyCkTjAzy3C5Q_EBF5Db1eCu9kO2QEgATn4",
+    authDomain: "ulasan-sweb.firebaseapp.com",
+    databaseURL: "https://ulasan-sweb-default-rtdb.firebaseio.com",
+    projectId: "ulasan-sweb",
+    storageBucket: "ulasan-sweb.firebasestorage.app",
+    messagingSenderId: "282986877934",
+    appId: "1:282986877934:web:26a32bae007f93b224b4ff"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const reviewsRef = ref(db, "reviews");
+
+window.saveReviewCloud = function(review){
+  push(reviewsRef, review);
+};
+
+onValue(reviewsRef, snap=>{
+  reviews = [];
+
+  snap.forEach(child=>{
+    reviews.unshift(child.val());
+  });
+
+  renderReviews();
+});
+</script>
+
 </body>
 </html>

@@ -11,7 +11,7 @@
 /* ─── CONFIG NOTICE ─── */
 :root{
   --bg:#0a0805;--bg2:#100e09;--bg3:#161209;--bg4:#1c1710;
-  --gold:#c9a84c;--gold-light:#e8c97a;--gold-dim:#7a6228;
+  --gold:#e8ff47;--gold-light:#e8ff47;--gold-dim:#e8ff47;
   --gold-glow:rgba(201,168,76,0.1);--gold-border:rgba(201,168,76,0.18);
   --text:#f0e8d6;--text-muted:#8a7a60;--text-dim:#3a3020;
   --red:#c04a4a;--green:#4a8c5c;
@@ -62,7 +62,7 @@ nav{
   background:rgba(10,8,5,0.92);backdrop-filter:blur(20px);
 }
 .nav-logo{
-  font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;
+  font-family:'DM Sans', sans-serif;font-size:1.4rem;font-weight:700;
   color:var(--gold-light);letter-spacing:0.08em;text-decoration:none;
 }
 .nav-back{
@@ -91,7 +91,7 @@ nav{
 }
 .page-eyebrow::before{content:'';width:28px;height:1px;background:var(--gold);}
 .page-title{
-  font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,5vw,3.8rem);
+  font-family:'DM Sans', sans-serif;font-size:clamp(2.4rem,5vw,3.8rem);
   font-weight:300;line-height:1.05;color:var(--text);margin-bottom:12px;
 }
 .page-title em{color:var(--gold);font-style:italic;}
@@ -115,7 +115,7 @@ nav{
 
 /* ─── FORM ─── */
 .form-title{
-  font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;
+  font-family:'DM Sans', sans-serif;font-size:1.5rem;font-weight:600;
   color:var(--text);margin-bottom:6px;
 }
 .form-sub{font-size:0.8rem;color:var(--text-muted);margin-bottom:28px;line-height:1.6;}
@@ -144,7 +144,7 @@ nav{
 .otp-digit{
   width:44px;height:52px;text-align:center;background:var(--bg3);
   border:1px solid var(--gold-border);color:var(--text);
-  font-size:1.3rem;font-weight:500;font-family:'Cormorant Garamond',serif;
+  font-size:1.3rem;font-weight:500;font-family:'DM Sans', sans-serif;
   outline:none;transition:border-color 0.2s;
 }
 .otp-digit:focus{border-color:var(--gold);}
@@ -200,7 +200,7 @@ nav{
 .success-state{display:none;text-align:center;padding:20px 0;}
 .success-state.show{display:block;}
 .success-icon{font-size:2.4rem;color:var(--gold);margin-bottom:14px;}
-.success-state h3{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;color:var(--text);margin-bottom:8px;}
+.success-state h3{font-family:'DM Sans', sans-serif;font-size:1.6rem;font-weight:300;color:var(--text);margin-bottom:8px;}
 .success-state p{font-size:0.85rem;color:var(--text-muted);line-height:1.7;}
 .write-another{
   display:inline-flex;align-items:center;gap:8px;margin-top:20px;
@@ -218,12 +218,12 @@ nav{
 }
 .reviews-label{font-size:0.67rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:10px;}
 .reviews-label::before{content:'';width:24px;height:1px;background:var(--gold);}
-.reviews-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--text);}
+.reviews-title{font-family:'DM Sans', sans-serif;font-size:1.8rem;font-weight:300;color:var(--text);}
 .avg-badge{
   display:flex;align-items:center;gap:12px;padding:14px 20px;
   border:1px solid var(--gold-border);background:var(--bg2);
 }
-.avg-num{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:600;color:var(--gold);line-height:1;}
+.avg-num{font-family:'DM Sans', sans-serif;font-size:2.4rem;font-weight:600;color:var(--gold);line-height:1;}
 .avg-info{font-size:0.72rem;color:var(--text-muted);}
 .avg-count{display:block;margin-top:2px;}
 
@@ -240,15 +240,15 @@ nav{
 .rc-avatar{
   width:40px;height:40px;border-radius:50%;background:var(--gold-glow);
   border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;
-  font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--gold);font-weight:600;
+  font-family:'DM Sans', sans-serif;font-size:1rem;color:var(--gold);font-weight:600;
   flex-shrink:0;
 }
 .rc-name{font-weight:500;font-size:0.9rem;color:var(--text);margin-bottom:1px;}
 .rc-email{font-size:0.72rem;color:var(--text-muted);}
 .rc-date{font-size:0.68rem;color:var(--text-dim);}
 .rc-body{font-size:0.87rem;line-height:1.8;color:var(--text-muted);font-style:italic;}
-.rc-body::before{content:'"';font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold);opacity:0.4;margin-right:2px;vertical-align:-2px;}
-.rc-body::after{content:'"';font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold);opacity:0.4;margin-left:2px;vertical-align:-4px;}
+.rc-body::before{content:'"';font-family:'DM Sans', sans-serif;font-size:1.4rem;color:var(--gold);opacity:0.4;margin-right:2px;vertical-align:-2px;}
+.rc-body::after{content:'"';font-family:'DM Sans', sans-serif;font-size:1.4rem;color:var(--gold);opacity:0.4;margin-left:2px;vertical-align:-4px;}
 .verified-badge{
   display:inline-flex;align-items:center;gap:5px;
   padding:3px 9px;background:rgba(74,140,92,0.1);border:1px solid rgba(74,140,92,0.25);
@@ -388,7 +388,7 @@ footer{
         <h2 class="reviews-title" id="review-count-title">Belum ada ulasan</h2>
       </div>
       <div class="avg-badge" id="avg-badge" style="display:none">
-        <div class="avg-num" id="avg-num">0.0</div>
+        <div class="avg-num" id="avg-num">5.0</div>
         <div class="avg-info">
           <div id="avg-stars" style="color:var(--gold);font-size:0.75rem;letter-spacing:2px;">★★★★★</div>
           <span class="avg-count" id="avg-count">0 ulasan</span>
@@ -405,7 +405,7 @@ footer{
 </div>
 
 <footer>
-  <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--gold);font-weight:600;">Made By sarviola.my.id</span>
+  <span style="font-family:'DM Sans', sans-serif;font-size:1.1rem;color:var(--gold);font-weight:600;">Made By <a href="https://sarviola.my.id" style="text-decoration:none;color:var(--text-dim)">sarviola.my.id</a></span>
   <span>© 2026 · Ulasan diverifikasi via OTP</span>
 </footer>
 

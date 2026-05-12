@@ -17,7 +17,7 @@
   --red:#c04a4a;--green:#4a8c5c;
   --radius:2px;
 }
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color: transparent;}
 html{scroll-behavior:smooth;}
 body{
   font-family:'DM Sans',sans-serif;
@@ -410,24 +410,20 @@ footer{
 </footer>
 
 <script>
-  // ─── EMAILJS CONFIG ───
 let EJS = {
   serviceId: 'service_l3gb92q',
   templateId: 'template_jottvtb',
   publicKey: 'qGQr8ZnClAX-mK6jk',
 };
 
-// auto hide banner + init emailjs
 document.getElementById('config-banner').classList.add('done');
 emailjs.init(EJS.publicKey);
 
-// ─── STATE ───
 let pendingOTP = '';
 let otpExpiry = 0;
 let resendTimer = null;
 let reviews = [];
 
-// ─── OTP ───
 function generateOTP(){
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
@@ -452,7 +448,7 @@ async function sendOTP(){
   hideMsg(msgEl);
 
   pendingOTP = generateOTP();
-  otpExpiry  = Date.now() + 5 * 60 * 1000; // 5 menit
+  otpExpiry  = Date.now() + 5 * 60 * 1000;
 
   try {
     await emailjs.send(EJS.serviceId, EJS.templateId, {
@@ -546,7 +542,6 @@ function startResendTimer(sec){
   }, 1000);
 }
 
-// ─── OTP INPUT AUTO-JUMP ───
 document.querySelectorAll('.otp-digit').forEach((inp, i, arr) => {
   inp.addEventListener('input', e => {
     const val = e.target.value.replace(/\D/g,'');
@@ -565,7 +560,6 @@ document.querySelectorAll('.otp-digit').forEach((inp, i, arr) => {
   });
 });
 
-// ─── REVIEWS RENDER ───
 function renderReviews(){
   const list = document.getElementById('review-list');
   const empty = document.getElementById('empty-state');
@@ -611,7 +605,6 @@ function renderReviews(){
   });
 }
 
-// ─── HELPERS ───
 function maskEmail(email){
   const [user, domain] = email.split('@');
   if(!user||!domain) return email;
@@ -658,47 +651,46 @@ function resetForm(){
   document.getElementById('resend-countdown').textContent = '';
 }
 
-// ─── INIT ───
 renderReviews();
 </script>
 <script src="https://nani-sigma.vercel.app/assets/js/cumantampilan.js"></script>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getDatabase,
-  ref,
-  push,
-  onValue
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-const firebaseConfig = {
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { 
+    getDatabase, 
+    ref, 
+    push, 
+    onValue 
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  
+  const firebaseConfig = {
     apiKey: "AIzaSyCkTjAzy3C5Q_EBF5Db1eCu9kO2QEgATn4",
     authDomain: "ulasan-sweb.firebaseapp.com",
+    databaseURL: "https://ulasan-sweb-default-rtdb.asia-southeast1.firebasedatabase.app/",
     projectId: "ulasan-sweb",
     storageBucket: "ulasan-sweb.firebasestorage.app",
     messagingSenderId: "282986877934",
     appId: "1:282986877934:web:26a32bae007f93b224b4ff",
     measurementId: "G-M76GJRP27V"
-};
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const reviewsRef = ref(db, "reviews");
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const reviewsRef = ref(db, "reviews");
 
-window.saveReviewCloud = function(review){
-  push(reviewsRef, review);
-};
+  window.saveReviewCloud = function(review){
+    push(reviewsRef, review);
+  };
 
-onValue(reviewsRef, snap=>{
-  reviews = [];
-
-  snap.forEach(child=>{
-    reviews.unshift(child.val());
+  onValue(reviewsRef, snap => {
+    reviews = []; 
+    snap.forEach(child => {
+      reviews.unshift(child.val());
+    });
+    if (typeof renderReviews === "function") {
+      renderReviews();
+    }
   });
-
-  renderReviews();
-});
 </script>
-
 </body>
 </html>

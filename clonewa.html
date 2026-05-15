@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>GoldChat</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+-webkit-tap-highlight-color:transparent;
+}
+
+body{
+background:#090909;
+height:100vh;
+overflow:hidden;
+color:white;
+}
+
+/* LOGIN */
+
+#login{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+padding:25px;
+gap:18px;
+}
+
+.logo{
+font-size:34px;
+font-weight:900;
+text-align:center;
+background:linear-gradient(45deg,#ffd700,#ffb300);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.sub{
+text-align:center;
+opacity:.7;
+font-size:14px;
+}
+
+input{
+height:56px;
+border:none;
+outline:none;
+padding:0 18px;
+border-radius:18px;
+font-size:16px;
+background:#181818;
+color:white;
+}
+
+button{
+height:56px;
+border:none;
+border-radius:18px;
+font-size:16px;
+font-weight:bold;
+background:linear-gradient(45deg,#ffd700,#ffb300);
+}
+
+/* APP */
+
+#app{
+display:none;
+height:100vh;
+flex-direction:column;
+}
+
+.header{
+height:70px;
+display:flex;
+align-items:center;
+padding:0 18px;
+background:#121212;
+border-bottom:1px solid #202020;
+}
+
+.avatar{
+width:42px;
+height:42px;
+border-radius:50%;
+background:linear-gradient(45deg,#ffd700,#ffb300);
+display:flex;
+justify-content:center;
+align-items:center;
+color:black;
+font-weight:bold;
+margin-right:12px;
+}
+
+.headInfo{
+flex:1;
+}
+
+.name{
+font-weight:bold;
+}
+
+.online{
+font-size:12px;
+opacity:.7;
+}
+
+#typing{
+font-size:12px;
+color:#ffd700;
+padding-left:15px;
+height:20px;
+}
+
+/* CHAT */
+
+#messages{
+flex:1;
+overflow:auto;
+padding:15px;
+}
+
+.bubble{
+max-width:80%;
+padding:12px 16px;
+margin:10px 0;
+border-radius:22px;
+font-size:15px;
+word-break:break-word;
+animation:show .25s ease;
+}
+
+.me{
+margin-left:auto;
+background:linear-gradient(45deg,#ffd700,#ffb300);
+color:black;
+}
+
+.other{
+background:#1a1a1a;
+}
+
+.sender{
+font-size:11px;
+opacity:.7;
+margin-bottom:4px;
+}
+
+@keyframes show{
+from{
+opacity:0;
+transform:translateY(15px);
+}
+}
+
+/* INPUT */
+
+.bottom{
+padding:12px;
+display:flex;
+gap:10px;
+background:#111;
+}
+
+.send{
+width:60px;
+flex:none;
+font-size:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="login">
+
+<div class="logo">GoldChat</div>
+
+<div class="sub">
+Realtime private messaging
+</div>
+
+<input id="username" placeholder="Nama kamu">
+
+<button onclick="login()">
+Masuk
+</button>
+
+</div>
+
+
+<!-- APP -->
+
+<div id="app">
+
+<div class="header">
+
+<div class="avatar" id="avatar">
+G
+</div>
+
+<div class="headInfo">
+
+<div class="name">
+Global Room
+</div>
+
+<div class="online">
+Realtime Connected
+</div>
+
+</div>
+
+</div>
+
+<div id="typing"></div>
+
+<div id="messages"></div>
+
+<div class="bottom">
+
+<input
+id="msg"
+placeholder="Ketik pesan..."
+oninput="typingNow()"
+>
+
+<button class="send" onclick="send()">
+➤
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+firebase.initializeApp({
+
+apiKey: "AIzaSyBcufeTd9fskM9oVcLa5xwYRhc3ughDXDM",
+authDomain: "goldchat-3606c.firebaseapp.com",
+databaseURL: "https://goldchat-3606c-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId: "goldchat-3606c",
+storageBucket: "goldchat-3606c.firebasestorage.app",
+messagingSenderId: "53229287573",
+appId: "1:53229287573:web:a270b56bb580c5e697439c"
+
+});
+
+const db=firebase.database();
+
+let me="";
+
+
+// LOGIN
+
+function login(){
+
+me=username.value.trim();
+
+if(!me)return;
+
+avatar.innerHTML=
+me[0].toUpperCase();
+
+login.style.display="none";
+app.style.display="flex";
+
+db.ref("users/"+me).set({
+online:true
+});
+
+loadMessages();
+
+watchTyping();
+
+}
+
+
+// SEND
+
+function send(){
+
+let text=msg.value.trim();
+
+if(!text)return;
+
+db.ref("chat").push({
+
+name:me,
+text:text,
+time:Date.now()
+
+});
+
+msg.value="";
+
+}
+
+
+// LOAD CHAT
+
+function loadMessages(){
+
+db.ref("chat")
+.on("child_added",snap=>{
+
+let data=snap.val();
+
+let div=document.createElement("div");
+
+div.className=
+"bubble "+
+(data.name===me?"me":"other");
+
+div.innerHTML=`
+
+<div class="sender">
+${data.name}
+</div>
+
+${data.text}
+
+`;
+
+messages.appendChild(div);
+
+messages.scrollTop=
+messages.scrollHeight;
+
+});
+
+}
+
+
+// TYPING
+
+function typingNow(){
+
+db.ref("typing").set(me);
+
+setTimeout(()=>{
+
+db.ref("typing").remove();
+
+},1000);
+
+}
+
+
+function watchTyping(){
+
+db.ref("typing")
+.on("value",snap=>{
+
+let who=snap.val();
+
+if(
+who &&
+who!==me
+){
+
+typing.innerHTML=
+who+" sedang mengetik...";
+
+}else{
+
+typing.innerHTML="";
+
+}
+
+});
+
+}
+
+
+// OFFLINE
+
+window.addEventListener(
+"beforeunload",
+
+()=>{
+
+db.ref("users/"+me)
+.update({
+online:false
+});
+
+}
+
+);
+
+</script>
+
+</body>
+</html>

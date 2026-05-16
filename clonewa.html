@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 
-<title>WeTaks - Sarviola Adnan</title>
+<title>GoldChat Pro</title>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -595,7 +595,48 @@ app.style.display="flex";
 
 loadUsers();
 
+const params=
+new URLSearchParams(location.search);
+
+const toAdmin=params.get("admin");
+const autoMsg=params.get("msg");
+
+if(toAdmin){
+
+openPrivate("admin");
+
+if(autoMsg){
+
+setTimeout(()=>{
+
+db.ref("messages/"+room())
+.once("value",snap=>{
+
+if(!snap.exists()){
+
+db.ref("messages/"+room())
+.push({
+
+from:me,
+text:autoMsg,
+image:"",
+read:false
+
+});
+
+}
+
+});
+
+},600);
+
+}
+
+}else{
+
 openGlobal();
+
+}
 
 }
 

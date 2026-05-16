@@ -109,6 +109,7 @@ body,#app,#chat,#sidebar,#messages{overflow-x:hidden;}
 }
 .logout-btn:hover{border-color:#c00;color:#f55;}
 
+
 /* CHAT */
 #chat{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;overflow:hidden;}
 #topbar{
@@ -224,16 +225,26 @@ body,#app,#chat,#sidebar,#messages{overflow-x:hidden;}
   <div class="login-title">GoldChat Pro</div>
   <div class="login-sub">Chat real-time berbasis ID unik</div>
   <div class="login-card">
-    <div class="lbl">ID KAMU (OTOMATIS)</div>
+    <div class="lbl">PILIH ID KAMU (5 DIGIT)</div>
     <div class="id-box">
       <span class="id-hash">#</span>
-      <span class="id-display" id="id-preview">?????</span>
+      <input
+        id="id-input"
+        class="id-display"
+        placeholder="?????"
+        maxlength="5"
+        inputmode="numeric"
+        oninput="this.value=this.value.replace(/\D/g,'')"
+        onkeydown="if(event.key==='Enter')document.getElementById('username').focus()"
+        style="background:transparent;border:none;outline:none;width:100%;color:white;font-size:28px;font-weight:800;letter-spacing:4px;"
+      >
     </div>
     <div class="lbl">NAMA PANGGILAN</div>
     <input class="login-input" id="username" placeholder="Nama kamu..." maxlength="30" onkeydown="if(event.key==='Enter')registerUser()">
-    <button class="login-btn" onclick="registerUser()">Masuk ke GoldChat ➤</button>
+    <div class="m-err" id="reg-err" style="margin:0;"></div>
+    <button class="login-btn" id="reg-btn" onclick="registerUser()">Masuk ke GoldChat ➤</button>
     <div class="login-hint">
-      ID 5 digit diberikan otomatis &amp; tersimpan.<br>
+      Pilih ID 5 digit sendiri — tidak bisa sama dengan orang lain.<br>
       Admin bisa dihubungi di ID <strong style="color:gold">99999</strong>
     </div>
   </div>
@@ -342,26 +353,53 @@ let recentIds = [];
 (function(){
   const s = JSON.parse(localStorage.getItem("gc2")||"null");
   if(s && s.id && s.name){
-    myId = s.id; myName = s.name;
-    recentIds = s.recents||[];
-    boot();
+    // Verifikasi ke Firebase — kalau ID dihapus, reset ke login
+    db.ref("users_v2/"+s.id).once("value", snap=>{
+      if(snap.exists()){
+        myId = s.id; myName = s.name;
+        recentIds = s.recents||[];
+        boot();
+      } else {
+        // ID tidak ada di Firebase — hapus sesi lokal & tampilkan login
+        localStorage.removeItem("gc2");
+        document.getElementById("login").style.display = "flex";
+      }
+    });
   } else {
-    let id;
-    do { id = String(Math.floor(10000+Math.random()*90000)); }
-    while(id===ADMIN_ID);
-    myId = id;
-    document.getElementById("id-preview").textContent = id;
     document.getElementById("login").style.display = "flex";
   }
 })();
 
 function registerUser(){
+  const idVal = document.getElementById("id-input").value.trim();
   const n = document.getElementById("username").value.trim();
-  if(!n){ alert("Masukkan nama dulu!"); return; }
-  myName = n;
-  db.ref("users_v2/"+myId).set({id:myId,name:myName});
-  save();
-  boot();
+  const err = document.getElementById("reg-err");
+  const btn = document.getElementById("reg-btn");
+
+  if(!/^\d{5}$/.test(idVal)){
+    err.textContent = "ID harus tepat 5 digit angka."; return;
+  }
+  if(!n){
+    err.textContent = "Masukkan nama panggilan dulu."; return;
+  }
+
+  err.textContent = "";
+  btn.textContent = "Memeriksa ID...";
+  btn.disabled = true;
+
+  db.ref("users_v2/"+idVal).once("value", snap=>{
+    if(snap.exists()){
+      err.textContent = "ID #"+idVal+" sudah dipakai, coba ID lain.";
+      btn.textContent = "Masuk ke GoldChat ➤";
+      btn.disabled = false;
+      return;
+    }
+    myId = idVal;
+    myName = n;
+    db.ref("users_v2/"+myId).set({id:myId, name:myName});
+    save();
+    boot();
+  });
 }
 
 function boot(){
@@ -369,6 +407,7 @@ function boot(){
   document.getElementById("app").style.display = "flex";
   document.getElementById("my-id-show").textContent = myId;
   renderRecent();
+  watchMyId();
 
   const p = new URLSearchParams(location.search);
   if(p.get("admin")){
@@ -376,6 +415,17 @@ function boot(){
   } else {
     openGlobal();
   }
+}
+
+/* ── WATCH: auto-reset jika ID dihapus dari Firebase ── */
+function watchMyId(){
+  db.ref("users_v2/"+myId).on("value", snap=>{
+    if(!snap.exists()){
+      localStorage.removeItem("gc2");
+      alert("Sesi kamu telah dihapus oleh admin. Silakan daftar ulang.");
+      location.reload();
+    }
+  });
 }
 
 function doLogout(){

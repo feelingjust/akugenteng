@@ -353,18 +353,9 @@ let recentIds = [];
 (function(){
   const s = JSON.parse(localStorage.getItem("gc2")||"null");
   if(s && s.id && s.name){
-    // Verifikasi ke Firebase — kalau ID dihapus, reset ke login
-    db.ref("users_v2/"+s.id).once("value", snap=>{
-      if(snap.exists()){
-        myId = s.id; myName = s.name;
-        recentIds = s.recents||[];
-        boot();
-      } else {
-        // ID tidak ada di Firebase — hapus sesi lokal & tampilkan login
-        localStorage.removeItem("gc2");
-        document.getElementById("login").style.display = "flex";
-      }
-    });
+    myId = s.id; myName = s.name;
+    recentIds = s.recents||[];
+    boot();
   } else {
     document.getElementById("login").style.display = "flex";
   }
@@ -407,7 +398,6 @@ function boot(){
   document.getElementById("app").style.display = "flex";
   document.getElementById("my-id-show").textContent = myId;
   renderRecent();
-  watchMyId();
 
   const p = new URLSearchParams(location.search);
   if(p.get("admin")){
@@ -415,17 +405,6 @@ function boot(){
   } else {
     openGlobal();
   }
-}
-
-/* ── WATCH: auto-reset jika ID dihapus dari Firebase ── */
-function watchMyId(){
-  db.ref("users_v2/"+myId).on("value", snap=>{
-    if(!snap.exists()){
-      localStorage.removeItem("gc2");
-      alert("Sesi kamu telah dihapus oleh admin. Silakan daftar ulang.");
-      location.reload();
-    }
-  });
 }
 
 function doLogout(){

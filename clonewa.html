@@ -2,9 +2,9 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 
-<title>GoldChat</title>
+<title>WeTaks - Sarviola Adnan</title>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -15,230 +15,419 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Arial,sans-serif;
+font-family:system-ui;
 -webkit-tap-highlight-color:transparent;
 }
 
+html,
 body{
-background:#090909;
-height:100vh;
+width:100%;
+height:100%;
 overflow:hidden;
+background:#0b0b0b;
 color:white;
 }
+
+body,
+#app,
+#chat,
+#sidebar,
+#messages{
+overflow-x:hidden;
+}
+
 
 /* LOGIN */
 
 #login{
-height:100vh;
-display:flex;
+width:100%;
+height:100%;
+display:none;
 flex-direction:column;
 justify-content:center;
-padding:25px;
-gap:18px;
+padding:20px;
+gap:14px;
 }
 
-.logo{
-font-size:34px;
-font-weight:900;
-text-align:center;
-background:linear-gradient(45deg,#ffd700,#ffb300);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-
-.sub{
-text-align:center;
-opacity:.7;
-font-size:14px;
-}
-
-input{
-height:56px;
+#login input,
+#login button{
+width:100%;
+height:54px;
 border:none;
 outline:none;
-padding:0 18px;
-border-radius:18px;
+border-radius:16px;
 font-size:16px;
-background:#181818;
-color:white;
 }
 
-button{
-height:56px;
-border:none;
-border-radius:18px;
-font-size:16px;
-font-weight:bold;
-background:linear-gradient(45deg,#ffd700,#ffb300);
+#login input{
+background:#1a1a1a;
+color:white;
+padding:0 16px;
 }
+
+#login button{
+background:gold;
+font-weight:bold;
+}
+
 
 /* APP */
 
 #app{
 display:none;
-height:100vh;
-flex-direction:column;
+width:100%;
+height:100%;
+position:relative;
 }
 
-.header{
-height:70px;
+
+/* SIDEBAR */
+
+#sidebar{
+width:360px;
+min-width:360px;
+max-width:360px;
+height:100%;
+background:#121212;
+overflow-y:auto;
+overflow-x:hidden;
+border-right:1px solid #222;
+transition:.25s;
+flex-shrink:0;
+}
+
+.menuItem{
+width:100%;
+padding:14px;
 display:flex;
 align-items:center;
-padding:0 18px;
-background:#121212;
-border-bottom:1px solid #202020;
+gap:12px;
+cursor:pointer;
+border-bottom:1px solid #1d1d1d;
+word-break:break-word;
 }
+
+
+/* AVATAR */
 
 .avatar{
 width:42px;
 height:42px;
+min-width:42px;
 border-radius:50%;
-background:linear-gradient(45deg,#ffd700,#ffb300);
+overflow:hidden;
+background:gold;
 display:flex;
-justify-content:center;
 align-items:center;
+justify-content:center;
+font-weight:bold;
 color:black;
-font-weight:bold;
-margin-right:12px;
 }
 
-.headInfo{
-flex:1;
+.avatar img{
+width:100%;
+height:100%;
+object-fit:cover;
 }
 
-.name{
-font-weight:bold;
-}
-
-.online{
-font-size:12px;
-opacity:.7;
-}
-
-#typing{
-font-size:12px;
-color:#ffd700;
-padding-left:15px;
-height:20px;
-}
 
 /* CHAT */
 
-#messages{
+#chat{
 flex:1;
-overflow:auto;
-padding:15px;
+min-width:0;
+height:100%;
+display:flex;
+flex-direction:column;
+overflow:hidden;
 }
 
-.bubble{
-max-width:80%;
-padding:12px 16px;
-margin:10px 0;
-border-radius:22px;
-font-size:15px;
+
+/* TOPBAR */
+
+#topbar{
+width:100%;
+height:68px;
+padding:0 14px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+background:#111;
+border-bottom:1px solid #222;
+}
+
+
+/* MESSAGES */
+
+#messages{
+flex:1;
+width:100%;
+padding:12px;
+overflow-y:auto;
+overflow-x:hidden;
+}
+
+.msg{
+width:fit-content;
+max-width:85%;
+padding:10px 14px;
+margin:8px 0;
+border-radius:18px;
 word-break:break-word;
-animation:show .25s ease;
+font-size:14px;
 }
 
 .me{
 margin-left:auto;
-background:linear-gradient(45deg,#ffd700,#ffb300);
+background:gold;
 color:black;
 }
 
 .other{
-background:#1a1a1a;
+background:#1b1b1b;
 }
 
-.sender{
-font-size:11px;
+.msg img{
+display:block;
+margin-top:8px;
+width:100%;
+max-width:220px;
+border-radius:14px;
+}
+
+
+/* SYSTEM */
+
+.system{
+text-align:center;
+margin:12px 0;
+font-size:12px;
 opacity:.7;
-margin-bottom:4px;
 }
 
-@keyframes show{
-from{
-opacity:0;
-transform:translateY(15px);
-}
-}
 
 /* INPUT */
 
 .bottom{
-padding:12px;
+width:100%;
+padding:10px;
 display:flex;
-gap:10px;
+align-items:center;
+gap:8px;
 background:#111;
+border-top:1px solid #222;
 }
 
-.send{
-width:60px;
-flex:none;
-font-size:20px;
+#msg{
+flex:1;
+min-width:0;
+height:50px;
+border:none;
+outline:none;
+border-radius:14px;
+padding:0 14px;
+background:#1a1a1a;
+color:white;
+}
+
+.bottom button{
+width:50px;
+height:50px;
+border:none;
+border-radius:14px;
+background:gold;
+}
+
+
+/* MODAL */
+
+.modal{
+position:fixed;
+inset:0;
+display:none;
+justify-content:center;
+align-items:center;
+background:rgba(0,0,0,.75);
+z-index:999;
+}
+
+.modalBox{
+width:92%;
+max-width:350px;
+padding:18px;
+border-radius:20px;
+background:#151515;
+}
+
+.modalBox input,
+.modalBox button{
+width:100%;
+height:50px;
+margin-top:12px;
+border:none;
+outline:none;
+border-radius:14px;
+}
+
+.modalBox input{
+background:#1f1f1f;
+padding:0 14px;
+color:white;
+}
+
+.modalBox button{
+background:gold;
+font-weight:bold;
+}
+
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+#sidebar{
+position:absolute;
+left:0;
+top:0;
+z-index:30;
+width:85%;
+max-width:320px;
+transform:translateX(-100%);
+box-shadow:8px 0 20px rgba(0,0,0,.4);
+}
+
+#sidebar.show{
+transform:translateX(0);
+}
+
 }
 
 </style>
 </head>
-
 <body>
+
+
 
 <!-- LOGIN -->
 
 <div id="login">
 
-<div class="logo">GoldChat</div>
+<input
+id="username"
+placeholder="Masukkan nama unik"
+>
 
-<div class="sub">
-Realtime private messaging
-</div>
-
-<input id="username" placeholder="Nama kamu">
-
-<button onclick="login()">
+<button onclick="registerUser()">
 Masuk
 </button>
 
 </div>
 
 
+
 <!-- APP -->
 
 <div id="app">
 
-<div class="header">
+<div id="sidebar">
 
-<div class="avatar" id="avatar">
-G
+<div
+class="menuItem"
+onclick="openGlobal()"
+>
+🌍 Global Chat
 </div>
 
-<div class="headInfo">
-
-<div class="name">
-Global Room
-</div>
-
-<div class="online">
-Realtime Connected
-</div>
+<div id="users"></div>
 
 </div>
 
+
+
+<div id="chat">
+
+<div id="topbar">
+
+<div
+style="
+display:flex;
+align-items:center;
+gap:12px;
+"
+>
+
+<button
+onclick="toggleSidebar()"
+style="
+background:none;
+border:none;
+color:white;
+font-size:22px;
+"
+>
+☰
+</button>
+
+
+<span id="chatTitle">
+Global Chat
+</span>
+
 </div>
 
-<div id="typing"></div>
+
+<button
+onclick="openRenameModal()"
+style="
+background:none;
+border:none;
+color:white;
+font-size:20px;
+"
+>
+⚙
+</button>
+
+</div>
+
 
 <div id="messages"></div>
+
+
 
 <div class="bottom">
 
 <input
-id="msg"
-placeholder="Ketik pesan..."
-oninput="typingNow()"
+type="file"
+id="imageInput"
+hidden
+accept="image/*"
 >
 
-<button class="send" onclick="send()">
+<button onclick="imageInput.click()">
+🖼
+</button>
+
+
+<input
+type="file"
+id="avatarInput"
+hidden
+accept="image/*"
+>
+
+<button onclick="avatarInput.click()">
+👤
+</button>
+
+
+<input
+id="msg"
+placeholder="Pesan..."
+>
+
+
+<button onclick="sendMsg()">
 ➤
 </button>
 
@@ -246,100 +435,438 @@ oninput="typingNow()"
 
 </div>
 
+</div>
+
+
+
+<!-- MODAL -->
+
+<div class="modal" id="renameModal">
+
+<div class="modalBox">
+
+<h3>Ganti Nama</h3>
+
+<p
+id="currentUserName"
+style="
+margin-top:8px;
+opacity:.7;
+font-size:14px;
+"
+></p>
+
+
+<input
+id="newName"
+placeholder="Nama baru"
+>
+
+<button onclick="changeName()">
+Simpan
+</button>
+
+</div>
+
+</div>
+
+
 
 <script>
 
 firebase.initializeApp({
 
-apiKey: "AIzaSyBcufeTd9fskM9oVcLa5xwYRhc3ughDXDM",
-authDomain: "goldchat-3606c.firebaseapp.com",
-databaseURL: "https://goldchat-3606c-default-rtdb.asia-southeast1.firebasedatabase.app",
-projectId: "goldchat-3606c",
-storageBucket: "goldchat-3606c.firebasestorage.app",
-messagingSenderId: "53229287573",
-appId: "1:53229287573:web:a270b56bb580c5e697439c"
+apiKey:"AIzaSyBcufeTd9fskM9oVcLa5xwYRhc3ughDXDM",
+authDomain:"goldchat-3606c.firebaseapp.com",
+databaseURL:"https://goldchat-3606c-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId:"goldchat-3606c"
 
 });
 
 const db=firebase.database();
 
 let me="";
+let target="";
+let globalMode=true;
+let sendImage="";
 
 
-// LOGIN
+const saved =
+localStorage.getItem("user");
 
-function login(){
 
-me=username.value.trim();
+if(saved){
 
-if(!me)return;
+start(saved);
 
-avatar.innerHTML=
-me[0].toUpperCase();
+}else{
+
+login.style.display="flex";
+
+app.style.display="none";
+
+}
+
+
+/* HELPERS */
+
+function fileToBase64(file){
+
+return new Promise(resolve=>{
+
+const reader =
+new FileReader();
+
+reader.onload =
+e=>resolve(
+e.target.result
+);
+
+reader.readAsDataURL(file);
+
+});
+
+}
+
+
+/* LOGIN */
+
+function registerUser(){
+
+const name =
+username.value.trim();
+
+if(!name)return;
+
+
+db.ref(
+"users/"+name
+).once(
+
+"value",
+
+snap=>{
+
+
+if(
+snap.exists()
+){
+
+alert(
+"Nama dipakai"
+);
+
+return;
+
+}
+
+
+db.ref(
+"users/"+name
+).set({
+
+avatar:""
+
+});
+
+
+localStorage.setItem(
+"user",
+name
+);
+
+
+start(name);
+
+});
+
+}
+
+
+/* START */
+
+function start(name){
+
+me=name;
 
 login.style.display="none";
+
 app.style.display="flex";
 
-db.ref("users/"+me).set({
-online:true
-});
+loadUsers();
 
-loadMessages();
-
-watchTyping();
+openGlobal();
 
 }
 
 
-// SEND
+/* USERS */
 
-function send(){
+function loadUsers(){
 
-let text=msg.value.trim();
+db.ref("users")
+.on("value",snap=>{
 
-if(!text)return;
+users.innerHTML="";
 
-db.ref("chat").push({
 
-name:me,
-text:text,
-time:Date.now()
+snap.forEach(x=>{
 
-});
+if(x.key===me)return;
 
-msg.value="";
 
+const d=x.val();
+
+
+users.innerHTML+=`
+
+<div
+class="menuItem"
+onclick="openPrivate('${x.key}')"
+>
+
+<div class="avatar">
+
+${
+d.avatar
+?
+`<img src="${d.avatar}">`
+:
+x.key[0]
 }
 
-
-// LOAD CHAT
-
-function loadMessages(){
-
-db.ref("chat")
-.on("child_added",snap=>{
-
-let data=snap.val();
-
-let div=document.createElement("div");
-
-div.className=
-"bubble "+
-(data.name===me?"me":"other");
-
-div.innerHTML=`
-
-<div class="sender">
-${data.name}
 </div>
 
-${data.text}
+${x.key}
+
+</div>
 
 `;
 
-messages.appendChild(div);
+});
 
-messages.scrollTop=
+});
+
+}
+
+
+/* ROOM */
+
+function room(){
+
+return [me,target]
+.sort()
+.join("_");
+
+}
+
+
+/* OPEN */
+
+function openGlobal(){
+
+globalMode=true;
+
+chatTitle.innerHTML=
+"🌍 Global Chat";
+
+closeSidebar();
+
+loadMessages();
+
+}
+
+
+function openPrivate(name){
+
+target=name;
+
+globalMode=false;
+
+chatTitle.innerHTML=
+name;
+
+closeSidebar();
+
+loadMessages();
+
+}
+
+
+/* IMAGE */
+
+imageInput.onchange =
+async()=>{
+
+const file =
+imageInput.files[0];
+
+if(!file)return;
+
+
+sendImage =
+await fileToBase64(file);
+
+};
+
+
+/* AVATAR */
+
+avatarInput.onchange =
+async()=>{
+
+const file =
+avatarInput.files[0];
+
+if(!file)return;
+
+
+const base64 =
+await fileToBase64(file);
+
+
+db.ref(
+"users/"+me
+).update({
+
+avatar:base64
+
+});
+
+};
+
+
+/* SEND */
+
+function sendMsg(){
+
+const text =
+msg.value.trim();
+
+
+if(
+!text &&
+!sendImage
+)return;
+
+
+const path =
+globalMode
+?
+"global"
+:
+"messages/"+room();
+
+
+db.ref(path)
+.push({
+
+from:me,
+
+text:text,
+
+image:sendImage,
+
+read:false
+
+});
+
+
+msg.value="";
+
+sendImage="";
+
+}
+
+
+/* LOAD */
+
+function loadMessages(){
+
+const path =
+globalMode
+?
+"global"
+:
+"messages/"+room();
+
+
+db.ref(path)
+.on("value",snap=>{
+
+messages.innerHTML="";
+
+
+snap.forEach(x=>{
+
+const d=x.val();
+
+
+if(d.system){
+
+messages.innerHTML+=`
+
+<div class="system">
+
+━━━━━━━━━━━━<br>
+
+${d.text}
+
+<br>━━━━━━━━━━━━
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+if(
+!globalMode &&
+d.from!==me
+){
+
+x.ref.update({
+
+read:true
+
+});
+
+}
+
+
+messages.innerHTML+=`
+
+<div class="msg ${
+d.from===me
+?
+"me"
+:
+"other"
+}">
+
+<b>${d.from}</b><br>
+
+${d.text||""}
+
+${
+d.image
+?
+`<img src="${d.image}">`
+:
+""
+}
+
+</div>
+
+`;
+
+});
+
+
+messages.scrollTop =
 messages.scrollHeight;
 
 });
@@ -347,62 +874,145 @@ messages.scrollHeight;
 }
 
 
-// TYPING
+/* RENAME */
 
-function typingNow(){
+function openRenameModal(){
 
-db.ref("typing").set(me);
+currentUserName.innerHTML =
+"Nama sekarang: "+me;
 
-setTimeout(()=>{
 
-db.ref("typing").remove();
+newName.value = "";
 
-},1000);
+
+renameModal.style.display =
+"flex";
 
 }
 
 
-function watchTyping(){
-
-db.ref("typing")
-.on("value",snap=>{
-
-let who=snap.val();
+renameModal.onclick =
+e=>{
 
 if(
-who &&
-who!==me
+e.target===renameModal
 ){
 
-typing.innerHTML=
-who+" sedang mengetik...";
-
-}else{
-
-typing.innerHTML="";
+renameModal.style.display =
+"none";
 
 }
 
-});
-
-}
+};
 
 
-// OFFLINE
+function changeName(){
 
-window.addEventListener(
-"beforeunload",
+const newUser =
+newName.value.trim();
 
-()=>{
+if(!newUser)return;
 
-db.ref("users/"+me)
-.update({
-online:false
-});
 
-}
+db.ref(
+"users/"+newUser
+).once(
 
+"value",
+
+snap=>{
+
+if(
+snap.exists()
+){
+
+alert(
+"Nama dipakai"
 );
+
+return;
+
+}
+
+
+db.ref(
+"users/"+me
+).once(
+
+"value",
+
+old=>{
+
+
+db.ref(
+"users/"+newUser
+).set(
+old.val()
+);
+
+
+db.ref(
+"users/"+me
+).remove();
+
+
+db.ref(
+"global"
+).push({
+
+system:true,
+
+text:
+me+
+" mengganti nama menjadi "+
+newUser
+
+});
+
+
+me=newUser;
+
+
+localStorage.setItem(
+"user",
+me
+);
+
+
+renameModal.style.display =
+"none";
+
+});
+
+});
+
+}
+
+
+/* SIDEBAR */
+
+function toggleSidebar(){
+
+sidebar.classList.toggle(
+"show"
+);
+
+}
+
+
+function closeSidebar(){
+
+if(
+window.innerWidth<=768
+){
+
+sidebar.classList.remove(
+"show"
+);
+
+}
+
+}
 
 </script>
 

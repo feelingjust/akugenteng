@@ -9,9 +9,9 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
   :root {
-    --gold: #F5C842;
-    --gold-light: #FFE07A;
-    --gold-dim: #B8922A;
+    --gold: gold;
+    --gold-light: gold;
+    --gold-dim: gold;
     --amber: #E8A020;
     --bg: #0F0C01;
     --bg-card: #141006;
@@ -625,7 +625,7 @@ function hubungiAdmin() {
   const heroName = document.querySelector('.det-hero-name');
   const freelance = heroName ? heroName.textContent.trim() : "freelance ini";
   const autoMsg = encodeURIComponent(`Halo Admin! Saya tertarik dengan freelance "${freelance}". Bisa bantu info lebih lanjut?`);
-  window.location.href = `clonewa.html?admin=1&msg=${autoMsg}`;
+  window.location.href = `lachat.html?admin=1&msg=${autoMsg}`;
 }
 </script>
 

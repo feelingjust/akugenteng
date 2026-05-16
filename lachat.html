@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>La Chat</title>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;background:#0b0b0b;color:white;}
+body,#app,#chat,#sidebar,#messages{overflow-x:hidden;}
+
+/* LOGIN */
+#login{
+  width:100%;height:100%;display:none;
+  flex-direction:column;justify-content:center;align-items:center;
+  padding:32px 24px;
+  background:radial-gradient(ellipse at top,#1a1400 0%,#0b0b0b 70%);
+}
+.login-logo{width:56px;height:56px;margin-bottom:10px;}
+.login-title{font-size:22px;font-weight:800;color:gold;margin-bottom:4px;}
+.login-sub{font-size:13px;color:#555;margin-bottom:28px;text-align:center;}
+.login-card{
+  width:100%;max-width:340px;
+  background:#131313;border:1px solid #222;
+  border-radius:20px;padding:22px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.lbl{font-size:11px;color:#555;letter-spacing:.5px;font-weight:600;}
+.id-box{
+  display:flex;align-items:center;
+  background:#1a1a1a;border-radius:12px;
+  border:1px solid #252525;padding:0 16px;height:54px;gap:10px;
+}
+.id-hash{color:gold;font-size:20px;font-weight:800;}
+.id-display{flex:1;font-size:28px;font-weight:800;color:white;letter-spacing:4px;}
+.login-input{
+  width:100%;height:52px;border:none;outline:none;
+  border-radius:12px;padding:0 16px;
+  background:#1a1a1a;color:white;font-size:15px;
+  border:1px solid #252525;
+}
+.login-input:focus{border-color:#444;}
+.login-btn{
+  height:52px;border:none;border-radius:12px;
+  background:gold;color:#000;font-size:15px;font-weight:800;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.login-hint{font-size:11px;color:#3a3a3a;text-align:center;line-height:1.6;}
+
+/* APP */
+#app{display:none;width:100%;height:100%;position:relative;}
+
+/* SIDEBAR */
+#sidebar{
+  width:290px;min-width:290px;max-width:290px;
+  height:100%;background:#111;
+  overflow-y:auto;overflow-x:hidden;
+  border-right:1px solid #1e1e1e;
+  transition:.25s;flex-shrink:0;
+  display:flex;flex-direction:column;
+}
+.sb-header{padding:16px;border-bottom:1px solid #1e1e1e;}
+.sb-logo{font-size:15px;font-weight:800;color:gold;display:flex;align-items:center;gap:7px;}
+.sb-myid{
+  margin-top:8px;font-size:12px;color:#444;
+  display:flex;align-items:center;gap:6px;
+}
+.sb-myid b{
+  background:#1a1a1a;border:1px solid #2a2a2a;
+  border-radius:8px;padding:3px 10px;
+  color:#aaa;font-size:13px;font-weight:700;letter-spacing:2px;
+}
+.menu-item{
+  width:100%;padding:14px 16px;
+  display:flex;align-items:center;gap:12px;
+  cursor:pointer;border-bottom:1px solid #171717;
+  transition:background .15s;font-size:14px;
+}
+.menu-item:hover{background:#181818;}
+.menu-item.active{background:#1d1900;border-left:3px solid gold;}
+.m-ico{
+  width:40px;height:40px;min-width:40px;
+  border-radius:50%;background:#1a1a1a;
+  border:1px solid #232323;
+  display:flex;align-items:center;justify-content:center;
+}
+.m-info{flex:1;min-width:0;}
+.m-name{font-size:14px;font-weight:600;color:#ddd;}
+.m-sub{font-size:11px;color:#444;margin-top:2px;}
+.add-id-btn{
+  margin:10px 12px;height:44px;
+  border:1px dashed #252525;background:transparent;
+  color:#555;border-radius:11px;cursor:pointer;
+  font-size:13px;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.add-id-btn:hover{border-color:gold;color:gold;}
+#recent-list{flex:1;}
+.sb-foot{padding:12px;border-top:1px solid #1a1a1a;}
+.logout-btn{
+  width:100%;height:38px;background:#1a1a1a;
+  border:1px solid #252525;border-radius:10px;
+  color:#555;font-size:12px;cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.logout-btn:hover{border-color:#c00;color:#f55;}
+
+/* CHAT */
+#chat{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;overflow:hidden;}
+#topbar{
+  width:100%;height:62px;padding:0 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:#111;border-bottom:1px solid #1e1e1e;flex-shrink:0;
+}
+.tb-left{display:flex;align-items:center;gap:10px;}
+.ham{background:none;border:none;color:#888;cursor:pointer;padding:4px;display:flex;align-items:center;}
+.tb-av{
+  width:38px;height:38px;border-radius:50%;
+  background:gold;display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#000;font-size:16px;flex-shrink:0;
+}
+.tb-name{font-size:15px;font-weight:700;color:#eee;}
+.tb-sub{font-size:11px;color:#444;}
+.tb-right{display:flex;gap:6px;}
+.ic-btn{background:none;border:none;color:#555;cursor:pointer;padding:6px;transition:color .15s;display:flex;align-items:center;}
+.ic-btn:hover{color:gold;}
+
+/* MESSAGES */
+#messages{
+  flex:1;padding:12px;overflow-y:auto;overflow-x:hidden;
+  display:flex;flex-direction:column;gap:4px;
+}
+.empty{margin:auto;text-align:center;color:#2a2a2a;font-size:13px;line-height:2.2;}
+.empty .empty-ico{margin-bottom:8px;display:flex;justify-content:center;}
+.msg{
+  max-width:78%;padding:9px 13px;
+  border-radius:16px;word-break:break-word;
+  font-size:14px;line-height:1.5;
+  cursor:pointer;user-select:none;
+  -webkit-user-select:none;
+}
+@keyframes mi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.msg.me{margin-left:auto;background:gold;color:#000;border-bottom-right-radius:4px;}
+.msg.other{background:#1b1b1b;border-bottom-left-radius:4px;}
+.msg-who{font-size:10px;font-weight:700;opacity:.6;margin-bottom:3px;}
+.msg-img{display:block;margin-top:7px;width:100%;max-width:220px;border-radius:11px;}
+.sys{
+  text-align:center;font-size:11px;color:#444;padding:6px 12px;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.sys span{
+  background:#1a1a1a;border:1px solid #252525;
+  border-radius:20px;padding:4px 12px;
+  color:#555;font-size:11px;line-height:1.5;
+}
+
+/* INPUT */
+.bottom{
+  width:100%;padding:10px 12px;
+  display:flex;align-items:center;gap:8px;
+  background:#111;border-top:1px solid #1e1e1e;flex-shrink:0;
+}
+#msg{
+  flex:1;height:46px;border:none;outline:none;
+  border-radius:12px;padding:0 14px;
+  background:#1a1a1a;color:white;font-size:14px;
+  border:1px solid #232323;
+}
+.send-btn{width:46px;height:46px;border:none;border-radius:12px;background:gold;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.img-btn{width:46px;height:46px;border:none;border-radius:12px;background:#1a1a1a;border:1px solid #232323;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+
+/* MODALS */
+.modal{position:fixed;inset:0;display:none;justify-content:center;align-items:center;background:rgba(0,0,0,.8);z-index:999;}
+.mbox{
+  width:92%;max-width:330px;
+  background:#141414;border:1px solid #222;
+  border-radius:18px;padding:22px;
+}
+.m-title{font-size:16px;font-weight:700;color:#eee;margin-bottom:4px;}
+.m-desc{font-size:12px;color:#444;margin-bottom:16px;line-height:1.5;}
+.m-input{
+  width:100%;height:52px;background:#1a1a1a;
+  border:1px solid #2a2a2a;border-radius:12px;
+  padding:0 16px;color:white;font-size:20px;
+  font-weight:700;letter-spacing:3px;
+  outline:none;margin-bottom:8px;text-align:center;
+}
+.m-input:focus{border-color:#444;}
+.m-input.text-left{text-align:left;letter-spacing:0;font-size:15px;font-weight:500;}
+.m-btn{
+  width:100%;height:46px;border:none;border-radius:12px;
+  background:gold;color:#000;font-size:15px;font-weight:800;
+  cursor:pointer;margin-bottom:8px;
+}
+.m-cancel{width:100%;height:38px;border:none;background:transparent;color:#444;font-size:13px;cursor:pointer;}
+.m-err{font-size:12px;color:#f55;min-height:16px;margin-bottom:6px;}
+.recent-section{margin-top:14px;border-top:1px solid #1e1e1e;padding-top:12px;}
+.recent-title{font-size:10px;color:#333;margin-bottom:8px;letter-spacing:.5px;}
+.id-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#1a1a1a;border:1px solid #252525;
+  border-radius:8px;padding:5px 12px;
+  font-size:13px;font-weight:700;color:#888;
+  cursor:pointer;margin:3px;transition:all .15s;
+}
+.id-chip:hover{border-color:gold;color:gold;}
+
+/* ALERT MODAL */
+#alertModal .mbox{text-align:center;}
+.alert-ico{display:flex;justify-content:center;margin-bottom:12px;}
+.alert-msg{font-size:14px;color:#ccc;margin-bottom:18px;line-height:1.6;}
+.confirm-row{display:flex;gap:8px;}
+.confirm-row .m-btn{margin:0;}
+.m-btn-danger{
+  flex:1;height:46px;border:none;border-radius:12px;
+  background:#2a0a0a;border:1px solid #500;
+  color:#f55;font-size:15px;font-weight:700;
+  cursor:pointer;
+}
+.m-btn-danger:hover{background:#3a0a0a;}
+
+/* ADMIN STYLES */
+.admin-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:#2a1f00;border:1px solid #4a3800;
+  border-radius:6px;padding:2px 8px;
+  font-size:10px;font-weight:800;color:gold;
+  letter-spacing:.5px;margin-top:6px;
+}
+.sb-del-btn{
+  opacity:0;width:28px;height:28px;flex-shrink:0;
+  border:none;border-radius:8px;
+  background:#2a0a0a;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;color:#f55;
+}
+.menu-item:hover .sb-del-btn{ opacity:1; }
+.sb-del-btn:hover{ background:#3a0a0a !important; }
+.ic-btn.danger{ color:#f55 !important; }
+.ic-btn.danger:hover{ color:#ff7777 !important; }
+.admin-clear-btn{
+  display:none; /* shown dynamically */
+}
+
+#toast{
+  position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-80px);
+  background:#1e1e1e;border:1px solid #2a2a2a;
+  border-radius:14px;padding:12px 18px;
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;color:#eee;
+  z-index:9999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  box-shadow:0 8px 32px rgba(0,0,0,.6);
+}
+#toast.show{transform:translateX(-50%) translateY(0);}
+#toast .t-badge{
+  background:gold;color:#000;font-size:10px;font-weight:800;
+  padding:2px 7px;border-radius:6px;flex-shrink:0;
+}
+
+/* UNREAD BADGE COUNT */
+.unread-badge{
+  position:absolute;top:-4px;right:-4px;
+  background:gold;color:#000;
+  font-size:9px;font-weight:900;
+  min-width:16px;height:16px;
+  border-radius:8px;padding:0 4px;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid #111;
+  line-height:1;
+}
+.sb-time{
+  font-size:10px;color:#333;white-space:nowrap;flex-shrink:0;
+  font-weight:500;
+}
+.has-unread .m-name{ color:#eee !important; }
+.has-unread .sb-time{ color:gold; }
+
+/* MESSAGE WRAPPER — for long-press / right-click */
+.msg-wrap{
+  display:flex;
+  flex-direction:column;
+  animation:mi .15s ease;
+}
+.msg-wrap.me{ align-items:flex-end; }
+.msg-wrap.other{ align-items:flex-start; }
+
+/* CONTEXT MENU */
+#ctx-menu{
+  position:fixed;z-index:8888;
+  background:#1e1e1e;border:1px solid #2a2a2a;
+  border-radius:14px;padding:6px;
+  box-shadow:0 8px 32px rgba(0,0,0,.7);
+  min-width:190px;
+  display:none;
+  animation:ctxIn .15s ease;
+}
+@keyframes ctxIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.ctx-item{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 14px;border-radius:10px;
+  font-size:13px;font-weight:500;color:#ccc;
+  cursor:pointer;transition:background .12s;
+  white-space:nowrap;
+}
+.ctx-item:hover{background:#2a2a2a;}
+.ctx-item.danger{color:#f55;}
+.ctx-item.danger:hover{background:#2a0a0a;}
+.ctx-sep{height:1px;background:#242424;margin:4px 0;}
+
+/* DELETED MESSAGE */
+.msg.deleted{
+  background:#141414 !important;
+  border:1px solid #222 !important;
+  color:#444 !important;
+  font-style:italic;
+  padding:7px 12px;
+}
+.msg.deleted.me{ background:#1c1900 !important; border-color:#2a2200 !important; }
+.msg-del-ico{ display:inline-flex; align-items:center; gap:5px; }
+
+/* MOBILE */
+@media(max-width:768px){
+  #sidebar{
+    position:absolute;left:0;top:0;z-index:30;
+    width:82%;max-width:290px;
+    transform:translateX(-100%);
+    box-shadow:10px 0 30px rgba(0,0,0,.6);
+  }
+  #sidebar.show{transform:translateX(0);}
+}
+@media(min-width:769px){
+  #app{display:flex !important;}
+  .ham{display:none;}
+}
+
+/* OVERLAY for sidebar mobile */
+#sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;}
+#sb-overlay.show{display:block;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <!-- Logo SVG -->
+  <svg class="login-logo" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="56" height="56" rx="16" fill="#1a1400"/>
+    <path d="M12 18C12 15.79 13.79 14 16 14H40C42.21 14 44 15.79 44 18V34C44 36.21 42.21 38 40 38H30L22 44V38H16C13.79 38 12 36.21 12 34V18Z" fill="gold"/>
+    <circle cx="21" cy="26" r="2.5" fill="#000"/>
+    <circle cx="28" cy="26" r="2.5" fill="#000"/>
+    <circle cx="35" cy="26" r="2.5" fill="#000"/>
+  </svg>
+  <div class="login-title">La Chat</div>
+  <div class="login-sub">Chat real-time berbasis ID unik</div>
+  <div class="login-card">
+    <div class="lbl">ID KAMU</div>
+    <div class="id-box">
+      <span class="id-hash">#</span>
+      <span class="id-display" id="id-display" style="flex:1;font-size:28px;font-weight:800;color:white;letter-spacing:4px;">·····</span>
+      <button onclick="generateNewId()" title="Acak ulang ID" style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;color:#555;transition:color .15s;" onmouseover="this.style.color='gold'" onmouseout="this.style.color='#555'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      </button>
+    </div>
+    <div class="lbl">NAMA PANGGILAN</div>
+    <input class="login-input" id="username" placeholder="Nama Kamu" maxlength="30" onkeydown="if(event.key==='Enter')registerUser()">
+    <div class="m-err" id="reg-err" style="margin:0;"></div>
+    <button class="login-btn" id="reg-btn" onclick="registerUser()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      Masuk ke La Chat
+    </button>
+    <div class="login-hint">
+      Pilih ID 5 digit sendiri<br>Admin bisa dihubungi di ID <strong style="color:gold">99999</strong>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div id="sb-overlay" onclick="closeSidebar()"></div>
+  <div id="sidebar">
+    <div class="sb-header">
+      <div class="sb-logo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="gold" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        La Chat
+      </div>
+      <div class="sb-myid">ID kamu: <b id="my-id-show">—</b></div>
+      <div id="admin-sidebar-badge" style="display:none;">
+        <div class="admin-badge">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="gold" stroke="gold" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          MODE TEZEYE
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-item active" id="menu-global" onclick="openGlobal()">
+      <div class="m-ico">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div class="m-info">
+        <div class="m-name">Global Chat</div>
+        <div class="m-sub">Semua orang bisa lihat</div>
+      </div>
+    </div>
+
+    <div id="recent-list"></div>
+
+    <button class="add-id-btn" onclick="openFindModal()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Chat dengan ID
+    </button>
+
+    <div style="flex:1;"></div>
+    <div class="sb-foot">
+      <button class="logout-btn" onclick="doLogout()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Keluar / Ganti Akun
+      </button>
+    </div>
+  </div>
+
+  <div id="chat">
+    <div id="topbar">
+      <div class="tb-left">
+        <button class="ham" onclick="toggleSidebar()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="tb-av" id="tb-av">
+          <svg id="tb-av-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <div>
+          <div class="tb-name" id="chatTitle">Global Chat</div>
+          <div class="tb-sub" id="chatSub">Semua orang</div>
+        </div>
+      </div>
+      <div class="tb-right">
+        <button class="ic-btn" id="admin-clear-btn" onclick="adminClearChat()" title="Hapus Semua Pesan (Admin)" style="display:none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>
+        <button class="ic-btn" onclick="openRenameModal()" title="Ganti nama">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="messages">
+      <div class="empty">
+        <div class="empty-ico">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#2a2a2a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        Belum ada pesan.<br>Jadilah yang pertama!
+      </div>
+    </div>
+
+    <div class="bottom">
+      <input type="file" id="imageInput" hidden accept="image/*">
+      <button class="img-btn" onclick="document.getElementById('imageInput').click()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </button>
+      <input id="msg" placeholder="Pesan..." onkeydown="if(event.key==='Enter')sendMsg()">
+      <button class="send-btn" onclick="sendMsg()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: FIND BY ID -->
+<div class="modal" id="findModal">
+  <div class="mbox">
+    <div class="m-title">Chat dengan ID</div>
+    <div class="m-desc">Masukkan ID 5 digit teman.<br>Admin: <strong style="color:gold">99999</strong></div>
+    <input class="m-input" id="find-input" placeholder="_ _ _ _ _"
+      maxlength="5" inputmode="numeric"
+      oninput="this.value=this.value.replace(/\D/g,'')"
+      onkeydown="if(event.key==='Enter')doFindUser()">
+    <div class="m-err" id="find-err"></div>
+    <div id="recent-chips"></div>
+    <button class="m-btn" onclick="doFindUser()">Buka Chat</button>
+    <button class="m-cancel" onclick="closeFindModal()">Batal</button>
+  </div>
+</div>
+
+<!-- MODAL: RENAME -->
+<div class="modal" id="renameModal">
+  <div class="mbox">
+    <div class="m-title">Ganti Nama</div>
+    <div class="m-desc" id="rename-cur"></div>
+    <input class="m-input text-left" id="newName" placeholder="Nama baru..." maxlength="30" onkeydown="if(event.key==='Enter')changeName()">
+    <div class="m-err" id="rename-err"></div>
+    <button class="m-btn" onclick="changeName()">Simpan</button>
+    <button class="m-cancel" onclick="renameModal.style.display='none'">Batal</button>
+  </div>
+</div>
+
+<!-- MODAL: ALERT / CONFIRM (pengganti alert & confirm) -->
+<div class="modal" id="alertModal">
+  <div class="mbox">
+    <div class="alert-ico" id="alert-ico"></div>
+    <div class="m-title" id="alert-title" style="text-align:center;margin-bottom:8px;"></div>
+    <div class="alert-msg" id="alert-msg"></div>
+    <div id="alert-btns"></div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU HAPUS PESAN -->
+<div id="ctx-menu">
+  <div class="ctx-item" id="ctx-copy" onclick="ctxCopy()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    Salin Pesan
+  </div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item danger" id="ctx-del-me" onclick="ctxDeleteMe()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+    Hapus untuk Saya
+  </div>
+  <div class="ctx-item danger" id="ctx-del-all" onclick="ctxDeleteAll()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+    Hapus untuk Semua
+  </div>
+</div>
+
+<!-- TOAST NOTIF -->
+<div id="toast">
+  <span class="t-badge">BARU</span>
+  <span id="toast-text"></span>
+</div>
+
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyBcufeTd9fskM9oVcLa5xwYRhc3ughDXDM",
+  authDomain:"goldchat-3606c.firebaseapp.com",
+  databaseURL:"https://goldchat-3606c-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"goldchat-3606c"
+});
+const db = firebase.database();
+const ADMIN_ID = "99999";
+
+let myId="", myName="";
+let target="", globalMode=true;
+let sendImage="";
+let msgRef=null, msgFn=null;
+let recentIds=[];
+let unreadMap={}; // id -> count
+let inboxListeners={}; // id -> listener ref
+let lastMsgMap = {}; // id -> {text, name, ts} untuk preview di sidebar
+let inboxInitTs = Date.now();
+let deletedHistoryIds = new Map(); // id -> timestamp penghapusan
+
+/* ══ SVG HELPERS ══ */
+const SVG = {
+  globe:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+  globeBlack:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+  user:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  userBlack:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  star:`<svg width="18" height="18" viewBox="0 0 24 24" fill="gold" stroke="gold" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  chat:`<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#2a2a2a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+  warn:`<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#f5c542" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+  info:`<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="gold" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  infor:`<svg width="15" height="12" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1.5" fill="#888" stroke="none"/></svg>`,
+  trash:`<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#f55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`,
+};
+
+/* ══ MODAL ALERT / CONFIRM pengganti alert() dan confirm() ══ */
+function showAlert(title, msg, type="info", onOk=null){
+  document.getElementById("alert-title").textContent = title;
+  document.getElementById("alert-msg").textContent = msg;
+  document.getElementById("alert-ico").innerHTML = type==="warn" ? SVG.warn : (type==="danger" ? SVG.trash : SVG.info);
+  document.getElementById("alert-btns").innerHTML = `<button class="m-btn" onclick="closeAlert()" style="margin-bottom:0;">OK</button>`;
+  const modal = document.getElementById("alertModal");
+  modal.style.display="flex";
+  if(onOk) modal._okCb = onOk;
+}
+
+function showConfirm(title, msg, type="warn", onYes, onNo=null){
+  document.getElementById("alert-title").textContent = title;
+  document.getElementById("alert-msg").textContent = msg;
+  document.getElementById("alert-ico").innerHTML = type==="danger" ? SVG.trash : SVG.warn;
+  document.getElementById("alert-btns").innerHTML = `
+    <div class="confirm-row">
+      <button class="m-btn-danger" onclick="closeAlert(false)">${type==="danger"?"Ya, Keluar":"Batal"}</button>
+      <button class="m-btn" onclick="closeAlert(true)" style="flex:1;margin:0;">${type==="danger"?"Batal":"OK"}</button>
+    </div>`;
+  const modal = document.getElementById("alertModal");
+  modal.style.display="flex";
+  modal._yesCb = onYes;
+  modal._noCb = onNo;
+  modal._isConfirm = true;
+}
+
+function closeAlert(confirmed){
+  const modal = document.getElementById("alertModal");
+  modal.style.display="none";
+  if(modal._isConfirm){
+    if(confirmed && modal._yesCb) modal._yesCb();
+    if(!confirmed && modal._noCb) modal._noCb();
+  } else {
+    if(modal._okCb) modal._okCb();
+  }
+  modal._yesCb=null; modal._noCb=null; modal._okCb=null; modal._isConfirm=false;
+}
+
+/* ══ TOAST NOTIF ══ */
+let toastTimer=null;
+function showToast(text, duration=3500){
+  const t = document.getElementById("toast");
+  document.getElementById("toast-text").textContent = text;
+  t.classList.add("show");
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove("show"), duration);
+}
+
+/* ══ BOOT ══ */
+(function(){
+  const s = JSON.parse(localStorage.getItem("gc2")||"null");
+  if(s && s.id && s.name){
+    myId=s.id; myName=s.name;
+    recentIds=s.recents||[];
+    boot();
+  } else {
+    document.getElementById("login").style.display="flex";
+    generateNewId(); // langsung generate ID random
+  }
+})();
+
+let pendingId = ""; // ID random yang sedang ditampilkan
+
+function generateRandomId(){
+  // Hasilkan 5 digit acak, hindari 99999 (admin)
+  let id;
+  do { id = String(Math.floor(10000 + Math.random() * 90000)); } while(id === "99999");
+  return id;
+}
+
+function generateNewId(){
+  const display = document.getElementById("id-display");
+  display.style.color = "#555";
+  display.textContent = "·····";
+  document.getElementById("reg-err").textContent = "";
+
+  const candidate = generateRandomId();
+  // Cek apakah ID sudah dipakai
+  db.ref("users_v2/"+candidate).once("value", snap=>{
+    if(snap.exists()){
+      // Sudah dipakai, coba lagi
+      generateNewId();
+    } else {
+      pendingId = candidate;
+      display.style.color = "white";
+      display.textContent = candidate;
+    }
+  });
+}
+
+function registerUser(){
+  const n = document.getElementById("username").value.trim();
+  const err = document.getElementById("reg-err");
+  const btn = document.getElementById("reg-btn");
+
+  if(!pendingId){ err.textContent="Tunggu ID selesai digenerate."; return; }
+  if(!n){ err.textContent="Masukkan nama panggilan dulu."; return; }
+
+  err.textContent="";
+  btn.textContent="Mendaftarkan...";
+  btn.disabled=true;
+
+  // Cek sekali lagi sebelum daftar (race condition)
+  db.ref("users_v2/"+pendingId).once("value", snap=>{
+    if(snap.exists()){
+      // ID sudah diambil orang lain, generate baru
+      err.textContent="ID bentrok, sedang acak ulang...";
+      btn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Masuk ke La Chat`;
+      btn.disabled=false;
+      generateNewId();
+      return;
+    }
+    myId=pendingId; myName=n;
+    db.ref("users_v2/"+myId).set({id:myId,name:myName});
+    save();
+    boot();
+  });
+}
+
+function boot(){
+  document.getElementById("login").style.display="none";
+  document.getElementById("app").style.display="flex";
+  document.getElementById("my-id-show").textContent=myId;
+
+  // Show admin badge if admin
+  if(myId===ADMIN_ID){
+    document.getElementById("admin-sidebar-badge").style.display="block";
+  }
+
+  renderRecent();
+  preloadLastMessages();
+  startInboxListeners();
+  watchUserDeleted();
+
+  const p=new URLSearchParams(location.search);
+  if(p.get("admin")){
+    openPrivate(ADMIN_ID, p.get("msg") || "");
+  } else {
+    openGlobal();
+  }
+}
+
+/* Preload preview pesan terakhir untuk tiap recent chat */
+function preloadLastMessages(){
+  recentIds.forEach(id=>{
+    const path="pm/"+roomKey(myId,id);
+    db.ref(path).limitToLast(1).once("value",snap=>{
+      if(!snap.exists()) return;
+      snap.forEach(x=>{
+        const d=x.val();
+        if(!lastMsgMap[id] || d.ts>(lastMsgMap[id].ts||0)){
+          lastMsgMap[id]={
+            text: d.deleted ? "Pesan dihapus" : (d.text||(d.image?"Gambar":"")),
+            name: d.name||"User #"+d.from,
+            ts: d.ts
+          };
+        }
+      });
+      renderRecent();
+    });
+  });
+}
+
+/* ══ WATCH: auto-logout jika user dihapus dari Firebase ══ */
+function watchUserDeleted(){
+  db.ref("users_v2/"+myId).on("value", snap=>{
+    if(!snap.exists()){
+      // ID dihapus oleh admin dari Firebase
+      forceLogout();
+    }
+  });
+}
+
+function forceLogout(){
+  // Hentikan semua listener dulu
+  if(msgRef && msgFn){ msgRef.off("value",msgFn); }
+  db.ref("inbox/"+myId).off();
+  db.ref("users_v2/"+myId).off();
+
+  // Hapus data lokal
+  localStorage.removeItem("gc2");
+
+  // Matikan listener alertModal agar klik luar tidak menutup modal
+  const modal = document.getElementById("alertModal");
+  modal.replaceWith(modal.cloneNode(true)); // hapus semua event listener lama
+  const freshModal = document.getElementById("alertModal");
+
+  document.getElementById("alert-ico").innerHTML = `
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#f55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>`;
+  document.getElementById("alert-title").textContent = "Akun Dihapus";
+  document.getElementById("alert-msg").textContent =
+    "ID #"+myId+" telah dihapus oleh admin. Kamu akan diarahkan untuk membuat akun baru.";
+  document.getElementById("alert-btns").innerHTML =
+    `<button class="m-btn" onclick="location.reload()">Buat Akun Baru</button>`;
+  freshModal.style.display="flex";
+  // Blokir semua klik di luar — tidak bisa tutup modal ini
+  freshModal.addEventListener("click", e => e.stopPropagation());
+}
+
+// Logout confirmation
+function doLogout(){
+  const modal = document.getElementById("alertModal");
+  document.getElementById("alert-title").textContent = "Keluar dari La Chat";
+  document.getElementById("alert-msg").textContent = "Tdak bisa kembali. Lanjut?";
+  document.getElementById("alert-ico").innerHTML = SVG.trash;
+  document.getElementById("alert-btns").innerHTML = `
+    <div class="confirm-row">
+      <button class="m-btn-danger" onclick="confirmLogout()">Ya, Keluar</button>
+      <button class="m-btn" onclick="closeAlert()" style="flex:1;margin:0;">Batal</button>
+    </div>`;
+  modal.style.display="flex";
+}
+function confirmLogout(){
+  closeAlert();
+  localStorage.removeItem("gc2");
+  location.reload();
+}
+
+function save(){
+  localStorage.setItem("gc2", JSON.stringify({id:myId,name:myName,recents:recentIds}));
+}
+
+/* ══ HAPUS RIWAYAT CHAT (semua user) ══ */
+
+function deleteHistory(id, displayName){
+  const modal = document.getElementById("alertModal");
+  document.getElementById("alert-title").textContent = "Hapus Riwayat Chat";
+  document.getElementById("alert-msg").textContent = `Hapus semua riwayat chat dengan ${displayName}? Pesan akan dihapus untuk kedua pihak.`;
+  document.getElementById("alert-ico").innerHTML = SVG.trash;
+  document.getElementById("alert-btns").innerHTML = `
+    <div class="confirm-row">
+      <button class="m-btn-danger" onclick="confirmDeleteHistory('${id}')">Ya, Hapus</button>
+      <button class="m-btn" onclick="closeAlert()" style="flex:1;margin:0;">Batal</button>
+    </div>`;
+  modal.style.display="flex";
+}
+
+function confirmDeleteHistory(id){
+  closeAlert();
+  const path = "pm/"+roomKey(myId, id);
+  const deletedAt = Date.now();
+
+  // Catat waktu penghapusan agar inbox listener tidak menambahkan pesan lama kembali
+  deletedHistoryIds.set(id, deletedAt);
+
+  // Hapus pesan PM dari Firebase
+  db.ref(path).remove();
+
+  // Hapus inbox milik kita yang dari user ini
+  db.ref("inbox/"+myId).orderByChild("from").equalTo(id).once("value", snap=>{
+    snap.forEach(x => x.ref.remove());
+  });
+
+  // Hapus dari daftar lokal
+  recentIds = recentIds.filter(x=>x!==id);
+  delete lastMsgMap[id];
+  delete unreadMap[id];
+  save();
+  renderRecent();
+
+  // Kalau sedang buka chat itu, kembali ke global
+  if(!globalMode && target===id){ openGlobal(); }
+  showToast("Riwayat chat dihapus");
+}
+
+
+// Hapus semua pesan di room yang sedang aktif (global atau PM)
+function adminClearChat(){
+  if(myId!==ADMIN_ID) return;
+  const path = globalMode ? "global_v2" : "pm/"+roomKey(myId,target);
+  const label = globalMode ? "Global Chat" : "chat ini";
+  const modal = document.getElementById("alertModal");
+  document.getElementById("alert-title").textContent = "Hapus Semua Pesan";
+  document.getElementById("alert-msg").textContent = `Hapus SEMUA pesan di ${label}? Tindakan ini tidak bisa dibatalkan.`;
+  document.getElementById("alert-ico").innerHTML = SVG.trash;
+  document.getElementById("alert-btns").innerHTML = `
+    <div class="confirm-row">
+      <button class="m-btn-danger" onclick="confirmAdminClearChat('${path}')">Ya, Hapus Semua</button>
+      <button class="m-btn" onclick="closeAlert()" style="flex:1;margin:0;">Batal</button>
+    </div>`;
+  modal.style.display="flex";
+}
+
+function confirmAdminClearChat(path){
+  closeAlert();
+  db.ref(path).remove()
+    .then(()=>showToast("Semua pesan berhasil dihapus"))
+    .catch(()=>showToast("Gagal menghapus pesan"));
+}
+
+function nameOf(id){ return id===ADMIN_ID ? "Admin La Chat" : (id===myId ? myName : "User #"+id); }
+function roomKey(a,b){ return [a,b].sort().join("_"); }
+
+/* ══ INBOX LISTENERS — notif + auto-add ke sidebar ══ */
+
+function startInboxListeners(){
+  db.ref("inbox/"+myId).on("child_added", snap=>{
+    const d = snap.val();
+    if(!d || d.from===myId) return;
+    const rid = d.from;
+    const senderName = d.name || "User #"+rid;
+
+    // Jika riwayat sudah dihapus, hanya proses pesan yang LEBIH BARU dari waktu penghapusan
+    if(deletedHistoryIds.has(rid) && d.ts <= deletedHistoryIds.get(rid)) return;
+
+    // Update preview pesan terakhir untuk ditampilkan di sidebar
+    if(!lastMsgMap[rid] || d.ts > (lastMsgMap[rid].ts||0)){
+      lastMsgMap[rid] = {
+        text: d.text || (d.image ? "Gambar" : ""),
+        name: senderName,
+        ts: d.ts
+      };
+    }
+
+    // Kalau ID ini belum di recent list → tambahkan otomatis ke sidebar
+    if(!recentIds.includes(rid)){
+      recentIds.unshift(rid);
+      if(recentIds.length>15) recentIds.pop();
+      save();
+    }
+
+    // Tandai unread & toast hanya untuk pesan BARU (bukan history lama)
+    const isActiveRoom = !globalMode && target === rid;
+    if(!isActiveRoom && d.ts > inboxInitTs){
+      unreadMap[rid] = (unreadMap[rid]||0)+1;
+      showToast(`${senderName}: ${d.text || "Gambar"}`);
+    }
+
+    renderRecent();
+  });
+}
+
+/* ══ OPEN GLOBAL ══ */
+function openGlobal(){
+  globalMode=true; target="";
+  document.getElementById("chatTitle").textContent="Global Chat";
+  document.getElementById("chatSub").textContent="Semua orang";
+  document.getElementById("tb-av").style.background="#2a2a2a";
+  document.getElementById("tb-av-ico").outerHTML = `<span id="tb-av-ico">${SVG.globeBlack}</span>`;
+  highlight("menu-global");
+  closeSidebar();
+  // Show admin clear button on global chat
+  const clearBtn = document.getElementById("admin-clear-btn");
+  if(myId===ADMIN_ID){ clearBtn.style.display="flex"; clearBtn.style.color="#f55"; }
+  else { clearBtn.style.display="none"; }
+  loadMessages();
+}
+
+/* ══ OPEN PRIVATE ══ */
+function openPrivate(id, autoMsg){
+  if(id===myId){
+    showAlert("Oops!", "Kamu tidak bisa chat ke diri sendiri.", "warn");
+    return;
+  }
+  target=id; globalMode=false;
+  unreadMap[id]=0;
+
+  // Cari nama dari Firebase
+  db.ref("users_v2/"+id).once("value", snap=>{
+    const data = snap.val();
+    const displayName = data ? data.name : "User #"+id;
+    document.getElementById("chatTitle").textContent = id===ADMIN_ID ? "Admin La Chat" : displayName;
+    document.getElementById("chatSub").textContent = "ID: "+id + (id===ADMIN_ID?" · Admin":"");
+  });
+
+  const isAdmin = id===ADMIN_ID;
+  document.getElementById("tb-av").style.background = isAdmin?"#2a1f00":"#1a1a1a";
+  document.getElementById("tb-av-ico").outerHTML = isAdmin
+    ? `<span id="tb-av-ico">${SVG.star}</span>`
+    : `<span id="tb-av-ico">${SVG.userBlack.replace('stroke="#000"','stroke="#aaa"')}</span>`;
+
+  // Add to recents
+  recentIds = recentIds.filter(x=>x!==id);
+  recentIds.unshift(id);
+  if(recentIds.length>15) recentIds.pop();
+  save();
+  renderRecent();
+  highlight("rc-"+id);
+  closeSidebar();
+
+  // Show admin clear button when admin is chatting with a user
+  const clearBtn = document.getElementById("admin-clear-btn");
+  if(myId===ADMIN_ID){ clearBtn.style.display="flex"; clearBtn.style.color="#f55"; }
+  else { clearBtn.style.display="none"; }
+
+  loadMessages();
+
+  // Auto-send
+  if(autoMsg){
+    const txt=decodeURIComponent(autoMsg);
+    setTimeout(()=>{
+      db.ref("pm/"+roomKey(myId,target)).once("value",snap=>{
+        if(!snap.exists()){
+          sendToRoom("pm/"+roomKey(myId,target), txt, "");
+        }
+      });
+    },700);
+  }
+}
+
+/* ══ RECENT ══ */
+function renderRecent(){
+  const box = document.getElementById("recent-list");
+  box.innerHTML="";
+  if(!recentIds.length){
+    box.innerHTML='<div style="padding:14px 16px;font-size:12px;color:#2e2e2e;">Belum ada chat pribadi</div>';
+    return;
+  }
+  recentIds.forEach(id=>{
+    const isAdmin=id===ADMIN_ID;
+    const unread=unreadMap[id]||0;
+    const last=lastMsgMap[id];
+
+    // Avatar
+    const icoHtml = isAdmin
+      ? `<div class="m-ico" style="background:#2a1f00;border-color:#3a2e00;position:relative;">${SVG.star}${unread>0?'<span class="unread-badge">'+Math.min(unread,99)+'</span>':''}</div>`
+      : `<div class="m-ico" style="position:relative;">${SVG.user}${unread>0?'<span class="unread-badge">'+Math.min(unread,99)+'</span>':''}</div>`;
+
+    // Preview text
+    const previewText = last
+      ? escSb(last.text) || '<span style="font-style:italic;color:#333;">Gambar</span>'
+      : '<span style="color:#2a2a2a;">Mulai percakapan</span>';
+
+    // Time
+    const timeHtml = last
+      ? `<span class="sb-time">${fmtTime(last.ts)}</span>`
+      : "";
+
+    // Name display
+    let displayName = isAdmin ? "Admin La Chat" : (last ? last.name : "User #"+id);
+
+    box.innerHTML+=`
+      <div class="menu-item ${unread>0?'has-unread':''}" id="rc-${id}" onclick="openPrivate('${id}')">
+        ${icoHtml}
+        <div class="m-info" style="overflow:hidden;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
+            <div class="m-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${escSb(displayName)}</div>
+            ${timeHtml}
+          </div>
+          <div class="m-sub" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;font-size:11px;color:${unread>0?'#888':'#3a3a3a'};">${previewText}</div>
+        </div>
+        <button class="sb-del-btn" onclick="event.stopPropagation();deleteHistory('${id}','${escSb(displayName)}')" title="Hapus riwayat chat">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        </button>
+      </div>`;
+  });
+}
+
+function escSb(t){ return (t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function fmtTime(ts){
+  if(!ts) return "";
+  const d=new Date(ts), now=new Date();
+  const sameDay = d.toDateString()===now.toDateString();
+  if(sameDay) return d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+  const diff=Math.floor((now-d)/86400000);
+  if(diff===1) return "Kemarin";
+  if(diff<7) return ["Min","Sen","Sel","Rab","Kam","Jum","Sab"][d.getDay()];
+  return d.toLocaleDateString("id-ID",{day:"numeric",month:"short"});
+}
+
+function highlight(id){
+  document.querySelectorAll(".menu-item").forEach(x=>x.classList.remove("active"));
+  const el=document.getElementById(id);
+  if(el) el.classList.add("active");
+}
+
+/* ══ FIND MODAL ══ */
+function openFindModal(){
+  document.getElementById("find-input").value="";
+  document.getElementById("find-err").textContent="";
+  const chips=document.getElementById("recent-chips");
+  if(recentIds.length){
+    chips.innerHTML=`<div class="recent-section">
+      <div class="recent-title">RECENT</div>
+      ${recentIds.map(id=>`<span class="id-chip" onclick="quickOpen('${id}')">#${id}${id===ADMIN_ID?" ★":""}</span>`).join("")}
+    </div>`;
+  } else { chips.innerHTML=""; }
+  document.getElementById("findModal").style.display="flex";
+  setTimeout(()=>document.getElementById("find-input").focus(),200);
+}
+
+function closeFindModal(){
+  document.getElementById("findModal").style.display="none";
+}
+
+function quickOpen(id){ closeFindModal(); openPrivate(id); }
+
+function doFindUser(){
+  const v=document.getElementById("find-input").value.trim();
+  const err=document.getElementById("find-err");
+  if(!/^\d{5}$/.test(v)){ err.textContent="ID harus tepat 5 digit angka."; return; }
+  if(v===myId){ err.textContent="Itu ID kamu sendiri!"; return; }
+  err.textContent="";
+  // Cek apakah user ada
+  db.ref("users_v2/"+v).once("value", snap=>{
+    closeFindModal();
+    if(!snap.exists()){
+      showAlert("User Tidak Ditemukan", `ID #${v} belum terdaftar. Pastikan ID benar, atau minta temanmu untuk bergabung dulu.`, "info");
+      return;
+    }
+    openPrivate(v);
+  });
+}
+
+// Semua modal tidak bisa ditutup dengan klik di luar
+
+/* ══ SEND ══ */
+function sendToRoom(path, text, image){
+  const payload={from:myId,name:myName,text,image,ts:Date.now()};
+  db.ref(path).push(payload);
+
+  // Kalau private, kirim juga ke inbox lawan
+  if(!globalMode && target){
+    db.ref("inbox/"+target).push({from:myId,name:myName,text,image,ts:Date.now()});
+  }
+}
+
+function sendMsg(){
+  const text=document.getElementById("msg").value.trim();
+  if(!text && !sendImage) return;
+  const path = globalMode ? "global_v2" : "pm/"+roomKey(myId,target);
+  sendToRoom(path, text, sendImage);
+
+  // Update preview di sidebar
+  if(!globalMode && target){
+    lastMsgMap[target]={
+      text: text||(sendImage?"Gambar":""),
+      name: myName,
+      ts: Date.now()
+    };
+    renderRecent();
+  }
+
+  document.getElementById("msg").value="";
+  sendImage="";
+  document.getElementById("msg").placeholder="Pesan...";
+}
+
+/* ══ CONTEXT MENU STATE ══ */
+let ctxMsgKey="", ctxMsgPath="", ctxMsgText="", ctxMsgIsMe=false;
+
+function openCtxMenu(e, msgKey, msgPath, isMe, text){
+  e.preventDefault();
+  e.stopPropagation();
+  ctxMsgKey=msgKey; ctxMsgPath=msgPath; ctxMsgText=text; ctxMsgIsMe=isMe;
+
+  const menu=document.getElementById("ctx-menu");
+  // Tampilkan "Hapus untuk Semua" hanya jika pesan milik kita
+  document.getElementById("ctx-del-all").style.display = isMe ? "flex" : "none";
+  // "Salin" hanya kalau ada teks
+  document.getElementById("ctx-copy").style.display = text ? "flex" : "none";
+
+  menu.style.display="block";
+
+  // Posisi menu
+  const vw=window.innerWidth, vh=window.innerHeight;
+  let x = e.clientX||e.touches?.[0]?.clientX||vw/2;
+  let y = e.clientY||e.touches?.[0]?.clientY||vh/2;
+  menu.style.left="0px"; menu.style.top="0px";
+  const mw=menu.offsetWidth||200, mh=menu.offsetHeight||120;
+  x = Math.min(x, vw-mw-8);
+  y = Math.min(y, vh-mh-8);
+  menu.style.left=Math.max(8,x)+"px";
+  menu.style.top=Math.max(8,y)+"px";
+}
+
+function closeCtxMenu(){ document.getElementById("ctx-menu").style.display="none"; }
+
+document.addEventListener("click", closeCtxMenu);
+document.addEventListener("touchstart", e=>{
+  if(!document.getElementById("ctx-menu").contains(e.target)) closeCtxMenu();
+},{passive:true});
+
+function ctxCopy(){
+  closeCtxMenu();
+  navigator.clipboard.writeText(ctxMsgText).then(()=>showToast("Pesan disalin")).catch(()=>{
+    const ta=document.createElement("textarea");
+    ta.value=ctxMsgText; document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); document.body.removeChild(ta);
+    showToast("Pesan disalin");
+  });
+}
+
+function ctxDeleteMe(){
+  closeCtxMenu();
+  // Hapus hanya di sisi lokal: simpan daftar hidden keys di localStorage
+  const hiddenKey="gc_hidden_"+myId;
+  const hidden=JSON.parse(localStorage.getItem(hiddenKey)||"[]");
+  if(!hidden.includes(ctxMsgKey)) hidden.push(ctxMsgKey);
+  localStorage.setItem(hiddenKey, JSON.stringify(hidden));
+  // Re-render
+  renderMessages(lastSnap);
+  showToast("Pesan dihapus untuk kamu");
+}
+
+function ctxDeleteAll(){
+  closeCtxMenu();
+  // Overwrite data di Firebase dengan flag deleted
+  db.ref(ctxMsgPath+"/"+ctxMsgKey).update({
+    deleted:true, text:"", image:"", deletedBy:myId, deletedAt:Date.now()
+  }).then(()=>showToast("Pesan dihapus untuk semua"))
+    .catch(()=>showToast("Gagal menghapus pesan"));
+}
+
+/* ══ LOAD MESSAGES ══ */
+let lastSnap=null;
+
+function getHidden(){
+  return JSON.parse(localStorage.getItem("gc_hidden_"+myId)||"[]");
+}
+
+function renderMessages(snap){
+  lastSnap=snap;
+  const box=document.getElementById("messages");
+  const hidden=getHidden();
+  const wasAtBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+
+  box.innerHTML="";
+  if(!snap || !snap.exists()){
+    box.innerHTML=`<div class="empty">
+      <div class="empty-ico">${SVG.chat}</div>
+      ${globalMode?"Sapa semua orang!":"Mulai percakapan baru!"}
+    </div>`;
+    return;
+  }
+
+  const path = globalMode ? "global_v2" : "pm/"+roomKey(myId,target);
+  let prevDate="";
+
+  snap.forEach(x=>{
+    const d=x.val();
+    const key=x.key;
+
+    if(d.system){ box.innerHTML+=`<div class="sys"><span>${SVG.infor} ${d.text}</span></div>`; return; }
+    if(hidden.includes(key)) return; // hapus untuk saya
+
+    // Date separator
+    const msgDate = new Date(d.ts).toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long"});
+    if(msgDate!==prevDate){
+      box.innerHTML+=`<div class="sys"><span>${msgDate}</span></div>`;
+      prevDate=msgDate;
+    }
+
+    const isMe=d.from===myId;
+    const who = isMe ? "Kamu" : (d.from===ADMIN_ID ? "Admin La Chat" : (d.name||"User #"+d.from));
+    const timeStr = new Date(d.ts).toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+    const safeKey=key.replace(/[^a-zA-Z0-9_-]/g,"");
+
+    if(d.deleted){
+      // Tampilkan placeholder pesan terhapus
+      box.innerHTML+=`
+        <div class="msg-wrap ${isMe?"me":"other"}">
+          <div class="msg deleted ${isMe?"me":"other"}">
+            <div class="msg-del-ico">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              Pesan telah dihapus
+            </div>
+          </div>
+          <div style="font-size:10px;color:#333;margin-top:2px;padding:0 4px;">${timeStr}</div>
+        </div>`;
+      return;
+    }
+
+    // Encode text untuk onclick
+    const escapedText=(d.text||"").replace(/\\/g,"\\\\").replace(/'/g,"\\'").replace(/\n/g,"\\n");
+
+    box.innerHTML+=`
+      <div class="msg-wrap ${isMe?"me":"other"}" id="wrap-${safeKey}">
+        <div class="msg ${isMe?"me":"other"}"
+          data-key="${key}"
+          data-path="${path}"
+          data-me="${isMe}"
+          data-text="${escapedText.replace(/"/g,'&quot;')}"
+          oncontextmenu="handleCtx(event,this)"
+          ontouchstart="handleTouchStart(event,this)"
+          ontouchend="handleTouchEnd()"
+          ontouchmove="handleTouchEnd()"
+        >
+          <div class="msg-who">${escapeHtml(who)} · ${timeStr}</div>
+          ${d.image?`<img class="msg-img" src="${d.image}" onclick="viewImg(this.src)">`:""}
+          ${d.text?`<span>${escapeHtml(d.text)}</span>`:""}
+        </div>
+      </div>`;
+  });
+
+  if(wasAtBottom || !lastSnap) box.scrollTop=box.scrollHeight;
+}
+
+/* Long-press touch support */
+let touchTimer=null;
+function handleTouchStart(e, el){
+  touchTimer=setTimeout(()=>{
+    const fakeE={
+      preventDefault:()=>{},stopPropagation:()=>{},
+      clientX:e.touches[0].clientX, clientY:e.touches[0].clientY,
+      touches:e.touches
+    };
+    handleCtx(fakeE, el);
+  },500);
+}
+function handleTouchEnd(){ if(touchTimer){ clearTimeout(touchTimer); touchTimer=null; } }
+
+function handleCtx(e, el){
+  const key=el.dataset.key;
+  const path=el.dataset.path;
+  const isMe=el.dataset.me==="true";
+  const text=el.dataset.text;
+  openCtxMenu(e, key, path, isMe, text);
+}
+
+function loadMessages(){
+  if(msgRef && msgFn){ msgRef.off("value",msgFn); }
+  const path = globalMode ? "global_v2" : "pm/"+roomKey(myId,target);
+  const box=document.getElementById("messages");
+  box.innerHTML=`<div class="empty"><div class="empty-ico">${SVG.chat}</div>Memuat pesan...</div>`;
+  msgRef=db.ref(path);
+  msgFn=msgRef.limitToLast(100).on("value",snap=>{
+    renderMessages(snap);
+  });
+}
+
+function escapeHtml(t){
+  return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function viewImg(src){
+  const w=window.open("","_blank","width=600,height=600");
+  w.document.write(`<body style="margin:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh;"><img src="${src}" style="max-width:100%;max-height:100%;object-fit:contain;"></body>`);
+}
+
+/* ══ IMAGE ══ */
+document.getElementById("imageInput").onchange=async function(){
+  const f=this.files[0]; if(!f) return;
+  if(f.size>2*1024*1024){ showAlert("File Terlalu Besar","Ukuran gambar maksimal 2MB.","warn"); this.value=""; return; }
+  const rd=new FileReader();
+  rd.onload=e=>{
+    sendImage=e.target.result;
+    document.getElementById("msg").placeholder="Gambar siap dikirim — tekan Enter/Send";
+  };
+  rd.readAsDataURL(f);
+};
+
+/* ══ RENAME ══ */
+function openRenameModal(){
+  document.getElementById("rename-cur").textContent="Nama sekarang: "+myName;
+  document.getElementById("newName").value="";
+  document.getElementById("rename-err").textContent="";
+  document.getElementById("renameModal").style.display="flex";
+  setTimeout(()=>document.getElementById("newName").focus(),200);
+}
+function changeName(){
+  const n=document.getElementById("newName").value.trim();
+  if(!n){ document.getElementById("rename-err").textContent="Nama tidak boleh kosong."; return; }
+  const oldName = myName;
+  myName=n;
+  db.ref("users_v2/"+myId).update({name:n});
+  save();
+  document.getElementById("renameModal").style.display="none";
+  showToast("Nama berhasil diganti ke "+n);
+
+  // Kirim pesan sistem ke global chat
+  db.ref("global_v2").push({
+    system: true,
+    text: `${oldName} (ID #${myId}) mengganti nama menjadi "${n}"`,
+    ts: Date.now()
+  });
+}
+
+/* ══ SIDEBAR ══ */
+function toggleSidebar(){
+  const sb=document.getElementById("sidebar");
+  const ov=document.getElementById("sb-overlay");
+  sb.classList.toggle("show");
+  ov.classList.toggle("show");
+}
+function closeSidebar(){
+  if(window.innerWidth<=768){
+    document.getElementById("sidebar").classList.remove("show");
+    document.getElementById("sb-overlay").classList.remove("show");
+  }
+}
+</script>
+</body>
+</html>

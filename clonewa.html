@@ -3,1059 +3,571 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-
 <title>GoldChat Pro</title>
-
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:system-ui;
--webkit-tap-highlight-color:transparent;
-}
-
-html,
-body{
-width:100%;
-height:100%;
-overflow:hidden;
-background:#0b0b0b;
-color:white;
-}
-
-body,
-#app,
-#chat,
-#sidebar,
-#messages{
-overflow-x:hidden;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;background:#0b0b0b;color:white;}
+body,#app,#chat,#sidebar,#messages{overflow-x:hidden;}
 
 /* LOGIN */
-
 #login{
-width:100%;
-height:100%;
-display:none;
-flex-direction:column;
-justify-content:center;
-padding:20px;
-gap:14px;
+  width:100%;height:100%;display:none;
+  flex-direction:column;justify-content:center;align-items:center;
+  padding:32px 24px;
+  background:radial-gradient(ellipse at top,#1a1400 0%,#0b0b0b 70%);
 }
-
-#login input,
-#login button{
-width:100%;
-height:54px;
-border:none;
-outline:none;
-border-radius:16px;
-font-size:16px;
+.login-logo{font-size:44px;margin-bottom:6px;}
+.login-title{font-size:22px;font-weight:800;color:gold;margin-bottom:4px;}
+.login-sub{font-size:13px;color:#555;margin-bottom:28px;text-align:center;}
+.login-card{
+  width:100%;max-width:340px;
+  background:#131313;border:1px solid #222;
+  border-radius:20px;padding:22px;
+  display:flex;flex-direction:column;gap:12px;
 }
-
-#login input{
-background:#1a1a1a;
-color:white;
-padding:0 16px;
+.lbl{font-size:11px;color:#555;letter-spacing:.5px;font-weight:600;}
+.id-box{
+  display:flex;align-items:center;
+  background:#1a1a1a;border-radius:12px;
+  border:1px solid #252525;padding:0 16px;height:54px;gap:10px;
 }
-
-#login button{
-background:gold;
-font-weight:bold;
+.id-hash{color:gold;font-size:20px;font-weight:800;}
+.id-display{flex:1;font-size:28px;font-weight:800;color:white;letter-spacing:4px;}
+.login-input{
+  width:100%;height:52px;border:none;outline:none;
+  border-radius:12px;padding:0 16px;
+  background:#1a1a1a;color:white;font-size:15px;
+  border:1px solid #252525;
 }
-
+.login-input:focus{border-color:#444;}
+.login-btn{
+  height:52px;border:none;border-radius:12px;
+  background:gold;color:#000;font-size:15px;font-weight:800;
+  cursor:pointer;
+}
+.login-hint{font-size:11px;color:#3a3a3a;text-align:center;line-height:1.6;}
 
 /* APP */
-
-#app{
-display:none;
-width:100%;
-height:100%;
-position:relative;
-}
-
+#app{display:none;width:100%;height:100%;position:relative;}
 
 /* SIDEBAR */
-
 #sidebar{
-width:360px;
-min-width:360px;
-max-width:360px;
-height:100%;
-background:#121212;
-overflow-y:auto;
-overflow-x:hidden;
-border-right:1px solid #222;
-transition:.25s;
-flex-shrink:0;
+  width:290px;min-width:290px;max-width:290px;
+  height:100%;background:#111;
+  overflow-y:auto;overflow-x:hidden;
+  border-right:1px solid #1e1e1e;
+  transition:.25s;flex-shrink:0;
+  display:flex;flex-direction:column;
 }
-
-.menuItem{
-width:100%;
-padding:14px;
-display:flex;
-align-items:center;
-gap:12px;
-cursor:pointer;
-border-bottom:1px solid #1d1d1d;
-word-break:break-word;
+.sb-header{
+  padding:16px;border-bottom:1px solid #1e1e1e;
 }
-
-
-/* AVATAR */
-
-.avatar{
-width:42px;
-height:42px;
-min-width:42px;
-border-radius:50%;
-overflow:hidden;
-background:gold;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:bold;
-color:black;
+.sb-logo{font-size:15px;font-weight:800;color:gold;}
+.sb-myid{
+  margin-top:8px;font-size:12px;color:#444;
+  display:flex;align-items:center;gap:6px;
 }
-
-.avatar img{
-width:100%;
-height:100%;
-object-fit:cover;
+.sb-myid b{
+  background:#1a1a1a;border:1px solid #2a2a2a;
+  border-radius:8px;padding:3px 10px;
+  color:#aaa;font-size:13px;font-weight:700;letter-spacing:2px;
 }
-
+.menu-item{
+  width:100%;padding:14px 16px;
+  display:flex;align-items:center;gap:12px;
+  cursor:pointer;border-bottom:1px solid #171717;
+  transition:background .15s;font-size:14px;
+}
+.menu-item:hover{background:#181818;}
+.menu-item.active{background:#1d1900;border-left:3px solid gold;}
+.m-ico{
+  width:40px;height:40px;min-width:40px;
+  border-radius:50%;background:#1a1a1a;
+  border:1px solid #232323;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+}
+.m-info{flex:1;min-width:0;}
+.m-name{font-size:14px;font-weight:600;color:#ddd;}
+.m-sub{font-size:11px;color:#444;margin-top:2px;}
+.add-id-btn{
+  margin:10px 12px;height:44px;
+  border:1px dashed #252525;background:transparent;
+  color:#555;border-radius:11px;cursor:pointer;
+  font-size:13px;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.add-id-btn:hover{border-color:gold;color:gold;}
+#recent-list{flex:1;}
+.sb-foot{padding:12px;border-top:1px solid #1a1a1a;}
+.logout-btn{
+  width:100%;height:38px;background:#1a1a1a;
+  border:1px solid #252525;border-radius:10px;
+  color:#555;font-size:12px;cursor:pointer;transition:all .15s;
+}
+.logout-btn:hover{border-color:#c00;color:#f55;}
 
 /* CHAT */
-
-#chat{
-flex:1;
-min-width:0;
-height:100%;
-display:flex;
-flex-direction:column;
-overflow:hidden;
-}
-
-
-/* TOPBAR */
-
+#chat{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;overflow:hidden;}
 #topbar{
-width:100%;
-height:68px;
-padding:0 14px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-background:#111;
-border-bottom:1px solid #222;
+  width:100%;height:62px;padding:0 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:#111;border-bottom:1px solid #1e1e1e;flex-shrink:0;
 }
-
+.tb-left{display:flex;align-items:center;gap:10px;}
+.ham{background:none;border:none;color:#888;font-size:22px;cursor:pointer;padding:4px;}
+.tb-av{
+  width:38px;height:38px;border-radius:50%;
+  background:gold;display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#000;font-size:16px;flex-shrink:0;
+}
+.tb-name{font-size:15px;font-weight:700;color:#eee;}
+.tb-sub{font-size:11px;color:#444;}
+.tb-right{display:flex;gap:6px;}
+.ic-btn{background:none;border:none;color:#555;font-size:19px;cursor:pointer;padding:4px;transition:color .15s;}
+.ic-btn:hover{color:gold;}
 
 /* MESSAGES */
-
 #messages{
-flex:1;
-width:100%;
-padding:12px;
-overflow-y:auto;
-overflow-x:hidden;
+  flex:1;padding:12px;overflow-y:auto;overflow-x:hidden;
+  display:flex;flex-direction:column;gap:4px;
 }
-
+.empty{margin:auto;text-align:center;color:#2a2a2a;font-size:13px;line-height:2.2;}
+.empty big{font-size:38px;display:block;margin-bottom:6px;}
 .msg{
-width:fit-content;
-max-width:85%;
-padding:10px 14px;
-margin:8px 0;
-border-radius:18px;
-word-break:break-word;
-font-size:14px;
+  max-width:78%;padding:9px 13px;
+  border-radius:16px;word-break:break-word;
+  font-size:14px;line-height:1.5;
+  animation:mi .15s ease;
 }
-
-.me{
-margin-left:auto;
-background:gold;
-color:black;
-}
-
-.other{
-background:#1b1b1b;
-}
-
-.msg img{
-display:block;
-margin-top:8px;
-width:100%;
-max-width:220px;
-border-radius:14px;
-}
-
-
-/* SYSTEM */
-
-.system{
-text-align:center;
-margin:12px 0;
-font-size:12px;
-opacity:.7;
-}
-
+@keyframes mi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.msg.me{margin-left:auto;background:gold;color:#000;border-bottom-right-radius:4px;}
+.msg.other{background:#1b1b1b;border-bottom-left-radius:4px;}
+.msg-who{font-size:10px;font-weight:700;opacity:.6;margin-bottom:3px;}
+.msg-img{display:block;margin-top:7px;width:100%;max-width:220px;border-radius:11px;}
+.sys{text-align:center;font-size:11px;color:#2e2e2e;padding:4px 0;}
 
 /* INPUT */
-
 .bottom{
-width:100%;
-padding:10px;
-display:flex;
-align-items:center;
-gap:8px;
-background:#111;
-border-top:1px solid #222;
+  width:100%;padding:10px 12px;
+  display:flex;align-items:center;gap:8px;
+  background:#111;border-top:1px solid #1e1e1e;flex-shrink:0;
 }
-
 #msg{
-flex:1;
-min-width:0;
-height:50px;
-border:none;
-outline:none;
-border-radius:14px;
-padding:0 14px;
-background:#1a1a1a;
-color:white;
+  flex:1;height:46px;border:none;outline:none;
+  border-radius:12px;padding:0 14px;
+  background:#1a1a1a;color:white;font-size:14px;
+  border:1px solid #232323;
 }
+.send-btn{width:46px;height:46px;border:none;border-radius:12px;background:gold;font-size:17px;cursor:pointer;flex-shrink:0;}
+.img-btn{width:46px;height:46px;border:none;border-radius:12px;background:#1a1a1a;border:1px solid #232323;font-size:17px;cursor:pointer;flex-shrink:0;}
 
-.bottom button{
-width:50px;
-height:50px;
-border:none;
-border-radius:14px;
-background:gold;
+/* MODALS */
+.modal{position:fixed;inset:0;display:none;justify-content:center;align-items:center;background:rgba(0,0,0,.8);z-index:999;}
+.mbox{
+  width:92%;max-width:330px;
+  background:#141414;border:1px solid #222;
+  border-radius:18px;padding:22px;
 }
-
-
-/* MODAL */
-
-.modal{
-position:fixed;
-inset:0;
-display:none;
-justify-content:center;
-align-items:center;
-background:rgba(0,0,0,.75);
-z-index:999;
+.m-title{font-size:16px;font-weight:700;color:#eee;margin-bottom:4px;}
+.m-sub{font-size:12px;color:#444;margin-bottom:16px;line-height:1.5;}
+.m-input{
+  width:100%;height:52px;background:#1a1a1a;
+  border:1px solid #2a2a2a;border-radius:12px;
+  padding:0 16px;color:white;font-size:20px;
+  font-weight:700;letter-spacing:3px;
+  outline:none;margin-bottom:8px;text-align:center;
 }
-
-.modalBox{
-width:92%;
-max-width:350px;
-padding:18px;
-border-radius:20px;
-background:#151515;
+.m-input:focus{border-color:#444;}
+.m-input.text-left{text-align:left;letter-spacing:0;font-size:15px;font-weight:500;}
+.m-btn{
+  width:100%;height:46px;border:none;border-radius:12px;
+  background:gold;color:#000;font-size:15px;font-weight:800;
+  cursor:pointer;margin-bottom:8px;
 }
-
-.modalBox input,
-.modalBox button{
-width:100%;
-height:50px;
-margin-top:12px;
-border:none;
-outline:none;
-border-radius:14px;
+.m-cancel{width:100%;height:38px;border:none;background:transparent;color:#444;font-size:13px;cursor:pointer;}
+.m-err{font-size:12px;color:#f55;min-height:16px;margin-bottom:6px;}
+.recent-section{margin-top:14px;border-top:1px solid #1e1e1e;padding-top:12px;}
+.recent-title{font-size:10px;color:#333;margin-bottom:8px;letter-spacing:.5px;}
+.id-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#1a1a1a;border:1px solid #252525;
+  border-radius:8px;padding:5px 12px;
+  font-size:13px;font-weight:700;color:#888;
+  cursor:pointer;margin:3px;transition:all .15s;
 }
-
-.modalBox input{
-background:#1f1f1f;
-padding:0 14px;
-color:white;
-}
-
-.modalBox button{
-background:gold;
-font-weight:bold;
-}
-
+.id-chip:hover{border-color:gold;color:gold;}
 
 /* MOBILE */
-
 @media(max-width:768px){
-
-#sidebar{
-position:absolute;
-left:0;
-top:0;
-z-index:30;
-width:85%;
-max-width:320px;
-transform:translateX(-100%);
-box-shadow:8px 0 20px rgba(0,0,0,.4);
+  #sidebar{
+    position:absolute;left:0;top:0;z-index:30;
+    width:82%;max-width:290px;
+    transform:translateX(-100%);
+    box-shadow:10px 0 30px rgba(0,0,0,.6);
+  }
+  #sidebar.show{transform:translateX(0);}
 }
-
-#sidebar.show{
-transform:translateX(0);
+@media(min-width:769px){
+  #app{display:flex !important;}
+  .ham{display:none;}
 }
-
-}
-
 </style>
 </head>
 <body>
 
-
-
 <!-- LOGIN -->
-
 <div id="login">
-
-<input
-id="username"
-placeholder="Masukkan nama unik"
->
-
-<button onclick="registerUser()">
-Masuk
-</button>
-
+  <div class="login-logo">💬</div>
+  <div class="login-title">GoldChat Pro</div>
+  <div class="login-sub">Chat real-time berbasis ID unik</div>
+  <div class="login-card">
+    <div class="lbl">ID KAMU (OTOMATIS)</div>
+    <div class="id-box">
+      <span class="id-hash">#</span>
+      <span class="id-display" id="id-preview">?????</span>
+    </div>
+    <div class="lbl">NAMA PANGGILAN</div>
+    <input class="login-input" id="username" placeholder="Nama kamu..." maxlength="30" onkeydown="if(event.key==='Enter')registerUser()">
+    <button class="login-btn" onclick="registerUser()">Masuk ke GoldChat ➤</button>
+    <div class="login-hint">
+      ID 5 digit diberikan otomatis &amp; tersimpan.<br>
+      Admin bisa dihubungi di ID <strong style="color:gold">99999</strong>
+    </div>
+  </div>
 </div>
-
-
 
 <!-- APP -->
-
 <div id="app">
+  <div id="sidebar">
+    <div class="sb-header">
+      <div class="sb-logo">⚡ GoldChat Pro</div>
+      <div class="sb-myid">ID kamu: <b id="my-id-show">—</b></div>
+    </div>
 
-<div id="sidebar">
+    <div class="menu-item active" id="menu-global" onclick="openGlobal()">
+      <div class="m-ico">🌍</div>
+      <div class="m-info">
+        <div class="m-name">Global Chat</div>
+        <div class="m-sub">Semua orang bisa lihat</div>
+      </div>
+    </div>
 
-<div
-class="menuItem"
-onclick="openGlobal()"
->
-🌍 Global Chat
+    <div id="recent-list"></div>
+
+    <button class="add-id-btn" onclick="openFindModal()">＋ Chat dengan ID</button>
+
+    <div style="flex:1;"></div>
+    <div class="sb-foot">
+      <button class="logout-btn" onclick="doLogout()">Keluar / Ganti Akun</button>
+    </div>
+  </div>
+
+  <div id="chat">
+    <div id="topbar">
+      <div class="tb-left">
+        <button class="ham" onclick="toggleSidebar()">☰</button>
+        <div class="tb-av" id="tb-av">🌍</div>
+        <div>
+          <div class="tb-name" id="chatTitle">Global Chat</div>
+          <div class="tb-sub" id="chatSub">Semua orang</div>
+        </div>
+      </div>
+      <div class="tb-right">
+        <button class="ic-btn" onclick="openRenameModal()" title="Ganti nama">✏️</button>
+      </div>
+    </div>
+
+    <div id="messages">
+      <div class="empty"><big>💬</big>Belum ada pesan.<br>Jadilah yang pertama!</div>
+    </div>
+
+    <div class="bottom">
+      <input type="file" id="imageInput" hidden accept="image/*">
+      <button class="img-btn" onclick="imageInput.click()">🖼</button>
+      <input id="msg" placeholder="Pesan..." onkeydown="if(event.key==='Enter')sendMsg()">
+      <button class="send-btn" onclick="sendMsg()">➤</button>
+    </div>
+  </div>
 </div>
 
-<div id="users"></div>
-
+<!-- MODAL: FIND BY ID -->
+<div class="modal" id="findModal">
+  <div class="mbox">
+    <div class="m-title">Chat dengan ID</div>
+    <div class="m-sub">Masukkan ID 5 digit teman.<br>Admin: <strong style="color:gold">99999</strong></div>
+    <input class="m-input" id="find-input" placeholder="_ _ _ _ _"
+      maxlength="5" inputmode="numeric"
+      oninput="this.value=this.value.replace(/\D/g,'')"
+      onkeydown="if(event.key==='Enter')doFindUser()">
+    <div class="m-err" id="find-err"></div>
+    <div id="recent-chips"></div>
+    <button class="m-btn" onclick="doFindUser()">Buka Chat</button>
+    <button class="m-cancel" onclick="closeFindModal()">Batal</button>
+  </div>
 </div>
 
-
-
-<div id="chat">
-
-<div id="topbar">
-
-<div
-style="
-display:flex;
-align-items:center;
-gap:12px;
-"
->
-
-<button
-onclick="toggleSidebar()"
-style="
-background:none;
-border:none;
-color:white;
-font-size:22px;
-"
->
-☰
-</button>
-
-
-<span id="chatTitle">
-Global Chat
-</span>
-
-</div>
-
-
-<button
-onclick="openRenameModal()"
-style="
-background:none;
-border:none;
-color:white;
-font-size:20px;
-"
->
-⚙
-</button>
-
-</div>
-
-
-<div id="messages"></div>
-
-
-
-<div class="bottom">
-
-<input
-type="file"
-id="imageInput"
-hidden
-accept="image/*"
->
-
-<button onclick="imageInput.click()">
-🖼
-</button>
-
-
-<input
-type="file"
-id="avatarInput"
-hidden
-accept="image/*"
->
-
-<button onclick="avatarInput.click()">
-👤
-</button>
-
-
-<input
-id="msg"
-placeholder="Pesan..."
->
-
-
-<button onclick="sendMsg()">
-➤
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- MODAL -->
-
+<!-- MODAL: RENAME -->
 <div class="modal" id="renameModal">
-
-<div class="modalBox">
-
-<h3>Ganti Nama</h3>
-
-<p
-id="currentUserName"
-style="
-margin-top:8px;
-opacity:.7;
-font-size:14px;
-"
-></p>
-
-
-<input
-id="newName"
-placeholder="Nama baru"
->
-
-<button onclick="changeName()">
-Simpan
-</button>
-
+  <div class="mbox">
+    <div class="m-title">Ganti Nama</div>
+    <div class="m-sub" id="rename-cur"></div>
+    <input class="m-input text-left" id="newName" placeholder="Nama baru..." maxlength="30">
+    <div class="m-err" id="rename-err"></div>
+    <button class="m-btn" onclick="changeName()">Simpan</button>
+    <button class="m-cancel" onclick="renameModal.style.display='none'">Batal</button>
+  </div>
 </div>
-
-</div>
-
-
 
 <script>
-
 firebase.initializeApp({
-
-apiKey:"AIzaSyBcufeTd9fskM9oVcLa5xwYRhc3ughDXDM",
-authDomain:"goldchat-3606c.firebaseapp.com",
-databaseURL:"https://goldchat-3606c-default-rtdb.asia-southeast1.firebasedatabase.app",
-projectId:"goldchat-3606c"
-
+  apiKey:"AIzaSyBcufeTd9fskM9oVcLa5xwYRhc3ughDXDM",
+  authDomain:"goldchat-3606c.firebaseapp.com",
+  databaseURL:"https://goldchat-3606c-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"goldchat-3606c"
 });
+const db = firebase.database();
 
-const db=firebase.database();
+const ADMIN_ID = "99999";
 
-let me="";
-let target="";
-let globalMode=true;
-let sendImage="";
+let myId = "", myName = "";
+let target = "", globalMode = true;
+let sendImage = "";
+let msgRef = null, msgFn = null;
+let recentIds = [];
 
-
-const saved =
-localStorage.getItem("user");
-
-
-if(saved){
-
-start(saved);
-
-}else{
-
-login.style.display="flex";
-
-app.style.display="none";
-
-}
-
-
-/* HELPERS */
-
-function fileToBase64(file){
-
-return new Promise(resolve=>{
-
-const reader =
-new FileReader();
-
-reader.onload =
-e=>resolve(
-e.target.result
-);
-
-reader.readAsDataURL(file);
-
-});
-
-}
-
-
-/* LOGIN */
+/* ── BOOT ── */
+(function(){
+  const s = JSON.parse(localStorage.getItem("gc2")||"null");
+  if(s && s.id && s.name){
+    myId = s.id; myName = s.name;
+    recentIds = s.recents||[];
+    boot();
+  } else {
+    let id;
+    do { id = String(Math.floor(10000+Math.random()*90000)); }
+    while(id===ADMIN_ID);
+    myId = id;
+    document.getElementById("id-preview").textContent = id;
+    document.getElementById("login").style.display = "flex";
+  }
+})();
 
 function registerUser(){
-
-const name =
-username.value.trim();
-
-if(!name)return;
-
-
-db.ref(
-"users/"+name
-).once(
-
-"value",
-
-snap=>{
-
-
-if(
-snap.exists()
-){
-
-alert(
-"Nama dipakai"
-);
-
-return;
-
+  const n = document.getElementById("username").value.trim();
+  if(!n){ alert("Masukkan nama dulu!"); return; }
+  myName = n;
+  db.ref("users_v2/"+myId).set({id:myId,name:myName});
+  save();
+  boot();
 }
 
+function boot(){
+  document.getElementById("login").style.display = "none";
+  document.getElementById("app").style.display = "flex";
+  document.getElementById("my-id-show").textContent = myId;
+  renderRecent();
 
-db.ref(
-"users/"+name
-).set({
-
-avatar:""
-
-});
-
-
-localStorage.setItem(
-"user",
-name
-);
-
-
-start(name);
-
-});
-
+  const p = new URLSearchParams(location.search);
+  if(p.get("admin")){
+    openPrivate(ADMIN_ID, p.get("msg"));
+  } else {
+    openGlobal();
+  }
 }
 
-
-/* START */
-
-function start(name){
-
-me=name;
-
-login.style.display="none";
-
-app.style.display="flex";
-
-loadUsers();
-
-const params=
-new URLSearchParams(location.search);
-
-const toAdmin=params.get("admin");
-const autoMsg=params.get("msg");
-
-if(toAdmin){
-
-openPrivate("admin");
-
-if(autoMsg){
-
-setTimeout(()=>{
-
-db.ref("messages/"+room())
-.once("value",snap=>{
-
-if(!snap.exists()){
-
-db.ref("messages/"+room())
-.push({
-
-from:me,
-text:autoMsg,
-image:"",
-read:false
-
-});
-
+function doLogout(){
+  if(!confirm("Keluar?")) return;
+  localStorage.removeItem("gc2");
+  location.reload();
 }
 
-});
-
-},600);
-
+function save(){
+  localStorage.setItem("gc2", JSON.stringify({id:myId,name:myName,recents:recentIds}));
 }
 
-}else{
+/* ── HELPERS ── */
+function nameOf(id){ return id===ADMIN_ID ? "👑 Admin" : "User #"+id; }
+function avOf(id){ return id===ADMIN_ID ? "👑" : "#"; }
+function roomKey(a,b){ return [a,b].sort().join("_"); }
 
-openGlobal();
-
-}
-
-}
-
-
-/* USERS */
-
-function loadUsers(){
-
-db.ref("users")
-.on("value",snap=>{
-
-users.innerHTML="";
-
-
-snap.forEach(x=>{
-
-if(x.key===me)return;
-
-
-const d=x.val();
-
-
-users.innerHTML+=`
-
-<div
-class="menuItem"
-onclick="openPrivate('${x.key}')"
->
-
-<div class="avatar">
-
-${
-d.avatar
-?
-`<img src="${d.avatar}">`
-:
-x.key[0]
-}
-
-</div>
-
-${x.key}
-
-</div>
-
-`;
-
-});
-
-});
-
-}
-
-
-/* ROOM */
-
-function room(){
-
-return [me,target]
-.sort()
-.join("_");
-
-}
-
-
-/* OPEN */
-
+/* ── OPEN GLOBAL ── */
 function openGlobal(){
-
-globalMode=true;
-
-chatTitle.innerHTML=
-"🌍 Global Chat";
-
-closeSidebar();
-
-loadMessages();
-
+  globalMode=true; target="";
+  document.getElementById("chatTitle").textContent="Global Chat";
+  document.getElementById("chatSub").textContent="Semua orang";
+  document.getElementById("tb-av").textContent="🌍";
+  document.getElementById("tb-av").style.background="";
+  highlight("menu-global");
+  closeSidebar();
+  loadMessages();
 }
 
+/* ── OPEN PRIVATE ── */
+function openPrivate(id, autoMsg){
+  if(id===myId){ alert("Tidak bisa chat ke diri sendiri!"); return; }
+  target=id; globalMode=false;
+  document.getElementById("chatTitle").textContent = nameOf(id);
+  document.getElementById("chatSub").textContent = "ID: "+id;
+  document.getElementById("tb-av").textContent = avOf(id);
+  document.getElementById("tb-av").style.background = id===ADMIN_ID?"#2a1f00":"#1a1a1a";
 
-function openPrivate(name){
+  // Add to recents
+  recentIds = recentIds.filter(x=>x!==id);
+  recentIds.unshift(id);
+  if(recentIds.length>10) recentIds.pop();
+  save();
+  renderRecent();
+  highlight("rc-"+id);
+  closeSidebar();
+  loadMessages();
 
-target=name;
-
-globalMode=false;
-
-chatTitle.innerHTML=
-name;
-
-closeSidebar();
-
-loadMessages();
-
+  // Auto-send
+  if(autoMsg){
+    const txt = decodeURIComponent(autoMsg);
+    setTimeout(()=>{
+      db.ref("pm/"+roomKey(myId,target)).once("value",snap=>{
+        if(!snap.exists()){
+          db.ref("pm/"+roomKey(myId,target)).push({from:myId,name:myName,text:txt,image:"",ts:Date.now()});
+        }
+      });
+    },700);
+  }
 }
 
+/* ── RECENT ── */
+function renderRecent(){
+  const box = document.getElementById("recent-list");
+  box.innerHTML = "";
+  if(!recentIds.length){
+    box.innerHTML = '<div style="padding:14px 16px;font-size:12px;color:#2e2e2e;">Belum ada chat pribadi</div>';
+    return;
+  }
+  recentIds.forEach(id=>{
+    const isAdmin = id===ADMIN_ID;
+    box.innerHTML += `
+      <div class="menu-item" id="rc-${id}" onclick="openPrivate('${id}')">
+        <div class="m-ico" style="${isAdmin?'background:#2a1f00;font-size:18px;':'font-size:13px;font-weight:700;color:#666;'}">
+          ${isAdmin?'👑':'#'}
+        </div>
+        <div class="m-info">
+          <div class="m-name">${nameOf(id)}</div>
+          <div class="m-sub">ID: ${id}</div>
+        </div>
+      </div>`;
+  });
+}
 
-/* IMAGE */
+function highlight(id){
+  document.querySelectorAll(".menu-item").forEach(x=>x.classList.remove("active"));
+  const el = document.getElementById(id);
+  if(el) el.classList.add("active");
+}
 
-imageInput.onchange =
-async()=>{
+/* ── FIND MODAL ── */
+function openFindModal(){
+  document.getElementById("find-input").value="";
+  document.getElementById("find-err").textContent="";
+  const chips = document.getElementById("recent-chips");
+  if(recentIds.length){
+    chips.innerHTML = `<div class="recent-section">
+      <div class="recent-title">RECENT</div>
+      ${recentIds.map(id=>`<span class="id-chip" onclick="quickOpen('${id}')">#${id}${id===ADMIN_ID?' 👑':''}</span>`).join("")}
+    </div>`;
+  } else { chips.innerHTML=""; }
+  document.getElementById("findModal").style.display="flex";
+  setTimeout(()=>document.getElementById("find-input").focus(),200);
+}
 
-const file =
-imageInput.files[0];
+function closeFindModal(){
+  document.getElementById("findModal").style.display="none";
+}
 
-if(!file)return;
+function quickOpen(id){
+  closeFindModal();
+  openPrivate(id);
+}
 
+function doFindUser(){
+  const v = document.getElementById("find-input").value.trim();
+  const err = document.getElementById("find-err");
+  if(!/^\d{5}$/.test(v)){ err.textContent="ID harus tepat 5 digit angka."; return; }
+  if(v===myId){ err.textContent="Itu ID kamu sendiri!"; return; }
+  err.textContent="";
+  closeFindModal();
+  openPrivate(v);
+}
 
-sendImage =
-await fileToBase64(file);
+document.getElementById("findModal").addEventListener("click",function(e){ if(e.target===this) closeFindModal(); });
+document.getElementById("renameModal").addEventListener("click",function(e){ if(e.target===this) this.style.display="none"; });
 
-};
-
-
-/* AVATAR */
-
-avatarInput.onchange =
-async()=>{
-
-const file =
-avatarInput.files[0];
-
-if(!file)return;
-
-
-const base64 =
-await fileToBase64(file);
-
-
-db.ref(
-"users/"+me
-).update({
-
-avatar:base64
-
-});
-
-};
-
-
-/* SEND */
-
+/* ── SEND ── */
 function sendMsg(){
-
-const text =
-msg.value.trim();
-
-
-if(
-!text &&
-!sendImage
-)return;
-
-
-const path =
-globalMode
-?
-"global"
-:
-"messages/"+room();
-
-
-db.ref(path)
-.push({
-
-from:me,
-
-text:text,
-
-image:sendImage,
-
-read:false
-
-});
-
-
-msg.value="";
-
-sendImage="";
-
+  const text = document.getElementById("msg").value.trim();
+  if(!text && !sendImage) return;
+  const path = globalMode ? "global_v2" : "pm/"+roomKey(myId,target);
+  db.ref(path).push({from:myId,name:myName,text,image:sendImage,ts:Date.now()});
+  document.getElementById("msg").value = "";
+  sendImage = "";
 }
 
-
-/* LOAD */
-
+/* ── LOAD MESSAGES ── */
 function loadMessages(){
-
-const path =
-globalMode
-?
-"global"
-:
-"messages/"+room();
-
-
-db.ref(path)
-.on("value",snap=>{
-
-messages.innerHTML="";
-
-
-snap.forEach(x=>{
-
-const d=x.val();
-
-
-if(d.system){
-
-messages.innerHTML+=`
-
-<div class="system">
-
-━━━━━━━━━━━━<br>
-
-${d.text}
-
-<br>━━━━━━━━━━━━
-
-</div>
-
-`;
-
-return;
-
+  if(msgRef && msgFn){ msgRef.off("value",msgFn); }
+  const path = globalMode ? "global_v2" : "pm/"+roomKey(myId,target);
+  const box = document.getElementById("messages");
+  msgRef = db.ref(path);
+  msgFn = msgRef.on("value",snap=>{
+    box.innerHTML="";
+    if(!snap.exists()){
+      box.innerHTML=`<div class="empty"><big>${globalMode?'🌍':'💬'}</big>${globalMode?'Sapa semua orang!':'Mulai percakapan!'}</div>`;
+      return;
+    }
+    snap.forEach(x=>{
+      const d=x.val();
+      if(d.system){ box.innerHTML+=`<div class="sys">— ${d.text} —</div>`; return; }
+      const isMe=d.from===myId;
+      const who = isMe ? "Kamu" : (d.from===ADMIN_ID ? "👑 Admin" : (d.name||"User #"+d.from));
+      box.innerHTML+=`
+        <div class="msg ${isMe?'me':'other'}">
+          <div class="msg-who">${who}</div>
+          ${d.text?`<span>${d.text}</span>`:""}
+          ${d.image?`<img class="msg-img" src="${d.image}">`:""}
+        </div>`;
+    });
+    box.scrollTop=box.scrollHeight;
+  });
 }
 
-
-if(
-!globalMode &&
-d.from!==me
-){
-
-x.ref.update({
-
-read:true
-
-});
-
-}
-
-
-messages.innerHTML+=`
-
-<div class="msg ${
-d.from===me
-?
-"me"
-:
-"other"
-}">
-
-<b>${d.from}</b><br>
-
-${d.text||""}
-
-${
-d.image
-?
-`<img src="${d.image}">`
-:
-""
-}
-
-</div>
-
-`;
-
-});
-
-
-messages.scrollTop =
-messages.scrollHeight;
-
-});
-
-}
-
-
-/* RENAME */
-
-function openRenameModal(){
-
-currentUserName.innerHTML =
-"Nama sekarang: "+me;
-
-
-newName.value = "";
-
-
-renameModal.style.display =
-"flex";
-
-}
-
-
-renameModal.onclick =
-e=>{
-
-if(
-e.target===renameModal
-){
-
-renameModal.style.display =
-"none";
-
-}
-
+/* ── IMAGE ── */
+document.getElementById("imageInput").onchange=async function(){
+  const f=this.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=e=>{ sendImage=e.target.result; document.getElementById("msg").placeholder="📎 Gambar siap dikirim..."; setTimeout(()=>document.getElementById("msg").placeholder="Pesan...",3000); };
+  rd.readAsDataURL(f);
 };
 
-
+/* ── RENAME ── */
+function openRenameModal(){
+  document.getElementById("rename-cur").textContent="Nama sekarang: "+myName;
+  document.getElementById("newName").value="";
+  document.getElementById("rename-err").textContent="";
+  document.getElementById("renameModal").style.display="flex";
+}
 function changeName(){
-
-const newUser =
-newName.value.trim();
-
-if(!newUser)return;
-
-
-db.ref(
-"users/"+newUser
-).once(
-
-"value",
-
-snap=>{
-
-if(
-snap.exists()
-){
-
-alert(
-"Nama dipakai"
-);
-
-return;
-
+  const n=document.getElementById("newName").value.trim();
+  if(!n){ document.getElementById("rename-err").textContent="Nama tidak boleh kosong."; return; }
+  myName=n;
+  db.ref("users_v2/"+myId).update({name:n});
+  save();
+  document.getElementById("renameModal").style.display="none";
 }
 
-
-db.ref(
-"users/"+me
-).once(
-
-"value",
-
-old=>{
-
-
-db.ref(
-"users/"+newUser
-).set(
-old.val()
-);
-
-
-db.ref(
-"users/"+me
-).remove();
-
-
-db.ref(
-"global"
-).push({
-
-system:true,
-
-text:
-me+
-" mengganti nama menjadi "+
-newUser
-
-});
-
-
-me=newUser;
-
-
-localStorage.setItem(
-"user",
-me
-);
-
-
-renameModal.style.display =
-"none";
-
-});
-
-});
-
-}
-
-
-/* SIDEBAR */
-
-function toggleSidebar(){
-
-sidebar.classList.toggle(
-"show"
-);
-
-}
-
-
-function closeSidebar(){
-
-if(
-window.innerWidth<=768
-){
-
-sidebar.classList.remove(
-"show"
-);
-
-}
-
-}
-
+/* ── SIDEBAR ── */
+function toggleSidebar(){ document.getElementById("sidebar").classList.toggle("show"); }
+function closeSidebar(){ if(window.innerWidth<=768) document.getElementById("sidebar").classList.remove("show"); }
 </script>
-
 </body>
 </html>

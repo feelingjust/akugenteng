@@ -501,10 +501,10 @@
         <div class="ev-ico"><i class="ti ti-mail"></i></div>
         <div class="ev-body">
           <div class="ev-row1"><span class="ev-name">Buat Gmail Baru</span><span class="badge b-easy">Mudah</span><span class="badge b-new">Terbaru</span></div>
-          <p class="ev-desc">Daftar akun Gmail baru dan verifikasi nomor HP. Reward langsung ke e-wallet setelah akun terverifikasi.</p>
+          <p class="ev-desc">Daftar akun Gmail baru. Reward langsung ke e-wallet setelah akun terverifikasi.</p>
           <div class="ev-meta">
             <span><i class="ti ti-clock"></i> ~5 menit</span>
-            <span><i class="ti ti-device-mobile"></i> HP + nomor aktif</span>
+            <span><i class="ti ti-device-mobile"></i> HP + internet aktif</span>
             <span><i class="ti ti-repeat"></i> Bisa Berulang</span>
           </div>
         </div>
@@ -528,7 +528,7 @@
       <div class="ev-card" data-cat="akun" onclick="openDetail('tiktok')">
         <div class="ev-ico"><i class="ti ti-brand-tiktok"></i></div>
         <div class="ev-body">
-          <div class="ev-row1"><span class="ev-name">Daftar TikTok + Upload Video</span><span class="badge b-hot">Populer</span></div>
+          <div class="ev-row1"><span class="ev-name">Buat TikTok + Upload Video</span><span class="badge b-hot">Populer</span></div>
           <p class="ev-desc">Buat akun TikTok baru dan upload 1 video pertama minimal 15 detik. Bonus tambahan jika video dapat 100 views.</p>
           <div class="ev-meta">
             <span><i class="ti ti-clock"></i> ~20 menit</span>
@@ -585,7 +585,7 @@
         <div class="ev-ico"><i class="ti ti-star"></i></div>
         <div class="ev-body">
           <div class="ev-row1"><span class="ev-name">Review Produk / Aplikasi</span><span class="badge b-easy">Mudah</span></div>
-          <p class="ev-desc">Tulis ulasan jujur di Google Play, App Store, atau marketplace. Review minimal 50 kata + rating bintang.</p>
+          <p class="ev-desc">Tulis ulasan jujur di Google Play, Google Maps, App Store, atau marketplace. Review minimal 50 kata + rating bintang.</p>
           <div class="ev-meta">
             <span><i class="ti ti-clock"></i> ~5 menit</span>
             <span><i class="ti ti-repeat"></i> Multi produk</span>
@@ -638,20 +638,21 @@ const details = {
     steps:[
       'Buka <strong>accounts.google.com</strong> di browser HP atau laptop kamu.',
       'Klik <strong>"Buat Akun"</strong> lalu pilih "Untuk Keperluan Pribadi".',
-      'Isi nama lengkap, tanggal lahir, dan buat username Gmail yang belum dipakai.',
-      'Masukkan <strong>nomor HP aktif</strong> untuk verifikasi — kode OTP akan dikirim via SMS.',
+      'Isi nama lengkap, tanggal lahir, username dan buat password Gmail yang di beri admin.',
+      'Gmail sesuai dengan yang di beri admin.',
+      'Tidak usah mengisi bagian nomor dan gmail pemulihan, abaikan.',
       'Setelah akun berhasil dibuat, <strong>screenshot halaman profil Gmail</strong> sebagai bukti.',
       'Kirim bukti screenshot ke admin. Reward <strong>Rp 1.500</strong> cair dalam 1x24 jam.'
     ],
     reqs:[
       {icon:'ti-device-mobile',text:'HP atau laptop dengan koneksi internet'},
-      {icon:'ti-id',text:'Nomor HP aktif yang belum pernah dipakai daftar Gmail'},
       {icon:'ti-wallet',text:'Aplikasi e-wallet aktif (GoPay / OVO / Dana)'}
     ],
     tips:[
-      'Gunakan nomor HP yang memang belum pernah didaftarkan ke Google sebelumnya.',
-      'Aktifkan 2-step verification agar akun tidak dianggap fake oleh sistem.',
-      'Screenshot harus terlihat jelas nama akun dan foto profil Gmail.'
+      'Isi semua langkah langkah dengan baik dan benar.',
+      'Screenshot harus terlihat jelas nama akun dan foto profil Gmail.',
+      'Kalo muncul di suruh memasukan nomor verifikasi ataupun gmail pemulihan berarti kena limit.',
+      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
     ]
   },
   facebook: {
@@ -669,20 +670,21 @@ const details = {
     ],
     reqs:[
       {icon:'ti-device-mobile',text:'HP dengan Play Store / App Store'},
-      {icon:'ti-sim-card',text:'Nomor HP yang belum pernah daftar Facebook'},
+      {icon:'ti-id',text:'Nomor HP yang belum pernah daftar Facebook'},
       {icon:'ti-mail',text:'Email aktif untuk backup akun'},
       {icon:'ti-photo',text:'Foto profil yang jelas (bukan AI/gambar palsu)'}
     ],
     tips:[
       'Jangan langsung hapus akun setelah klaim — harus aktif minimal 3 hari.',
       'Gunakan nama asli agar akun tidak cepat dibanned oleh sistem Facebook.',
-      'Hindari add teman terlalu banyak di hari pertama agar tidak dianggap spam.'
+      'Hindari add teman terlalu banyak di hari pertama agar tidak dianggap spam.',
+      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
     ]
   },
   tiktok: {
-    icon:'ti-brand-tiktok', name:'Daftar TikTok + Upload Video', badges:['b-hot|Populer'],
+    icon:'ti-brand-tiktok', name:'Buat TikTok + Upload Video', badges:['b-hot|Populer'],
     price:'Rp 5.000', psub:'+ bonus Rp 2.500 jika tembus 100 views',
-    info:[{lbl:'Durasi',val:'~20 menit'},{lbl:'Modal',val:'Gratis'},{lbl:'Frekuensi',val:'Tidak Terbatas'},{lbl:'Bonus',val:'+Rp 2.500 / 100 views'}],
+    info:[{lbl:'Durasi',val:'~20 menit'},{lbl:'Modal',val:'Gratis'},{lbl:'Frekuensi',val:'Tidak Terbatas'},{lbl:'Cair Ke',val:'GoPay / OVO / Dana'}],
     steps:[
       'Download aplikasi <strong>TikTok</strong> dari Play Store atau App Store.',
       'Daftar menggunakan <strong>email atau nomor HP</strong> yang belum pernah dipakai di TikTok.',
@@ -694,14 +696,15 @@ const details = {
     ],
     reqs:[
       {icon:'ti-device-mobile',text:'HP dengan kamera yang berfungsi baik'},
-      {icon:'ti-sim-card',text:'Email / nomor HP baru yang belum terdaftar di TikTok'},
+      {icon:'ti-id',text:'Email / nomor HP baru yang belum terdaftar di TikTok'},
       {icon:'ti-video',text:'Video minimal 15 detik (konten original lebih baik)'},
       {icon:'ti-wifi',text:'Koneksi internet stabil untuk upload video'}
     ],
     tips:[
       'Video yang informatif atau lucu punya peluang lebih besar tembus 100 views.',
       'Upload di jam prime time (19.00–22.00) agar jangkauan lebih luas.',
-      'Tambahkan hashtag populer agar video lebih mudah ditemukan pengguna lain.'
+      'Tambahkan hashtag populer agar video lebih mudah ditemukan pengguna lain.',
+      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
     ]
   },
   app: {
@@ -726,7 +729,8 @@ const details = {
     tips:[
       'Jangan uninstall aplikasi dalam waktu 7 hari setelah klaim reward.',
       'Pastikan download dari link resmi yang diberikan admin, bukan sumber lain.',
-      'Satu HP hanya bisa klaim 1x meskipun punya banyak akun email.'
+      'Satu HP hanya bisa klaim 1x meskipun punya banyak akun email.',
+      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
     ]
   },
   survey: {
@@ -739,7 +743,6 @@ const details = {
       'Jawab semua pertanyaan dengan <strong>jujur dan konsisten</strong> — sistem akan mendeteksi jawaban asal-asalan.',
       'Pastikan kamu memenuhi <strong>kriteria responden</strong> yang diminta (usia, pekerjaan, dll).',
       'Setelah selesai, kamu akan mendapat <strong>kode konfirmasi</strong> atau poin otomatis.',
-      'Kumpulkan minimal <strong>Rp 20.000</strong> sebelum bisa withdraw ke e-wallet.',
       'Request withdraw melalui dashboard, dana cair dalam 1–3 hari kerja.'
     ],
     reqs:[
@@ -751,7 +754,8 @@ const details = {
     tips:[
       'Lengkapi profil 100% agar mendapat lebih banyak undangan survey yang sesuai.',
       'Jangan menjawab terlalu cepat — sistem mencatat waktu pengerjaan.',
-      'Cek email secara rutin karena undangan survey sering dikirim lewat email.'
+      'Cek email secara rutin karena undangan survey sering dikirim lewat email.',
+      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
     ]
   },
   youtube: {
@@ -777,7 +781,8 @@ const details = {
     tips:[
       'Channel dengan nama yang menarik punya peluang lebih besar berkembang.',
       'Video pertama tidak harus berkualitas tinggi — yang penting sudah terupload.',
-      'Jangan hapus channel minimal 14 hari setelah klaim reward.'
+      'Jangan hapus channel minimal 14 hari setelah klaim reward.',
+      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
     ]
   },
   review: {
@@ -786,7 +791,7 @@ const details = {
     info:[{lbl:'Durasi',val:'~5 menit'},{lbl:'Modal',val:'Gratis'},{lbl:'Frekuensi',val:'Multi produk'},{lbl:'Verifikasi',val:'Manual oleh admin'}],
     steps:[
       'Admin akan membagikan <strong>daftar produk atau aplikasi</strong> yang perlu direview.',
-      'Buka halaman produk di <strong>Google Play / App Store / Tokopedia / Shopee</strong> sesuai instruksi.',
+      'Buka halaman produk di <strong>Google Play / Google Maps / App Store / Tokopedia / Shopee</strong> sesuai instruksi.',
       'Klik <strong>"Tulis Ulasan"</strong> dan berikan rating bintang sesuai pengalamanmu.',
       'Tulis review <strong>minimal 50 kata</strong> — jujur, informatif, dan tidak copy-paste.',
       'Submit review, lalu <strong>screenshot hasil review</strong> yang sudah tampil.',
@@ -802,7 +807,8 @@ const details = {
     tips:[
       'Review yang detail dan spesifik punya peluang lebih besar disetujui admin.',
       'Hindari review yang terlalu singkat atau menggunakan kata-kata yang sama berulang.',
-      'Bisa klaim untuk banyak produk berbeda dalam sehari — tidak ada batas harian.'
+      'Bisa klaim untuk banyak produk berbeda dalam sehari — tidak ada batas harian.',
+      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
     ]
   },
   referral: {
@@ -827,7 +833,8 @@ const details = {
     tips:[
       'Share ke grup WhatsApp atau komunitas online untuk hasil lebih maksimal.',
       'Teman yang diajak harus benar-benar baru — akun yang sudah ada tidak terhitung.',
-      'Gunakan caption menarik saat share di media sosial agar lebih banyak yang tertarik.'
+      'Gunakan caption menarik saat share di media sosial agar lebih banyak yang tertarik.',
+      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
     ]
   }
 };

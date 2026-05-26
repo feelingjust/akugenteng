@@ -7,151 +7,97 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
   :root {
-    --gold: gold;
-    --gold-light: gold;
-    --gold-dim: gold;
-    --amber: #E8A020;
-    --bg: #0F0C01;
-    --bg-card: #141006;
-    --bg-card2: #1A1508;
-    --surface: #201A08;
-    --border: #2A2208;
-    --border-hover: #4A3A10;
-    --text: #F0E8D0;
-    --text-muted: #8A7A50;
-    --text-dim: #5A4E2A;
-    --text-faint: #4A3E20;
+    --gold: gold; --bg: #0F0C01; --bg-card: #141006; --bg-card2: #1A1508;
+    --border: #2A2208; --border-hover: #4A3A10;
+    --text: #F0E8D0; --text-muted: #8A7A50; --text-dim: #5A4E2A; --text-faint: #4A3E20;
   }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 15px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
-
-  /* NAV */
-  nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(15,12,1,0.95);
-    backdrop-filter: blur(8px);
-    border-bottom: 0.5px solid var(--border);
-    padding: 14px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .nav-logo {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--gold);
-    letter-spacing: 1px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  /* ── NAV ── */
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(15,12,1,0.96); backdrop-filter: blur(8px); border-bottom: 0.5px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .nav-logo { font-size: 16px; font-weight: 700; color: var(--gold); letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
   .nav-logo i { font-size: 20px; }
-  .nav-badge {
-    font-size: 11px;
-    background: var(--bg-card2);
-    color: var(--text-muted);
-    border: 0.5px solid var(--border);
-    border-radius: 99px;
-    padding: 3px 12px;
-  }
+  .nav-badge { font-size: 11px; background: var(--bg-card2); color: var(--text-muted); border: 0.5px solid var(--border); border-radius: 99px; padding: 3px 12px; }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
 
-  /* LAYOUT */
-  .container {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 28px 20px 60px;
-  }
+  /* ── BELL ── */
+  .notif-btn { position: relative; background: var(--bg-card2); border: 0.5px solid var(--border); border-radius: 10px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color .15s; flex-shrink: 0; padding: 0; }
+  .notif-btn:hover, .notif-btn.ring { border-color: var(--gold); }
+  .notif-btn svg { width: 18px; height: 18px; stroke: var(--text-muted); transition: stroke .15s; }
+  .notif-btn:hover svg, .notif-btn.ring svg { stroke: var(--gold); }
+  .notif-btn.ring { animation: bellShake .6s ease; }
+  @keyframes bellShake { 0%,100%{transform:rotate(0)} 20%{transform:rotate(-12deg)} 40%{transform:rotate(12deg)} 60%{transform:rotate(-8deg)} 80%{transform:rotate(8deg)} }
+  .nbadge { position: absolute; top: -4px; right: -4px; background: #c0392b; color: #fff; font-size: 9px; font-weight: 700; border-radius: 99px; min-width: 16px; height: 16px; display: none; align-items: center; justify-content: center; padding: 0 4px; border: 1.5px solid var(--bg); }
+  .nbadge.on { display: flex; }
 
-  /* HEADER */
+  /* ── PANEL ── */
+  #npanel { position: fixed; top: 64px; right: 12px; width: 320px; max-height: 420px; background: #0f0e0a; border: 0.5px solid var(--border-hover); border-radius: 14px; z-index: 999; overflow: hidden; display: none; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.75); }
+  #npanel.open { display: flex; animation: pIn .2s ease; }
+  @keyframes pIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
+  .np-head { padding: 14px 16px 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border); }
+  .np-title { font-size: 13px; font-weight: 700; color: var(--gold); display: flex; align-items: center; gap: 7px; }
+  .np-title svg { width: 14px; height: 14px; stroke: var(--gold); }
+
+  .np-list { overflow-y: auto; flex: 1; padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+  .np-empty { text-align: center; color: var(--text-faint); font-size: 12px; padding: 28px 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .np-empty svg { width: 28px; height: 28px; stroke: var(--text-faint); opacity: .4; }
+  .nitem { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: 10px; padding: 12px 13px; display: flex; gap: 10px; align-items: flex-start; position: relative; animation: mIn .2s ease; }
+  .nitem.unread { border-color: #3A2E08; background: #1A1508; }
+  .nitem.unread::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--gold); position:absolute; top:10px; right:10px; }
+  .nitem-ico { width: 30px; height: 30px; border-radius: 8px; background: #1f1b07; border: 0.5px solid var(--border-hover); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .nitem-ico svg { width: 14px; height: 14px; stroke: var(--gold); }
+  .nitem-body { flex: 1; min-width: 0; }
+  .nitem-msg { font-size: 12px; color: var(--text); line-height: 1.45; word-break: break-word; }
+  .nitem-time { font-size: 10px; color: var(--text-faint); margin-top: 4px; }
+
+  /* ── TOAST ── */
+  #twrap { position: fixed; top: 70px; right: 12px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; max-width: 300px; }
+  .toast { background: #1A1508; border: 0.5px solid var(--gold); border-radius: 12px; padding: 12px 14px; display: flex; align-items: flex-start; gap: 10px; pointer-events: all; box-shadow: 0 8px 32px rgba(0,0,0,.6); animation: tIn .3s ease, tOut .3s ease 4.7s forwards; }
+  @keyframes tIn  { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:none} }
+  @keyframes tOut { to{opacity:0;transform:translateX(20px)} }
+  .toast-ico svg { width: 17px; height: 17px; stroke: var(--gold); margin-top: 1px; }
+  .toast-title { font-size: 11px; font-weight: 700; color: var(--gold); margin-bottom: 2px; }
+  .toast-msg { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+  /* ── STATUS DOT ── */
+  .status-pill { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-faint); padding: 3px 9px; background: var(--bg-card); border: 0.5px solid var(--border); border-radius: 6px; }
+  .sdot { width: 6px; height: 6px; border-radius: 50%; background: #555; transition: background .3s; flex-shrink: 0; }
+  .sdot.on  { background: #27ae60; box-shadow: 0 0 5px #27ae60; }
+  .sdot.err { background: #c0392b; box-shadow: 0 0 5px #c0392b; }
+
+  /* ── LAYOUT ── */
+  .wrap { max-width: 780px; margin: 0 auto; padding: 28px 20px 60px; }
   .page-header { margin-bottom: 24px; }
-  .page-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--gold);
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .page-title { font-size: 22px; font-weight: 700; color: var(--gold); margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
   .page-title i { font-size: 22px; }
-  .page-sub { font-size: 13px; color: var(--text-muted); }
+  .page-sub { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-  /* STAT BAR */
-  .stat-bar {
-    display: flex;
-    border: 0.5px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
-  .stat {
-    flex: 1;
-    padding: 12px 8px;
-    text-align: center;
-    background: var(--bg-card);
-    border-right: 0.5px solid var(--border);
-  }
+  /* ── STAT BAR ── */
+  .stat-bar { display: flex; border: 0.5px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+  .stat { flex: 1; padding: 12px 8px; text-align: center; background: var(--bg-card); border-right: 0.5px solid var(--border); }
   .stat:last-child { border-right: none; }
   .stat-num { font-size: 15px; font-weight: 700; color: var(--gold); line-height: 1; margin-bottom: 3px; }
   .stat-lbl { font-size: 10px; color: var(--text-dim); }
 
-  /* FILTERS */
+  /* ── FILTERS ── */
   .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-  .chip {
-    font-size: 12px;
-    padding: 5px 14px;
-    border-radius: 99px;
-    border: 0.5px solid var(--border);
-    background: var(--bg-card);
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all .15s;
-    font-family: inherit;
-  }
+  .chip { font-size: 12px; padding: 5px 14px; border-radius: 99px; border: 0.5px solid var(--border); background: var(--bg-card); color: var(--text-muted); cursor: pointer; transition: all .15s; font-family: inherit; }
   .chip:hover { border-color: var(--gold); color: var(--gold); }
   .chip.active { background: var(--gold); color: var(--bg); border-color: var(--gold); font-weight: 600; }
 
-  /* Freelance LIST */
+  /* ── CARDS ── */
   .ev-list { display: flex; flex-direction: column; gap: 8px; }
-  .ev-card {
-    background: var(--bg-card);
-    border: 0.5px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 18px;
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    cursor: pointer;
-    transition: border-color .15s, background .15s;
-  }
+  .ev-card { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px; cursor: pointer; transition: border-color .15s, background .15s; }
   .ev-card:hover { border-color: var(--gold); background: var(--bg-card2); }
-  .ev-ico {
-    width: 40px; height: 40px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    background: var(--bg-card2);
-    border: 0.5px solid var(--border);
-  }
+  .ev-ico { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--bg-card2); border: 0.5px solid var(--border); }
   .ev-ico i { color: var(--gold); font-size: 18px; }
   .ev-body { flex: 1; min-width: 0; }
   .ev-row1 { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; flex-wrap: wrap; }
   .ev-name { font-size: 14px; font-weight: 600; color: var(--text); }
   .badge { font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
-  .b-new { background: #1A2A1A; color: #7AC47A; border: 0.5px solid #2A4A2A; }
-  .b-hot { background: #2A1A08; color: #E8A020; border: 0.5px solid #4A2A08; }
+  .b-new  { background: #1A2A1A; color: #7AC47A; border: 0.5px solid #2A4A2A; }
+  .b-hot  { background: #2A1A08; color: #E8A020; border: 0.5px solid #4A2A08; }
   .b-easy { background: #1A1A2A; color: #7A9AE8; border: 0.5px solid #2A2A4A; }
   .ev-desc { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; line-height: 1.5; }
   .ev-meta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
@@ -162,322 +108,99 @@
   .ev-price-sub { font-size: 10px; color: var(--text-dim); text-align: right; }
   .ev-arr { font-size: 14px; color: var(--border-hover); margin-top: 6px; }
 
-  /* DETAIL VIEW */
-  .det-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: none;
-    border: none;
-    color: var(--gold-dim);
-    font-size: 13px;
-    cursor: pointer;
-    padding: 0;
-    margin-bottom: 20px;
-    font-family: inherit;
-    transition: color .15s;
-  }
-  .det-back:hover { color: var(--gold); }
+  /* ── DETAIL ── */
+  .det-back { display: inline-flex; align-items: center; gap: 8px; background: none; border: none; color: var(--gold); font-size: 13px; cursor: pointer; padding: 0; margin-bottom: 20px; font-family: inherit; transition: opacity .15s; }
+  .det-back:hover { opacity: .7; }
   .det-back i { font-size: 16px; }
-
-  .det-hero {
-    background: var(--bg-card);
-    border: 0.5px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-  }
-  .det-hero-ico {
-    width: 54px; height: 54px;
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    background: var(--bg-card2);
-    border: 0.5px solid var(--border);
-  }
+  .det-hero { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; margin-bottom: 10px; flex-wrap: wrap; }
+  .det-hero-ico { width: 54px; height: 54px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--bg-card2); border: 0.5px solid var(--border); }
   .det-hero-ico i { color: var(--gold); font-size: 26px; }
   .det-hero-info { flex: 1; min-width: 0; }
   .det-hero-name { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
   .det-hero-badges { display: flex; gap: 6px; flex-wrap: wrap; }
-  .det-hero-price-block { text-align: right; flex-shrink: 0; }
-  .det-hero-price { font-size: 24px; font-weight: 700; color: var(--gold); line-height: 1; }
-  .det-hero-psub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
-
-  .det-section {
-    background: var(--bg-card);
-    border: 0.5px solid var(--border);
-    border-radius: 12px;
-    padding: 18px;
-    margin-bottom: 10px;
-  }
-  .det-sec-title {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-muted);
-    letter-spacing: .8px;
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    text-transform: uppercase;
-  }
-  .det-sec-title i { font-size: 14px; color: var(--text-dim); }
-
-  .det-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .det-info-item {
-    background: var(--bg-card2);
-    border: 0.5px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 12px;
-  }
-  .det-info-lbl { font-size: 10px; color: var(--text-faint); margin-bottom: 3px; }
-  .det-info-val { font-size: 13px; font-weight: 600; color: var(--gold-dim); }
-
-  .det-steps { display: flex; flex-direction: column; gap: 12px; }
-  .det-step { display: flex; gap: 12px; align-items: flex-start; }
-  .det-step-num {
-    width: 26px; height: 26px;
-    border-radius: 50%;
-    background: var(--bg-card2);
-    border: 0.5px solid var(--border-hover);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 700;
-    color: var(--gold);
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-  .det-step-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; padding-top: 3px; }
-  .det-step-text strong { color: var(--gold-dim); font-weight: 600; }
-
-  .det-reqs { display: flex; flex-direction: column; gap: 8px; }
-  .det-req { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-muted); }
-  .det-req i { font-size: 16px; color: var(--text-dim); flex-shrink: 0; }
-
-  .det-tips { display: flex; flex-direction: column; gap: 8px; }
-  .det-tip { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.55; }
-  .det-tip i { font-size: 15px; color: var(--gold); flex-shrink: 0; margin-top: 1px; }
-
-  .det-cta {
-    background: linear-gradient(135deg, #2A1E04, var(--bg-card2));
-    border: 0.5px solid var(--border-hover);
-    border-radius: 12px;
-    padding: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
-  }
+  .det-price-block { text-align: right; flex-shrink: 0; }
+  .det-price { font-size: 24px; font-weight: 700; color: var(--gold); line-height: 1; }
+  .det-psub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+  .det-sec { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 10px; }
+  .det-sec-t { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: .8px; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
+  .det-sec-t i { font-size: 14px; color: var(--text-dim); }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .info-item { background: var(--bg-card2); border: 0.5px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+  .info-lbl { font-size: 10px; color: var(--text-faint); margin-bottom: 3px; }
+  .info-val { font-size: 13px; font-weight: 600; color: var(--gold); }
+  .steps { display: flex; flex-direction: column; gap: 12px; }
+  .step { display: flex; gap: 12px; align-items: flex-start; }
+  .step-n { width: 26px; height: 26px; border-radius: 50%; background: var(--bg-card2); border: 0.5px solid var(--border-hover); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--gold); flex-shrink: 0; margin-top: 1px; }
+  .step-t { font-size: 13px; color: var(--text-muted); line-height: 1.6; padding-top: 3px; }
+  .step-t strong { color: var(--gold); font-weight: 600; }
+  .reqs { display: flex; flex-direction: column; gap: 8px; }
+  .req { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-muted); }
+  .req i { font-size: 16px; color: var(--text-dim); flex-shrink: 0; }
+  .tips { display: flex; flex-direction: column; gap: 8px; }
+  .tip { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+  .tip i { font-size: 15px; color: var(--gold); flex-shrink: 0; margin-top: 1px; }
+  .det-cta { background: linear-gradient(135deg, #2A1E04, var(--bg-card2)); border: 0.5px solid var(--border-hover); border-radius: 12px; padding: 18px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; }
   .det-cta-text { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
   .det-cta-text strong { color: var(--gold); font-weight: 700; display: block; font-size: 15px; margin-bottom: 2px; }
-  .det-cta-btn {
-    background: var(--gold);
-    color: var(--bg);
-    border: none;
-    border-radius: 99px;
-    padding: 10px 22px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-    font-family: inherit;
-    transition: background .15s;
-    flex-shrink: 0;
-  }
-  .det-cta-btn:hover { background: var(--gold-light); }
+  .cta-btn { background: var(--gold); color: var(--bg); border: none; border-radius: 99px; padding: 10px 22px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; font-family: inherit; transition: opacity .15s; flex-shrink: 0; }
+  .cta-btn:hover { opacity: .85; }
 
-  /* UTILS */
   .hidden { display: none !important; }
-
-  /* CHAT OVERLAY */
-  #chat-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: rgba(0,0,0,0.75);
-    justify-content: center;
-    align-items: flex-end;
-    animation: fadeIn .2s ease;
-  }
-  #chat-overlay.active { display: flex; }
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-
-  #chat-box {
-    width: 100%;
-    max-width: 480px;
-    height: 85vh;
-    background: #0b0b0b;
-    border-radius: 20px 20px 0 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    animation: slideUp .25s ease;
-  }
-  @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-
-  #chat-topbar {
-    background: #111;
-    border-bottom: 1px solid #222;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  #chat-topbar .chat-avatar {
-    width: 38px; height: 38px;
-    border-radius: 50%;
-    background: gold;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: bold; color: black; font-size: 16px;
-    flex-shrink: 0;
-  }
-  #chat-topbar .chat-info { flex: 1; }
-  #chat-topbar .chat-name { font-size: 15px; font-weight: 600; color: #fff; }
-  #chat-topbar .chat-status { font-size: 11px; color: #7a7a7a; }
-  #chat-close {
-    background: none; border: none; color: #aaa;
-    font-size: 22px; cursor: pointer; padding: 0 4px;
-  }
-
-  #chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    background: #0b0b0b;
-  }
-
-  .cmsg {
-    max-width: 80%;
-    padding: 10px 14px;
-    border-radius: 18px;
-    font-size: 13px;
-    line-height: 1.5;
-    word-break: break-word;
-    animation: msgIn .15s ease;
-  }
-  @keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
-  .cmsg.sent { background: gold; color: #000; align-self: flex-end; border-bottom-right-radius: 4px; }
-  .cmsg.recv { background: #1b1b1b; color: #eee; align-self: flex-start; border-bottom-left-radius: 4px; }
-
-  .cmsg-time { font-size: 10px; opacity: 0.6; margin-top: 4px; text-align: right; }
-
-  #chat-input-area {
-    padding: 10px 12px;
-    background: #111;
-    border-top: 1px solid #222;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  #chat-input-area input {
-    flex: 1;
-    height: 46px;
-    background: #1a1a1a;
-    border: none;
-    outline: none;
-    border-radius: 12px;
-    padding: 0 14px;
-    color: white;
-    font-size: 14px;
-    font-family: inherit;
-  }
-  #chat-input-area button {
-    width: 46px; height: 46px;
-    background: gold;
-    border: none;
-    border-radius: 12px;
-    font-size: 18px;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .typing-indicator {
-    display: flex; gap: 4px; align-items: center;
-    padding: 10px 14px;
-    background: #1b1b1b;
-    border-radius: 18px;
-    border-bottom-left-radius: 4px;
-    align-self: flex-start;
-    width: 60px;
-  }
-  .typing-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #555;
-    animation: bounce 1.2s infinite;
-  }
-  .typing-dot:nth-child(2) { animation-delay: .2s; }
-  .typing-dot:nth-child(3) { animation-delay: .4s; }
-  @keyframes bounce {
-    0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)}
-  }
-
-  #chat-name-prompt {
-    display: flex;
-    flex-direction: column;
-    padding: 24px 20px;
-    gap: 12px;
-    background: #111;
-    border-bottom: 1px solid #222;
-    animation: fadeIn .2s ease;
-  }
-  #chat-name-prompt p { font-size: 13px; color: #aaa; }
-  #chat-name-prompt input {
-    height: 46px;
-    background: #1a1a1a;
-    border: none; outline: none;
-    border-radius: 12px;
-    padding: 0 14px;
-    color: white;
-    font-size: 14px;
-    font-family: inherit;
-  }
-  #chat-name-prompt button {
-    height: 46px;
-    background: gold;
-    border: none;
-    border-radius: 12px;
-    font-weight: bold;
-    font-size: 14px;
-    cursor: pointer;
-    font-family: inherit;
-  }
+  @keyframes mIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
 
   @media (max-width: 480px) {
     .stat { min-width: 50%; }
-    .det-hero { gap: 12px; }
-    .det-hero-price { font-size: 20px; }
     nav { padding: 12px 16px; }
-    .container { padding: 20px 14px 50px; }
+    .wrap { padding: 20px 14px 50px; }
+    #npanel { right: 8px; left: 8px; width: auto; }
   }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-logo">
-    <i class="ti ti-bolt"></i>
-    Freelance Digital
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<div id="twrap"></div>
+
+<div id="npanel">
+  <div class="np-head">
+    <div class="np-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Notifikasi Dari Admin
+    </div>
+
   </div>
-  <span class="nav-badge" id="nav-count">8 freelance aktif</span>
+  <div class="np-list" id="np-list">
+    <div class="np-empty" id="np-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      <span>Belum ada notifikasi</span>
+    </div>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-logo"><i class="ti ti-bolt"></i> Freelance Digital</div>
+  <div class="nav-right">
+    <span class="nav-badge" id="nav-count">8 freelance aktif</span>
+    <button class="notif-btn" id="nbell" onclick="togglePanel()" title="Notifikasi">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="nbadge" id="nbadge"></span>
+    </button>
+  </div>
 </nav>
 
-<div class="container">
-
-  <!-- LIST VIEW -->
+<div class="wrap">
   <div id="view-list">
     <div class="page-header">
       <div class="page-title"><i class="ti ti-gift"></i> Freelance Tanpa Modal</div>
-      <div class="page-sub">Klik freelance untuk lihat langkah-langkah lengkap dan cara klaim reward</div>
+      <div class="page-sub">
+        <span>Klik freelance untuk lihat langkah-langkah lengkap dan cara klaim reward</span>
+        <span class="status-pill">
+          <span class="sdot" id="sdot"></span>
+          <span id="slabel">Menghubungkan...</span>
+        </span>
+      </div>
     </div>
 
     <div class="stat-bar">
@@ -488,442 +211,355 @@
     </div>
 
     <div class="filters">
-      <button class="chip active" onclick="filter('all',this)">Semua</button>
-      <button class="chip" onclick="filter('akun',this)">Buat Akun</button>
-      <button class="chip" onclick="filter('survey',this)">Survey</button>
-      <button class="chip" onclick="filter('aplikasi',this)">Download App</button>
-      <button class="chip" onclick="filter('referral',this)">Referral</button>
+      <button class="chip active" onclick="filterCat('all',this)">Semua</button>
+      <button class="chip" onclick="filterCat('akun',this)">Buat Akun</button>
+      <button class="chip" onclick="filterCat('survey',this)">Survey</button>
+      <button class="chip" onclick="filterCat('aplikasi',this)">Download App</button>
+      <button class="chip" onclick="filterCat('referral',this)">Referral</button>
     </div>
 
-    <div class="ev-list" id="ev-list">
-
+    <div class="ev-list">
       <div class="ev-card" data-cat="akun" onclick="openDetail('gmail')">
         <div class="ev-ico"><i class="ti ti-mail"></i></div>
         <div class="ev-body">
           <div class="ev-row1"><span class="ev-name">Buat Gmail Baru</span><span class="badge b-easy">Mudah</span><span class="badge b-new">Terbaru</span></div>
           <p class="ev-desc">Daftar akun Gmail baru. Reward langsung ke e-wallet setelah akun terverifikasi.</p>
-          <div class="ev-meta">
-            <span><i class="ti ti-clock"></i> ~5 menit</span>
-            <span><i class="ti ti-device-mobile"></i> HP + internet aktif</span>
-            <span><i class="ti ti-repeat"></i> Bisa Berulang</span>
-          </div>
+          <div class="ev-meta"><span><i class="ti ti-clock"></i> ~5 menit</span><span><i class="ti ti-device-mobile"></i> HP + internet</span><span><i class="ti ti-repeat"></i> Bisa Berulang</span></div>
         </div>
         <div class="ev-right"><div class="ev-price">Rp 1.500</div><div class="ev-price-sub">per akun</div><div class="ev-arr"><i class="ti ti-chevron-right"></i></div></div>
       </div>
-
       <div class="ev-card" data-cat="akun" onclick="openDetail('facebook')">
         <div class="ev-ico"><i class="ti ti-brand-facebook"></i></div>
         <div class="ev-body">
           <div class="ev-row1"><span class="ev-name">Buat Akun Facebook</span><span class="badge b-easy">Mudah</span></div>
           <p class="ev-desc">Buat akun Facebook baru, lengkapi profil dengan foto, dan join grup tertentu. Reward cair setelah akun aktif 3 hari.</p>
-          <div class="ev-meta">
-            <span><i class="ti ti-clock"></i> ~10 menit</span>
-            <span><i class="ti ti-device-mobile"></i> HP + email</span>
-            <span><i class="ti ti-repeat"></i> Bisa Berulang</span>
-          </div>
+          <div class="ev-meta"><span><i class="ti ti-clock"></i> ~10 menit</span><span><i class="ti ti-device-mobile"></i> HP + email</span><span><i class="ti ti-repeat"></i> Bisa Berulang</span></div>
         </div>
         <div class="ev-right"><div class="ev-price">Rp 2.000</div><div class="ev-price-sub">per akun</div><div class="ev-arr"><i class="ti ti-chevron-right"></i></div></div>
       </div>
-
       <div class="ev-card" data-cat="akun" onclick="openDetail('tiktok')">
         <div class="ev-ico"><i class="ti ti-brand-tiktok"></i></div>
         <div class="ev-body">
           <div class="ev-row1"><span class="ev-name">Buat TikTok + Upload Video</span><span class="badge b-hot">Populer</span></div>
           <p class="ev-desc">Buat akun TikTok baru dan upload 1 video pertama minimal 15 detik. Bonus tambahan jika video dapat 100 views.</p>
-          <div class="ev-meta">
-            <span><i class="ti ti-clock"></i> ~20 menit</span>
-            <span><i class="ti ti-device-mobile"></i> HP kamera OK</span>
-            <span><i class="ti ti-star"></i> Bonus views</span>
-          </div>
+          <div class="ev-meta"><span><i class="ti ti-clock"></i> ~20 menit</span><span><i class="ti ti-device-mobile"></i> HP kamera OK</span><span><i class="ti ti-star"></i> Bonus views</span></div>
         </div>
         <div class="ev-right"><div class="ev-price">Rp 5.000</div><div class="ev-price-sub">+ bonus Rp 2.500</div><div class="ev-arr"><i class="ti ti-chevron-right"></i></div></div>
       </div>
-
       <div class="ev-card" data-cat="aplikasi" onclick="openDetail('app')">
         <div class="ev-ico"><i class="ti ti-device-mobile-down"></i></div>
         <div class="ev-body">
-          <div class="ev-row1"><span class="ev-name">Download & Install Aplikasi</span><span class="badge b-new">Terbaru</span></div>
+          <div class="ev-row1"><span class="ev-name">Download &amp; Install Aplikasi</span><span class="badge b-new">Terbaru</span></div>
           <p class="ev-desc">Download aplikasi mitra dari Play Store / App Store, buka, dan buat akun baru. Reward langsung tanpa syarat tambahan.</p>
-          <div class="ev-meta">
-            <span><i class="ti ti-clock"></i> ~5 menit</span>
-            <span><i class="ti ti-wifi"></i> Internet stabil</span>
-            <span><i class="ti ti-repeat"></i> Bisa Berulang</span>
-          </div>
+          <div class="ev-meta"><span><i class="ti ti-clock"></i> ~5 menit</span><span><i class="ti ti-wifi"></i> Internet stabil</span><span><i class="ti ti-repeat"></i> Bisa Berulang</span></div>
         </div>
         <div class="ev-right"><div class="ev-price">Rp 3.000</div><div class="ev-price-sub">per aplikasi</div><div class="ev-arr"><i class="ti ti-chevron-right"></i></div></div>
       </div>
-
       <div class="ev-card" data-cat="survey" onclick="openDetail('survey')">
         <div class="ev-ico"><i class="ti ti-clipboard-list"></i></div>
         <div class="ev-body">
           <div class="ev-row1"><span class="ev-name">Isi Survey Online</span><span class="badge b-hot">Populer</span></div>
           <p class="ev-desc">Isi kuesioner online dari brand ternama. Satu survey biasanya 5–15 pertanyaan. Makin banyak diisi, makin besar penghasilan.</p>
-          <div class="ev-meta">
-            <span><i class="ti ti-clock"></i> ~10 menit</span>
-            <span><i class="ti ti-repeat"></i> Bisa berulang</span>
-            <span><i class="ti ti-infinity"></i> Tidak terbatas</span>
-          </div>
+          <div class="ev-meta"><span><i class="ti ti-clock"></i> ~10 menit</span><span><i class="ti ti-repeat"></i> Bisa berulang</span><span><i class="ti ti-infinity"></i> Tidak terbatas</span></div>
         </div>
         <div class="ev-right"><div class="ev-price">Rp 2.000</div><div class="ev-price-sub">per survey</div><div class="ev-arr"><i class="ti ti-chevron-right"></i></div></div>
       </div>
-
       <div class="ev-card" data-cat="akun" onclick="openDetail('youtube')">
         <div class="ev-ico"><i class="ti ti-brand-youtube"></i></div>
         <div class="ev-body">
           <div class="ev-row1"><span class="ev-name">Buat Channel YouTube</span><span class="badge b-new">Terbaru</span></div>
           <p class="ev-desc">Buat channel YouTube baru, lengkapi profil, lalu upload 1 video perdana. Reward cair setelah channel diverifikasi.</p>
-          <div class="ev-meta">
-            <span><i class="ti ti-clock"></i> ~15 menit</span>
-            <span><i class="ti ti-device-laptop"></i> HP / Laptop</span>
-            <span><i class="ti ti-repeat"></i> Bisa Berulang</span>
-          </div>
+          <div class="ev-meta"><span><i class="ti ti-clock"></i> ~15 menit</span><span><i class="ti ti-device-laptop"></i> HP / Laptop</span><span><i class="ti ti-repeat"></i> Bisa Berulang</span></div>
         </div>
         <div class="ev-right"><div class="ev-price">Rp 7.500</div><div class="ev-price-sub">per channel</div><div class="ev-arr"><i class="ti ti-chevron-right"></i></div></div>
       </div>
-
       <div class="ev-card" data-cat="survey" onclick="openDetail('review')">
         <div class="ev-ico"><i class="ti ti-star"></i></div>
         <div class="ev-body">
           <div class="ev-row1"><span class="ev-name">Review Produk / Aplikasi</span><span class="badge b-easy">Mudah</span></div>
           <p class="ev-desc">Tulis ulasan jujur di Google Play, Google Maps, App Store, atau marketplace. Review minimal 50 kata + rating bintang.</p>
-          <div class="ev-meta">
-            <span><i class="ti ti-clock"></i> ~5 menit</span>
-            <span><i class="ti ti-repeat"></i> Multi produk</span>
-            <span><i class="ti ti-check"></i> Diverifikasi admin</span>
-          </div>
+          <div class="ev-meta"><span><i class="ti ti-clock"></i> ~5 menit</span><span><i class="ti ti-repeat"></i> Multi produk</span><span><i class="ti ti-check"></i> Diverifikasi admin</span></div>
         </div>
         <div class="ev-right"><div class="ev-price">Rp 1.500</div><div class="ev-price-sub">per review disetujui</div><div class="ev-arr"><i class="ti ti-chevron-right"></i></div></div>
       </div>
-
       <div class="ev-card" data-cat="referral" onclick="openDetail('referral')">
         <div class="ev-ico"><i class="ti ti-users"></i></div>
         <div class="ev-body">
           <div class="ev-row1"><span class="ev-name">Referral Teman ke Aplikasi</span><span class="badge b-hot">Populer</span></div>
           <p class="ev-desc">Ajak teman daftar pakai kode referral kamu. Kedua pihak dapat reward. Tidak ada batas jumlah referral.</p>
-          <div class="ev-meta">
-            <span><i class="ti ti-clock"></i> Instan</span>
-            <span><i class="ti ti-infinity"></i> Tidak terbatas</span>
-            <span><i class="ti ti-gift"></i> Bonus 2 pihak</span>
-          </div>
+          <div class="ev-meta"><span><i class="ti ti-clock"></i> Instan</span><span><i class="ti ti-infinity"></i> Tidak terbatas</span><span><i class="ti ti-gift"></i> Bonus 2 pihak</span></div>
         </div>
         <div class="ev-right"><div class="ev-price">Rp 500</div><div class="ev-price-sub">per referral berhasil</div><div class="ev-arr"><i class="ti ti-chevron-right"></i></div></div>
       </div>
-
     </div>
   </div>
 
-  <!-- DETAIL VIEW -->
   <div id="view-detail" class="hidden">
     <button class="det-back" onclick="closeDetail()"><i class="ti ti-arrow-left"></i> Kembali ke semua freelance</button>
     <div id="det-content"></div>
   </div>
-
 </div>
 
 <script>
-function hubungiAdmin() {
-  const heroName = document.querySelector('.det-hero-name');
-  const freelance = heroName ? heroName.textContent.trim() : "freelance ini";
-  const autoMsg = encodeURIComponent(`Halo Admin! Saya tertarik dengan freelance "${freelance}". Bisa bantu info lebih lanjut?`);
-  window.location.href = `lachat.html?admin=1&msg=${autoMsg}`;
-}
-</script>
 
-<script>
-const details = {
-  gmail: {
-    icon:'ti-mail', name:'Buat Gmail Baru', badges:['b-easy|Mudah','b-new|Terbaru'],
-    price:'Rp 1.500', psub:'per akun Gmail baru',
-    info:[{lbl:'Durasi',val:'~5 menit'},{lbl:'Modal',val:'Gratis'},{lbl:'Frekuensi',val:'Tidak Terbatas'},{lbl:'Cair ke',val:'GoPay / OVO / Dana'}],
-    steps:[
-      'Buka <strong>accounts.google.com</strong> di browser HP atau laptop kamu.',
-      'Klik <strong>"Buat Akun"</strong> lalu pilih "Untuk Keperluan Pribadi".',
-      'Isi nama lengkap, tanggal lahir, username dan buat password Gmail yang di beri admin.',
-      'Gmail sesuai dengan yang di beri admin.',
-      'Tidak usah mengisi bagian nomor dan gmail pemulihan, abaikan.',
-      'Setelah akun berhasil dibuat, <strong>screenshot halaman profil Gmail</strong> sebagai bukti.',
-      'Kirim bukti screenshot ke admin. Reward <strong>Rp 1.500</strong> cair dalam 1x24 jam.'
-    ],
-    reqs:[
-      {icon:'ti-device-mobile',text:'HP atau laptop dengan koneksi internet'},
-      {icon:'ti-wallet',text:'Aplikasi e-wallet aktif (GoPay / OVO / Dana)'}
-    ],
-    tips:[
-      'Isi semua langkah langkah dengan baik dan benar.',
-      'Screenshot harus terlihat jelas nama akun dan foto profil Gmail.',
-      'Kalo muncul di suruh memasukan nomor verifikasi ataupun gmail pemulihan berarti kena limit.',
-      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
-    ]
-  },
-  facebook: {
-    icon:'ti-brand-facebook', name:'Buat Akun Facebook', badges:['b-easy|Mudah'],
-    price:'Rp 2.000', psub:'per akun Facebook aktif',
-    info:[{lbl:'Durasi',val:'~10 menit'},{lbl:'Modal',val:'Gratis'},{lbl:'Frekuensi',val:'Tidak Terbatas'},{lbl:'Cair ke',val:'GoPay / OVO / Dana'}],
-    steps:[
-      'Download aplikasi <strong>Facebook</strong> dari Play Store atau App Store jika belum ada.',
-      'Buka aplikasi, klik <strong>"Buat Akun Baru"</strong> dan isi data diri dengan benar.',
-      'Verifikasi menggunakan <strong>nomor HP aktif</strong> — masukkan kode OTP yang dikirim via SMS.',
-      'Upload <strong>foto profil</strong> yang jelas (bukan foto default atau blank).',
-      'Join minimal <strong>1 grup publik</strong> sesuai instruksi yang diberikan admin.',
-      'Pertahankan akun tetap aktif selama <strong>3 hari</strong> tanpa dihapus.',
-      'Setelah 3 hari, kirim screenshot profil ke admin. Reward cair dalam 24 jam.'
-    ],
-    reqs:[
-      {icon:'ti-device-mobile',text:'HP dengan Play Store / App Store'},
-      {icon:'ti-id',text:'Nomor HP yang belum pernah daftar Facebook'},
-      {icon:'ti-mail',text:'Email aktif untuk backup akun'},
-      {icon:'ti-photo',text:'Foto profil yang jelas (bukan AI/gambar palsu)'}
-    ],
-    tips:[
-      'Jangan langsung hapus akun setelah klaim — harus aktif minimal 3 hari.',
-      'Gunakan nama asli agar akun tidak cepat dibanned oleh sistem Facebook.',
-      'Hindari add teman terlalu banyak di hari pertama agar tidak dianggap spam.',
-      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
-    ]
-  },
-  tiktok: {
-    icon:'ti-brand-tiktok', name:'Buat TikTok + Upload Video', badges:['b-hot|Populer'],
-    price:'Rp 5.000', psub:'+ bonus Rp 2.500 jika tembus 100 views',
-    info:[{lbl:'Durasi',val:'~20 menit'},{lbl:'Modal',val:'Gratis'},{lbl:'Frekuensi',val:'Tidak Terbatas'},{lbl:'Cair Ke',val:'GoPay / OVO / Dana'}],
-    steps:[
-      'Download aplikasi <strong>TikTok</strong> dari Play Store atau App Store.',
-      'Daftar menggunakan <strong>email atau nomor HP</strong> yang belum pernah dipakai di TikTok.',
-      'Lengkapi profil: isi <strong>username, bio singkat</strong>, dan upload foto profil.',
-      'Rekam atau siapkan video minimal <strong>15 detik</strong> — konten apapun yang tidak melanggar aturan TikTok.',
-      'Upload video pertama. Pastikan <strong>visibilitas diatur ke "Publik"</strong>.',
-      'Screenshot halaman profil + video yang sudah terupload, kirim ke admin.',
-      'Reward <strong>Rp 5.000</strong> cair setelah verifikasi. Bonus <strong>Rp 2.500</strong> jika video tembus 100 views dalam 7 hari.'
-    ],
-    reqs:[
-      {icon:'ti-device-mobile',text:'HP dengan kamera yang berfungsi baik'},
-      {icon:'ti-id',text:'Email / nomor HP baru yang belum terdaftar di TikTok'},
-      {icon:'ti-video',text:'Video minimal 15 detik (konten original lebih baik)'},
-      {icon:'ti-wifi',text:'Koneksi internet stabil untuk upload video'}
-    ],
-    tips:[
-      'Video yang informatif atau lucu punya peluang lebih besar tembus 100 views.',
-      'Upload di jam prime time (19.00–22.00) agar jangkauan lebih luas.',
-      'Tambahkan hashtag populer agar video lebih mudah ditemukan pengguna lain.',
-      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
-    ]
-  },
-  app: {
-    icon:'ti-device-mobile-down', name:'Download & Install Aplikasi', badges:['b-new|Terbaru'],
-    price:'Rp 3.000', psub:'per aplikasi mitra',
-    info:[{lbl:'Durasi',val:'~5 menit'},{lbl:'Modal',val:'Gratis'},{lbl:'Frekuensi',val:'Tidak Terbatas'},{lbl:'Cair ke',val:'GoPay / OVO / Dana'}],
-    steps:[
-      'Admin akan membagikan <strong>link atau nama aplikasi mitra</strong> yang sedang aktif freelance.',
-      'Download dan install aplikasi dari <strong>Play Store (Android)</strong> atau <strong>App Store (iOS)</strong>.',
-      'Buka aplikasi, lalu <strong>buat akun baru</strong> menggunakan email atau nomor HP.',
-      'Lengkapi proses onboarding hingga masuk ke <strong>halaman utama aplikasi</strong>.',
-      'Screenshot halaman utama aplikasi setelah login berhasil.',
-      'Kirim screenshot ke admin beserta <strong>ID akun atau email</strong> yang didaftarkan.',
-      'Reward <strong>Rp 3.000</strong> cair dalam 1x24 jam setelah verifikasi admin.'
-    ],
-    reqs:[
-      {icon:'ti-device-mobile',text:'HP Android atau iOS dengan storage yang cukup'},
-      {icon:'ti-wifi',text:'Koneksi internet stabil'},
-      {icon:'ti-mail',text:'Email aktif untuk daftar akun aplikasi'},
-      {icon:'ti-brand-google-play',text:'Akses ke Play Store atau App Store'}
-    ],
-    tips:[
-      'Jangan uninstall aplikasi dalam waktu 7 hari setelah klaim reward.',
-      'Pastikan download dari link resmi yang diberikan admin, bukan sumber lain.',
-      'Satu HP hanya bisa klaim 1x meskipun punya banyak akun email.',
-      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
-    ]
-  },
-  survey: {
-    icon:'ti-clipboard-list', name:'Isi Survey Online', badges:['b-hot|Populer'],
-    price:'Rp 2.000', psub:'per survey selesai',
-    info:[{lbl:'Durasi',val:'~10 menit'},{lbl:'Modal',val:'Gratis'},{lbl:'Frekuensi',val:'Tidak terbatas'},{lbl:'Cair ke',val:'GoPay / OVO / Dana'}],
-    steps:[
-      'Daftar atau login ke platform survey yang sedang aktif (link diberikan admin).',
-      'Pilih survey yang tersedia dan klik <strong>"Mulai Survey"</strong>.',
-      'Jawab semua pertanyaan dengan <strong>jujur dan konsisten</strong> — sistem akan mendeteksi jawaban asal-asalan.',
-      'Pastikan kamu memenuhi <strong>kriteria responden</strong> yang diminta (usia, pekerjaan, dll).',
-      'Setelah selesai, kamu akan mendapat <strong>kode konfirmasi</strong> atau poin otomatis.',
-      'Request withdraw melalui dashboard, dana cair dalam 1–3 hari kerja.'
-    ],
-    reqs:[
-      {icon:'ti-device-mobile',text:'HP atau laptop dengan browser'},
-      {icon:'ti-user',text:'Profil lengkap agar dapat lebih banyak undangan survey'},
-      {icon:'ti-clock',text:'Waktu luang ~10 menit per survey'},
-      {icon:'ti-circle-check',text:'Kejujuran dalam menjawab (sistem validasi aktif)'}
-    ],
-    tips:[
-      'Lengkapi profil 100% agar mendapat lebih banyak undangan survey yang sesuai.',
-      'Jangan menjawab terlalu cepat — sistem mencatat waktu pengerjaan.',
-      'Cek email secara rutin karena undangan survey sering dikirim lewat email.',
-      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
-    ]
-  },
-  youtube: {
-    icon:'ti-brand-youtube', name:'Buat Channel YouTube', badges:['b-new|Terbaru'],
-    price:'Rp 7.500', psub:'per channel terverifikasi',
-    info:[{lbl:'Durasi',val:'~15 menit'},{lbl:'Modal',val:'Gratis'},{lbl:'Frekuensi',val:'Tidak Terbatas'},{lbl:'Cair ke',val:'GoPay / OVO / Dana'}],
-    steps:[
-      'Login ke akun Google kamu, lalu buka <strong>YouTube.com</strong>.',
-      'Klik foto profil di pojok kanan atas, pilih <strong>"Buat Channel"</strong>.',
-      'Isi <strong>nama channel</strong> (bisa nama sendiri atau nama unik), lalu konfirmasi.',
-      'Upload <strong>foto profil channel</strong> dan isi deskripsi channel minimal 50 kata.',
-      'Upload <strong>1 video perdana</strong> dengan durasi minimal 30 detik — konten bebas.',
-      'Pastikan video diatur ke <strong>visibilitas Publik</strong>, bukan private.',
-      'Screenshot halaman channel (tampak nama, foto, dan 1 video), kirim ke admin.',
-      'Reward <strong>Rp 7.500</strong> cair setelah admin memverifikasi channel dalam 1x24 jam.'
-    ],
-    reqs:[
-      {icon:'ti-brand-google',text:'Akun Google aktif (Gmail yang sudah ada)'},
-      {icon:'ti-device-laptop',text:'HP atau laptop dengan browser / aplikasi YouTube'},
-      {icon:'ti-video',text:'Video minimal 30 detik untuk diupload perdana'},
-      {icon:'ti-photo',text:'Foto profil channel yang jelas'}
-    ],
-    tips:[
-      'Channel dengan nama yang menarik punya peluang lebih besar berkembang.',
-      'Video pertama tidak harus berkualitas tinggi — yang penting sudah terupload.',
-      'Jangan hapus channel minimal 14 hari setelah klaim reward.',
-      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
-    ]
-  },
-  review: {
-    icon:'ti-star', name:'Review Produk / Aplikasi', badges:['b-easy|Mudah'],
-    price:'Rp 1.500', psub:'per review yang disetujui admin',
-    info:[{lbl:'Durasi',val:'~5 menit'},{lbl:'Modal',val:'Gratis'},{lbl:'Frekuensi',val:'Multi produk'},{lbl:'Verifikasi',val:'Manual oleh admin'}],
-    steps:[
-      'Admin akan membagikan <strong>daftar produk atau aplikasi</strong> yang perlu direview.',
-      'Buka halaman produk di <strong>Google Play / Google Maps / App Store / Tokopedia / Shopee</strong> sesuai instruksi.',
-      'Klik <strong>"Tulis Ulasan"</strong> dan berikan rating bintang sesuai pengalamanmu.',
-      'Tulis review <strong>minimal 50 kata</strong> — jujur, informatif, dan tidak copy-paste.',
-      'Submit review, lalu <strong>screenshot hasil review</strong> yang sudah tampil.',
-      'Kirim screenshot ke admin beserta link produk yang direview.',
-      'Admin memverifikasi dalam 24 jam. Jika disetujui, reward <strong>Rp 1.500</strong> langsung cair.'
-    ],
-    reqs:[
-      {icon:'ti-device-mobile',text:'HP dengan Play Store / App Store / marketplace'},
-      {icon:'ti-user',text:'Akun marketplace aktif (Tokopedia / Shopee / Google)'},
-      {icon:'ti-pencil',text:'Kemampuan menulis review minimal 50 kata'},
-      {icon:'ti-circle-check',text:'Review harus asli, bukan copy-paste'}
-    ],
-    tips:[
-      'Review yang detail dan spesifik punya peluang lebih besar disetujui admin.',
-      'Hindari review yang terlalu singkat atau menggunakan kata-kata yang sama berulang.',
-      'Bisa klaim untuk banyak produk berbeda dalam sehari — tidak ada batas harian.',
-      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
-    ]
-  },
-  referral: {
-    icon:'ti-users', name:'Referral Teman ke Aplikasi', badges:['b-hot|Populer'],
-    price:'Rp 500', psub:'per referral berhasil',
-    info:[{lbl:'Durasi',val:'Instan'},{lbl:'Modal',val:'Gratis'},{lbl:'Frekuensi',val:'Tidak terbatas'},{lbl:'Bonus teman',val:'Rp 500'}],
-    steps:[
-      'Daftar di aplikasi mitra yang sedang aktif program referral (link dari admin).',
-      'Setelah login, buka menu <strong>"Undang Teman"</strong> atau <strong>"Referral"</strong> di dalam aplikasi.',
-      'Salin <strong>kode referral unik</strong> milikmu atau bagikan link undangan langsung.',
-      'Kirimkan kode/link ke teman melalui WhatsApp, Instagram, atau media sosial lainnya.',
-      'Teman harus <strong>daftar menggunakan kode kamu</strong> dan menyelesaikan proses verifikasi.',
-      'Setelah teman berhasil aktif, kamu mendapat reward <strong>Rp 500</strong> dan teman mendapat <strong>Rp 50</strong>.',
-      'Tidak ada batas jumlah referral — semakin banyak teman diajak, semakin besar penghasilan.'
-    ],
-    reqs:[
-      {icon:'ti-device-mobile',text:'HP dengan aplikasi mitra terinstall'},
-      {icon:'ti-users',text:'Teman yang belum pernah daftar di aplikasi tersebut'},
-      {icon:'ti-brand-whatsapp',text:'Media sosial atau WhatsApp untuk share kode'},
-      {icon:'ti-circle-check',text:'Teman harus menyelesaikan verifikasi penuh'}
-    ],
-    tips:[
-      'Share ke grup WhatsApp atau komunitas online untuk hasil lebih maksimal.',
-      'Teman yang diajak harus benar-benar baru — akun yang sudah ada tidak terhitung.',
-      'Gunakan caption menarik saat share di media sosial agar lebih banyak yang tertarik.',
-      'Jika ada yang mau di tanya bisa langsung aja, tidak usah malu bertanya.'
-    ]
+const TG_TOKEN  = '8967418197:AAFycc_kcvOLkfaWq1SIFBE4kTPHMp6R_oY';
+const ADMIN_ID  = '7158806033';
+
+firebase.initializeApp({
+  apiKey:      'AIzaSyBcufeTd9fskM9oVcLa5xwYRhc3ughDXDM',
+  authDomain:  'goldchat-3606c.firebaseapp.com',
+  databaseURL: 'https://goldchat-3606c-default-rtdb.asia-southeast1.firebasedatabase.app',
+  projectId:   'goldchat-3606c'
+});
+const db = firebase.database();
+
+let tgOffset = parseInt(localStorage.getItem('tg_offset') || '0');
+
+async function tgPoll() {
+  try {
+    const url = `https://api.telegram.org/bot${TG_TOKEN}/getUpdates?timeout=5&allowed_updates=["message"]${tgOffset ? '&offset=' + tgOffset : ''}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    if (!data.ok || !data.result.length) return;
+
+    for (const upd of data.result) {
+      tgOffset = upd.update_id + 1;
+      localStorage.setItem('tg_offset', tgOffset);
+
+      const msg    = upd.message;
+      if (!msg || !msg.text) continue;
+
+      const fromId = String(msg.from?.id || '');
+      const text   = msg.text.trim();
+      const chatId = String(msg.chat?.id || '');
+
+      if (!text.startsWith('/notif')) continue;
+
+      if (fromId !== ADMIN_ID) {
+        await tgSend(chatId, 'Command error. Kamu tidak memiliki akses untuk menggunakan perintah ini.');
+        continue;
+      }
+
+      const notifText = text.slice(6).trim();
+      if (!notifText) {
+        await tgSend(chatId, 'Format salah. Gunakan: /notif <pesan>');
+        continue;
+      }
+
+      await db.ref('notifications').push({
+        text:      notifText,
+        timestamp: Date.now()
+      });
+
+      await tgSend(chatId, 'Notifikasi berhasil dikirim ke semua user.');
+    }
+  } catch (e) {
+    console.warn('tgPoll error:', e);
   }
+}
+
+async function tgSend(chatId, text) {
+  try {
+    await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ chat_id: chatId, text })
+    });
+  } catch (e) { console.warn('tgSend error:', e); }
+}
+
+setInterval(tgPoll, 3000);
+tgPoll();
+
+const SVG = {
+  bell:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
+  info:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+  warn:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+  check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  star:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
+};
+function pickIcon(t) {
+  t = t.toLowerCase();
+  if (t.includes('baru')||t.includes('tersedia')||t.includes('tambah')) return SVG.star;
+  if (t.includes('berhasil')||t.includes('sukses')||t.includes('selesai')) return SVG.check;
+  if (t.includes('penting')||t.includes('perhatian')||t.includes('peringatan')) return SVG.warn;
+  return SVG.info;
+}
+
+let notifs    = [];
+let seenKeys  = new Set(JSON.parse(localStorage.getItem('fb_seen') || '[]'));
+let unread    = 0;
+let panelOpen = false;
+
+window.addEventListener('DOMContentLoaded', () => {
+  renderNotifs();
+
+  const ref = db.ref('notifications');
+
+  ref.on('value', snap => {
+    const prev = notifs.map(n => n.id);
+    notifs = [];
+
+    if (snap.exists()) {
+      snap.forEach(child => {
+        const d  = child.val();
+        if (!d?.text) return;
+        const ts = d.timestamp ? new Date(d.timestamp) : new Date();
+        notifs.unshift({
+          id:     child.key,
+          text:   d.text,
+          time:   ts.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' }),
+          date:   ts.toLocaleDateString('id-ID',  { day:'numeric', month:'short' }),
+          unread: !seenKeys.has(child.key)
+        });
+      });
+    }
+
+    const newKeys = notifs.filter(n => !seenKeys.has(n.id));
+    if (newKeys.length > 0) {
+      newKeys.forEach(n => {
+        if (!prev.includes(n.id)) {
+          showToast(n.text);
+          const bell = document.getElementById('nbell');
+          bell.classList.add('ring');
+          setTimeout(() => bell.classList.remove('ring'), 700);
+        }
+      });
+      unread = newKeys.length;
+    }
+
+    updateBadge();
+    renderNotifs();
+    setStatus(true);
+  }, () => setStatus(false));
+
+  db.ref('.info/connected').on('value', s => setStatus(s.val() === true));
+
+  document.addEventListener('click', e => {
+    const p = document.getElementById('npanel');
+    const b = document.getElementById('nbell');
+    if (!p.contains(e.target) && !b.contains(e.target)) closePanel();
+  });
+});
+
+function setStatus(ok) {
+  document.getElementById('sdot').className    = 'sdot ' + (ok ? 'on' : 'err');
+  document.getElementById('slabel').textContent = ok ? 'live chat admin aktif' : 'Terputus...';
+}
+
+function renderNotifs() {
+  const list  = document.getElementById('np-list');
+  const empty = document.getElementById('np-empty');
+  Array.from(list.children).forEach(c => { if (c !== empty) c.remove(); });
+  if (!notifs.length) { empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+  notifs.forEach(n => {
+    const d = document.createElement('div');
+    d.className = 'nitem' + (n.unread ? ' unread' : '');
+    d.innerHTML = `<div class="nitem-ico">${pickIcon(n.text)}</div>
+      <div class="nitem-body">
+        <div class="nitem-msg">${esc(n.text)}</div>
+        <div class="nitem-time">${n.date} &middot; ${n.time}</div>
+      </div>`;
+    list.appendChild(d);
+  });
+}
+
+function updateBadge() {
+  const b = document.getElementById('nbadge');
+  if (unread > 0) { b.textContent = unread > 9 ? '9+' : unread; b.classList.add('on'); }
+  else b.classList.remove('on');
+}
+
+function togglePanel() { panelOpen ? closePanel() : openPanel(); }
+function openPanel() {
+  document.getElementById('npanel').classList.add('open');
+  panelOpen = true;
+  unread    = 0;
+  notifs.forEach(n => seenKeys.add(n.id));
+  saveKeys(); updateBadge(); renderNotifs();
+}
+function closePanel() {
+  document.getElementById('npanel').classList.remove('open');
+  panelOpen = false;
+}
+function showToast(msg) {
+  const wrap  = document.getElementById('twrap');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `<div class="toast-ico">${SVG.bell}</div>
+    <div><div class="toast-title">Pesan dari Admin</div>
+    <div class="toast-msg">${esc(msg.length > 80 ? msg.slice(0,80)+'...' : msg)}</div></div>`;
+  wrap.appendChild(toast);
+  setTimeout(() => toast.remove(), 5100);
+}
+function saveKeys()   { localStorage.setItem('fb_seen', JSON.stringify([...seenKeys])); }
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+const D = {
+  gmail:    { icon:'ti-mail',               name:'Buat Gmail Baru',             badges:['b-easy|Mudah','b-new|Terbaru'],  price:'Rp 1.500', psub:'per akun Gmail baru',              info:[{l:'Durasi',v:'~5 menit'},{l:'Modal',v:'Gratis'},{l:'Frekuensi',v:'Tidak Terbatas'},{l:'Cair ke',v:'GoPay / OVO / Dana'}], steps:['Buka <strong>accounts.google.com</strong> di browser HP atau laptop kamu.','Klik <strong>"Buat Akun"</strong> lalu pilih "Untuk Keperluan Pribadi".','Isi nama lengkap, tanggal lahir, username dan password sesuai arahan admin.','Tidak usah mengisi bagian nomor dan gmail pemulihan, abaikan.','Setelah akun berhasil dibuat, <strong>screenshot halaman profil Gmail</strong>.','Kirim screenshot ke admin. Reward <strong>Rp 1.500</strong> cair dalam 1x24 jam.'], reqs:[{i:'ti-device-mobile',t:'HP atau laptop dengan koneksi internet'},{i:'ti-wallet',t:'E-wallet aktif (GoPay / OVO / Dana)'}], tips:['Isi semua langkah dengan baik dan benar.','Screenshot harus terlihat jelas nama akun dan foto profil.','Jika muncul verifikasi nomor berarti kena limit, coba lagi nanti.','Jika ada pertanyaan, langsung hubungi admin.'] },
+  facebook: { icon:'ti-brand-facebook',     name:'Buat Akun Facebook',          badges:['b-easy|Mudah'],                  price:'Rp 2.000', psub:'per akun Facebook aktif',         info:[{l:'Durasi',v:'~10 menit'},{l:'Modal',v:'Gratis'},{l:'Frekuensi',v:'Tidak Terbatas'},{l:'Cair ke',v:'GoPay / OVO / Dana'}], steps:['Download <strong>Facebook</strong> dari Play Store atau App Store.','Klik <strong>"Buat Akun Baru"</strong> dan isi data diri dengan benar.','Verifikasi menggunakan <strong>nomor HP aktif</strong>.','Upload <strong>foto profil</strong> yang jelas.','Join minimal <strong>1 grup publik</strong> sesuai instruksi admin.','Pertahankan akun aktif selama <strong>3 hari</strong>.','Kirim screenshot profil ke admin. Reward cair dalam 24 jam.'], reqs:[{i:'ti-device-mobile',t:'HP dengan Play Store / App Store'},{i:'ti-id',t:'Nomor HP yang belum pernah daftar Facebook'},{i:'ti-mail',t:'Email aktif'},{i:'ti-photo',t:'Foto profil yang jelas'}], tips:['Jangan hapus akun — harus aktif minimal 3 hari.','Gunakan nama asli agar tidak cepat dibanned.','Jangan add teman terlalu banyak di hari pertama.','Jika ada pertanyaan, langsung hubungi admin.'] },
+  tiktok:   { icon:'ti-brand-tiktok',       name:'Buat TikTok + Upload Video',  badges:['b-hot|Populer'],                 price:'Rp 5.000', psub:'+ bonus Rp 2.500 jika 100 views', info:[{l:'Durasi',v:'~20 menit'},{l:'Modal',v:'Gratis'},{l:'Frekuensi',v:'Tidak Terbatas'},{l:'Cair ke',v:'GoPay / OVO / Dana'}], steps:['Download <strong>TikTok</strong> dari Play Store atau App Store.','Daftar dengan <strong>email atau nomor HP baru</strong>.','Lengkapi profil: username, bio, dan foto profil.','Upload video minimal <strong>15 detik</strong>, visibilitas <strong>Publik</strong>.','Screenshot profil + video, kirim ke admin.','Reward <strong>Rp 5.000</strong> + bonus <strong>Rp 2.500</strong> jika 100 views dalam 7 hari.'], reqs:[{i:'ti-device-mobile',t:'HP dengan kamera yang berfungsi'},{i:'ti-id',t:'Email / nomor HP baru'},{i:'ti-video',t:'Video minimal 15 detik'},{i:'ti-wifi',t:'Koneksi internet stabil'}], tips:['Video informatif atau lucu lebih mudah tembus 100 views.','Upload di jam 19.00–22.00 agar jangkauan luas.','Tambahkan hashtag populer.','Jika ada pertanyaan, langsung hubungi admin.'] },
+  app:      { icon:'ti-device-mobile-down', name:'Download & Install Aplikasi', badges:['b-new|Terbaru'],                 price:'Rp 3.000', psub:'per aplikasi mitra',               info:[{l:'Durasi',v:'~5 menit'},{l:'Modal',v:'Gratis'},{l:'Frekuensi',v:'Tidak Terbatas'},{l:'Cair ke',v:'GoPay / OVO / Dana'}], steps:['Admin membagikan link atau nama aplikasi mitra.','Download dari <strong>Play Store</strong> atau <strong>App Store</strong>.','Buat akun baru, lengkapi hingga masuk halaman utama.','Screenshot halaman utama, kirim ke admin beserta email terdaftar.','Reward <strong>Rp 3.000</strong> cair dalam 1x24 jam.'], reqs:[{i:'ti-device-mobile',t:'HP dengan storage cukup'},{i:'ti-wifi',t:'Koneksi internet stabil'},{i:'ti-mail',t:'Email aktif'},{i:'ti-brand-google-play',t:'Play Store atau App Store'}], tips:['Jangan uninstall dalam 7 hari setelah klaim.','Satu HP hanya bisa klaim 1x.','Jika ada pertanyaan, langsung hubungi admin.'] },
+  survey:   { icon:'ti-clipboard-list',     name:'Isi Survey Online',           badges:['b-hot|Populer'],                 price:'Rp 2.000', psub:'per survey selesai',               info:[{l:'Durasi',v:'~10 menit'},{l:'Modal',v:'Gratis'},{l:'Frekuensi',v:'Tidak terbatas'},{l:'Cair ke',v:'GoPay / OVO / Dana'}], steps:['Login ke platform survey (link dari admin).','Pilih survey dan klik <strong>"Mulai Survey"</strong>.','Jawab semua pertanyaan dengan <strong>jujur dan konsisten</strong>.','Pastikan memenuhi kriteria responden.','Dapatkan kode konfirmasi atau poin otomatis.','Request withdraw melalui dashboard.'], reqs:[{i:'ti-device-mobile',t:'HP atau laptop'},{i:'ti-user',t:'Profil lengkap'},{i:'ti-clock',t:'Waktu ~10 menit per survey'},{i:'ti-circle-check',t:'Kejujuran dalam menjawab'}], tips:['Profil 100% = lebih banyak undangan.','Jangan menjawab terlalu cepat.','Cek email rutin.','Jika ada pertanyaan, langsung hubungi admin.'] },
+  youtube:  { icon:'ti-brand-youtube',      name:'Buat Channel YouTube',        badges:['b-new|Terbaru'],                 price:'Rp 7.500', psub:'per channel terverifikasi',       info:[{l:'Durasi',v:'~15 menit'},{l:'Modal',v:'Gratis'},{l:'Frekuensi',v:'Tidak Terbatas'},{l:'Cair ke',v:'GoPay / OVO / Dana'}], steps:['Login Google, buka <strong>YouTube.com</strong>.','Klik foto profil → <strong>"Buat Channel"</strong>.','Isi nama channel, upload foto profil, deskripsi min 50 kata.','Upload <strong>1 video perdana</strong> minimal 30 detik, visibilitas <strong>Publik</strong>.','Screenshot halaman channel, kirim ke admin.','Reward <strong>Rp 7.500</strong> cair dalam 1x24 jam.'], reqs:[{i:'ti-brand-google',t:'Akun Google aktif'},{i:'ti-device-laptop',t:'HP atau laptop'},{i:'ti-video',t:'Video minimal 30 detik'},{i:'ti-photo',t:'Foto profil channel yang jelas'}], tips:['Nama channel menarik = peluang berkembang lebih besar.','Jangan hapus channel minimal 14 hari setelah klaim.','Jika ada pertanyaan, langsung hubungi admin.'] },
+  review:   { icon:'ti-star',               name:'Review Produk / Aplikasi',    badges:['b-easy|Mudah'],                  price:'Rp 1.500', psub:'per review yang disetujui',       info:[{l:'Durasi',v:'~5 menit'},{l:'Modal',v:'Gratis'},{l:'Frekuensi',v:'Multi produk'},{l:'Verifikasi',v:'Manual admin'}], steps:['Admin membagikan daftar produk yang perlu direview.','Buka halaman di <strong>Play Store / Maps / Tokopedia / Shopee</strong>.','Tulis ulasan <strong>minimal 50 kata</strong>, jujur dan informatif.','Screenshot hasil review, kirim ke admin + link produk.','Reward <strong>Rp 1.500</strong> cair setelah disetujui.'], reqs:[{i:'ti-device-mobile',t:'HP dengan marketplace'},{i:'ti-user',t:'Akun marketplace aktif'},{i:'ti-pencil',t:'Kemampuan menulis min 50 kata'},{i:'ti-circle-check',t:'Review asli, bukan copy-paste'}], tips:['Review detail lebih mudah disetujui.','Bisa klaim banyak produk dalam sehari.','Jika ada pertanyaan, langsung hubungi admin.'] },
+  referral: { icon:'ti-users',              name:'Referral Teman ke Aplikasi',  badges:['b-hot|Populer'],                 price:'Rp 500',   psub:'per referral berhasil',           info:[{l:'Durasi',v:'Instan'},{l:'Modal',v:'Gratis'},{l:'Frekuensi',v:'Tidak terbatas'},{l:'Bonus teman',v:'Rp 50'}], steps:['Daftar di aplikasi mitra (link dari admin).','Buka menu <strong>"Undang Teman"</strong> atau <strong>"Referral"</strong>.','Salin kode atau bagikan link undangan.','Teman daftar dengan kode kamu dan selesaikan verifikasi.','Kamu dapat <strong>Rp 500</strong>, teman dapat <strong>Rp 50</strong>.','Tidak ada batas referral.'], reqs:[{i:'ti-device-mobile',t:'HP dengan aplikasi mitra'},{i:'ti-users',t:'Teman yang belum daftar di aplikasi'},{i:'ti-brand-whatsapp',t:'WhatsApp atau media sosial'},{i:'ti-circle-check',t:'Teman harus selesaikan verifikasi'}], tips:['Share ke grup WhatsApp atau komunitas online.','Teman harus benar-benar baru.','Caption menarik = lebih banyak yang ikut.','Jika ada pertanyaan, langsung hubungi admin.'] }
 };
 
-function badgeHTML(b) {
-  const [cls, txt] = b.split('|');
-  return `<span class="badge ${cls}">${txt}</span>`;
-}
+function bHTML(b) { const [c,t]=b.split('|'); return `<span class="badge ${c}">${t}</span>`; }
 
 function openDetail(id) {
-  const d = details[id];
-  const infoHTML = d.info.map(i =>
-    `<div class="det-info-item"><div class="det-info-lbl">${i.lbl}</div><div class="det-info-val">${i.val}</div></div>`
-  ).join('');
-  const stepsHTML = d.steps.map((s, i) =>
-    `<div class="det-step"><div class="det-step-num">${i+1}</div><div class="det-step-text">${s}</div></div>`
-  ).join('');
-  const reqsHTML = d.reqs.map(r =>
-    `<div class="det-req"><i class="ti ${r.icon}"></i>${r.text}</div>`
-  ).join('');
-  const tipsHTML = d.tips.map(t =>
-    `<div class="det-tip"><i class="ti ti-bulb"></i>${t}</div>`
-  ).join('');
-
+  const d = D[id];
   document.getElementById('det-content').innerHTML = `
     <div class="det-hero">
       <div class="det-hero-ico"><i class="ti ${d.icon}"></i></div>
-      <div class="det-hero-info">
-        <div class="det-hero-name">${d.name}</div>
-        <div class="det-hero-badges">${d.badges.map(badgeHTML).join('')}</div>
-      </div>
-      <div class="det-hero-price-block">
-        <div class="det-hero-price">${d.price}</div>
-        <div class="det-hero-psub">${d.psub}</div>
-      </div>
+      <div class="det-hero-info"><div class="det-hero-name">${d.name}</div><div class="det-hero-badges">${d.badges.map(bHTML).join('')}</div></div>
+      <div class="det-price-block"><div class="det-price">${d.price}</div><div class="det-psub">${d.psub}</div></div>
     </div>
-    <div class="det-section">
-      <div class="det-sec-title"><i class="ti ti-info-circle"></i> Info Singkat</div>
-      <div class="det-info-grid">${infoHTML}</div>
-    </div>
-    <div class="det-section">
-      <div class="det-sec-title"><i class="ti ti-list-numbers"></i> Langkah-langkah</div>
-      <div class="det-steps">${stepsHTML}</div>
-    </div>
-    <div class="det-section">
-      <div class="det-sec-title"><i class="ti ti-checklist"></i> Yang Dibutuhkan</div>
-      <div class="det-reqs">${reqsHTML}</div>
-    </div>
-    <div class="det-section">
-      <div class="det-sec-title"><i class="ti ti-bulb"></i> Tips & Trik</div>
-      <div class="det-tips">${tipsHTML}</div>
-    </div>
+    <div class="det-sec"><div class="det-sec-t"><i class="ti ti-info-circle"></i> Info Singkat</div>
+      <div class="info-grid">${d.info.map(i=>`<div class="info-item"><div class="info-lbl">${i.l}</div><div class="info-val">${i.v}</div></div>`).join('')}</div></div>
+    <div class="det-sec"><div class="det-sec-t"><i class="ti ti-list-numbers"></i> Langkah-langkah</div>
+      <div class="steps">${d.steps.map((s,i)=>`<div class="step"><div class="step-n">${i+1}</div><div class="step-t">${s}</div></div>`).join('')}</div></div>
+    <div class="det-sec"><div class="det-sec-t"><i class="ti ti-checklist"></i> Yang Dibutuhkan</div>
+      <div class="reqs">${d.reqs.map(r=>`<div class="req"><i class="ti ${r.i}"></i>${r.t}</div>`).join('')}</div></div>
+    <div class="det-sec"><div class="det-sec-t"><i class="ti ti-bulb"></i> Tips &amp; Trik</div>
+      <div class="tips">${d.tips.map(t=>`<div class="tip"><i class="ti ti-bulb"></i>${t}</div>`).join('')}</div></div>
     <div class="det-cta">
-      <div class="det-cta-text">
-        <strong>Siap ikut freelance ini?</strong>
-        Hubungi admin untuk link & info terbaru
-      </div>
-      <button class="det-cta-btn" onclick="hubungiAdmin()">Hubungi Admin</button>
-
-    </div>
-  `;
-
+      <div class="det-cta-text"><strong>Siap ikut freelance ini?</strong>Hubungi admin untuk link &amp; info terbaru</div>
+      <button class="cta-btn" onclick="hubungiAdmin()">Hubungi Admin</button>
+    </div>`;
   document.getElementById('view-list').classList.add('hidden');
   document.getElementById('view-detail').classList.remove('hidden');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top:0, behavior:'smooth' });
   document.getElementById('nav-count').textContent = d.name;
 }
 
 function closeDetail() {
   document.getElementById('view-list').classList.remove('hidden');
   document.getElementById('view-detail').classList.add('hidden');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top:0, behavior:'smooth' });
   document.getElementById('nav-count').textContent = '8 freelance aktif';
 }
 
-function filter(cat, el) {
+function filterCat(cat, el) {
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
-  const cards = document.querySelectorAll('.ev-card');
-  let visible = 0;
-  cards.forEach(c => {
-    if (cat === 'all' || c.dataset.cat === cat) {
-      c.classList.remove('hidden');
-      visible++;
-    } else {
-      c.classList.add('hidden');
-    }
+  let v = 0;
+  document.querySelectorAll('.ev-card').forEach(c => {
+    const show = cat === 'all' || c.dataset.cat === cat;
+    c.classList.toggle('hidden', !show);
+    if (show) v++;
   });
-  document.getElementById('nav-count').textContent = visible + ' freelance aktif';
+  document.getElementById('nav-count').textContent = v + ' freelance aktif';
+}
+
+function hubungiAdmin() {
+  const n = document.querySelector('.det-hero-name');
+  window.location.href = 'lachat.html?admin=1&msg=' +
+    encodeURIComponent('Halo Admin! Saya tertarik dengan freelance "' + (n ? n.textContent.trim() : 'freelance ini') + '". Bisa bantu info lebih lanjut?');
 }
 </script>
 </body>

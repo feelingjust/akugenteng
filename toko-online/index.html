@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Serba Bisa Bot</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root{
+    --bg:#0e1016;
+    --surface:#171a24;
+    --surface-2:#1f232f;
+    --border:#2a2f3f;
+    --text:#f3f4f8;
+    --muted:#8b92a8;
+
+    --c-market:#3b82f6;
+    --c-portfolio:#a78bfa;
+    --c-economy:#22c55e;
+    --c-info:#06b6d4;
+    --c-games:#f59e0b;
+    --c-downloader:#ec4899;
+    --c-tools:#8b5cf6;
+    --c-group:#10b981;
+    --c-community:#3b82f6;
+    --c-contact:#06b6d4;
+    --c-about:#94a3b8;
+    --c-pvp:#ef4444;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    padding:16px;
+    padding-bottom:32px;
+  }
+
+  .header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:16px;
+    padding:4px 2px;
+  }
+
+  .logo{
+    width:48px; height:48px;
+    border-radius:14px;
+    background:linear-gradient(135deg,#3b82f6,#8b5cf6);
+    display:flex; align-items:center; justify-content:center;
+    font-size:24px;
+    flex-shrink:0;
+    box-shadow:0 4px 16px rgba(59,130,246,.35);
+  }
+
+  .header h1{
+    font-family:'Sora', sans-serif;
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+  .header p{
+    font-size:12.5px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-bottom:18px;
+  }
+  .stat-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px 8px;
+    text-align:center;
+  }
+  .stat-card .val{
+    font-family:'Sora', sans-serif;
+    font-size:16px;
+    font-weight:700;
+    line-height:1.1;
+  }
+  .stat-card .lbl{
+    font-size:10.5px;
+    color:var(--muted);
+    margin-top:3px;
+    letter-spacing:.02em;
+  }
+
+  .section-title{
+    font-size:11px;
+    font-weight:700;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    margin:18px 4px 10px;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+  }
+
+  .card{
+    --c: var(--c-market);
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:14px 12px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    text-align:left;
+    cursor:pointer;
+    transition:transform .12s ease, background .15s ease, border-color .15s ease;
+    overflow:hidden;
+    -webkit-tap-highlight-color:transparent;
+    appearance:none;
+    font-family:inherit;
+  }
+  .card:active{
+    transform:scale(.97);
+    background:var(--surface-2);
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:4px;
+    background:var(--c);
+    border-radius:0 4px 4px 0;
+  }
+  .card .icon{
+    width:36px; height:36px;
+    border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+    background:color-mix(in srgb, var(--c) 18%, transparent);
+  }
+  .card .label{
+    font-family:'Sora', sans-serif;
+    font-size:14px;
+    font-weight:600;
+    line-height:1.25;
+  }
+  .card .sub{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:-4px;
+  }
+
+  .pill-row{
+    display:flex;
+    gap:8px;
+    margin-top:18px;
+    flex-wrap:wrap;
+  }
+  .pill{
+    flex:1;
+    min-width:90px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:10px 14px;
+    text-align:center;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--text);
+    text-decoration:none;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .pill:active{ background:var(--surface-2); }
+
+  .footer{
+    text-align:center;
+    margin-top:22px;
+    font-size:11px;
+    color:var(--muted);
+  }
+
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#f4f5f8;
+      --surface:#ffffff;
+      --surface-2:#eef0f5;
+      --border:#e3e6ee;
+      --text:#14161f;
+      --muted:#7b8194;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="logo">🤖</div>
+    <div>
+      <h1>Serba Bisa Bot</h1>
+      <p>Pilih menu untuk mulai</p>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="val" id="statSaldo">—</div>
+      <div class="lbl">SALDO</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="statRank">—</div>
+      <div class="lbl">RANKING</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="statGames">—</div>
+      <div class="lbl">SISA GAME</div>
+    </div>
+  </div>
+
+  <div class="section-title">Menu Utama</div>
+  <div class="grid">
+    <button class="card" style="--c:var(--c-market)"      data-action="menu_market">
+      <div class="icon">🛍️</div>
+      <div><div class="label">Marketplace</div><div class="sub">Belanja produk</div></div>
+    </button>
+    <button class="card" style="--c:var(--c-portfolio)"   data-action="menu_portfolio">
+      <div class="icon">💼</div>
+      <div><div class="label">Portfolio</div><div class="sub">Riwayat & aset</div></div>
+    </button>
+    <button class="card" style="--c:var(--c-economy)"     data-action="menu_economy">
+      <div class="icon">💰</div>
+      <div><div class="label">Economy</div><div class="sub">Saldo & daily</div></div>
+    </button>
+    <button class="card" style="--c:var(--c-games)"       data-action="menu_games">
+      <div class="icon">🎮</div>
+      <div><div class="label">Games</div><div class="sub">Main & menang</div></div>
+    </button>
+    <button class="card" style="--c:var(--c-pvp)"         data-action="menu_pvp">
+      <div class="icon">⚔️</div>
+      <div><div class="label">PVP Battle</div><div class="sub">Lawan player</div></div>
+    </button>
+    <button class="card" style="--c:var(--c-info)"        data-action="menu_info">
+      <div class="icon">🌦️</div>
+      <div><div class="label">Info</div><div class="sub">Cuaca & gempa</div></div>
+    </button>
+    <button class="card" style="--c:var(--c-downloader)"  data-action="menu_downloader">
+      <div class="icon">📥</div>
+      <div><div class="label">Downloader</div><div class="sub">Download media</div></div>
+    </button>
+    <button class="card" style="--c:var(--c-tools)"       data-action="menu_tools">
+      <div class="icon">🔧</div>
+      <div><div class="label">Tools</div><div class="sub">Cek IP, nomor, dll</div></div>
+    </button>
+    <button class="card" style="--c:var(--c-group)"       data-action="menu_group">
+      <div class="icon">👥</div>
+      <div><div class="label">Group Manager</div><div class="sub">Kelola grup</div></div>
+    </button>
+    <button class="card" style="--c:var(--c-community)"   data-action="menu_community">
+      <div class="icon">💬</div>
+      <div><div class="label">Community</div><div class="sub">Gabung komunitas</div></div>
+    </button>
+    <button class="card" style="--c:var(--c-contact)"     data-action="menu_contact">
+      <div class="icon">📞</div>
+      <div><div class="label">Contact</div><div class="sub">Hubungi admin</div></div>
+    </button>
+    <button class="card" style="--c:var(--c-about)"       data-action="menu_about">
+      <div class="icon">ℹ️</div>
+      <div><div class="label">About</div><div class="sub">Tentang bot</div></div>
+    </button>
+  </div>
+
+  <div class="section-title">Statistik & Lainnya</div>
+  <div class="pill-row">
+    <button class="pill" data-action="eco_saldo">💰 Saldo</button>
+    <button class="pill" data-action="eco_daily">🎁 Daily</button>
+    <button class="pill" data-action="eco_leader">🏆 Leaderboard</button>
+  </div>
+
+  <div class="footer">Serba Bisa Bot · Mini App</div>
+
+<script>
+  const tg = window.Telegram?.WebApp;
+  if (tg) {
+    tg.ready();
+    tg.expand();
+
+    // Sinkronkan tema dengan Telegram
+    const root = document.documentElement;
+    if (tg.themeParams) {
+      const tp = tg.themeParams;
+      if (tp.bg_color)        root.style.setProperty('--bg', tp.bg_color);
+      if (tp.secondary_bg_color) root.style.setProperty('--surface', tp.secondary_bg_color);
+      if (tp.text_color)      root.style.setProperty('--text', tp.text_color);
+      if (tp.hint_color)      root.style.setProperty('--muted', tp.hint_color);
+    }
+  }
+
+  // Kirim data ke bot saat tombol ditekan
+  document.querySelectorAll('[data-action]').forEach(el => {
+    el.addEventListener('click', () => {
+      const action = el.getAttribute('data-action');
+      if (tg) {
+        tg.sendData(JSON.stringify({ action }));
+      } else {
+        alert('Aksi: ' + action + ' (buka via Telegram untuk fungsi penuh)');
+      }
+    });
+  });
+
+  // ===== Ambil statistik user (opsional, butuh backend endpoint) =====
+  // Jika kamu sudah punya endpoint API di bot untuk return data user,
+  // ganti URL di bawah ini dan aktifkan fetch.
+  /*
+  async function loadStats() {
+    if (!tg?.initDataUnsafe?.user) return;
+    const userId = tg.initDataUnsafe.user.id;
+    try {
+      const res = await fetch(`https://sarviola.my.id/api/stats?user_id=${userId}`);
+      const data = await res.json();
+      document.getElementById('statSaldo').textContent = 'Rp ' + data.saldo.toLocaleString('id-ID');
+      document.getElementById('statRank').textContent  = data.rank ? '#' + data.rank : '-';
+      document.getElementById('statGames').textContent = data.gamesLeft;
+    } catch (e) {
+      console.error('Gagal load stats', e);
+    }
+  }
+  loadStats();
+  */
+</script>
+</body>
+</html>

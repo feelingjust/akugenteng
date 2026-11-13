@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Pemesanan & Pop-up Sukses</title>
+    <style>
+        /* =========================================
+           PENGATURAN DASAR & BACKGROUND
+           ========================================= */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #2b2e3b;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 0;
+            box-sizing: border-box;
+        }
+
+        /* =========================================
+           STYLING FORMULIR (KARTU PUTIH)
+           ========================================= */
+        .card-form {
+            background-color: #ffffff;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 12px;
+            padding: 25px 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+        }
+
+        .card-form h2 {
+            margin-top: 0;
+            color: #333;
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Grup Input */
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .form-group input, 
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+            background-color: #fff;
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus {
+            border-color: #6b52e5;
+        }
+
+        .form-group input[readonly] {
+            background-color: #f5f5f5;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        /* Container untuk Custom Input (Tersembunyi by default) */
+        .custom-inputs-container {
+            display: none; 
+            margin-bottom: 15px;
+            animation: slideDown 0.3s ease-out forwards;
+        }
+
+        /* Menghilangkan panah bawaan browser pada input type number */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tombol Submit */
+        .btn-submit {
+            width: 100%;
+            background-color: #6b52e5;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-submit:hover {
+            background-color: #5a43d1;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* =========================================
+           STYLING POP-UP MODAL (SUKSES)
+           ========================================= */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1000;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: #ffffff;
+            width: 85%;
+            max-width: 400px;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: scale(0.8);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .overlay.show .modal {
+            transform: scale(1);
+        }
+
+        /* Animasi Centang */
+        .checkmark-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid #20b2aa;
+            margin: 0 auto 20px auto;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .checkmark {
+            width: 20px;
+            height: 35px;
+            border: solid #20b2aa;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg);
+            margin-top: -8px;
+            margin-left: 2px;
+            animation: drawCheck 0.5s ease forwards;
+            animation-delay: 0.3s;
+            opacity: 0; 
+        }
+
+        .title {
+            color: #555;
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            margin-top: 0;
+        }
+
+        .details {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .details p {
+            margin: 4px 0;
+            word-break: break-all;
+        }
+
+        .btn-ok {
+            background-color: #6b52e5;
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-ok:hover {
+            background-color: #5a43d1;
+        }
+
+        .btn-ok:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes drawCheck {
+            0% { height: 0; width: 0; opacity: 0; }
+            50% { height: 35px; width: 0; opacity: 1; }
+            100% { height: 35px; width: 20px; opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- =========================================
+         1. FORM PEMESANAN
+         ========================================= -->
+    <div class="card-form" id="formContainer">
+        <h2>Buat Pesanan Baru</h2>
+        
+        <form id="orderForm">
+            <div class="form-group">
+                <label>Layanan</label>
+                <select id="inputLayanan" required>
+                    <option value="" disabled selected>-- Pilih Layanan --</option>
+                    <option value="43406 - 🇮🇩 Instagram Followers Indonesia [100K] [REFILL 7 HARI] INSTAN" data-harga="1200">43406 - 🇮🇩 Instagram Followers Indonesia [100K] [REFILL 7 HARI] INSTAN</option>
+                    <option value="43407 - 🌍 Instagram Followers Global [100K] [REFILL 30 HARI]" data-harga="2500">43407 - 🌍 Instagram Followers Global [100K] [REFILL 30 HARI]</option>
+                    <option value="43410 - ❤️ Instagram Likes Indonesia [10K] [INSTAN]" data-harga="500">43410 - ❤️ Instagram Likes Indonesia [10K] [INSTAN]</option>
+                    <option value="43412 - 👁️ Instagram Views [1M] [INSTAN]" data-harga="300">43412 - 👁️ Instagram Views [1M] [INSTAN]</option>
+                    <!-- Opsi Custom -->
+                    <option value="custom">✍️ Ketik Sendiri (Custom)</option>
+                </select>
+            </div>
+
+            <!-- Container Input Custom (Hanya Nama & Harga Akhir) -->
+            <div id="customServiceContainer" class="custom-inputs-container">
+                <div class="form-group">
+                    <label>Nama Layanan Custom</label>
+                    <input type="text" id="inputCustomLayanan" placeholder="Contoh: Jasa Like 10 Foto Terbaru">
+                </div>
+                <div class="form-group">
+                    <label>Total Harga Custom (Rp)</label>
+                    <input type="number" id="inputCustomHarga" placeholder="Contoh: 5000">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Target / Link Profil</label>
+                <input type="url" id="inputTarget" placeholder="https://www.instagram.com/username" required>
+            </div>
+
+            <div class="form-group">
+                <label>Jumlah Pesan</label>
+                <!-- Input jumlah selalu ada -->
+                <input type="number" id="inputJumlah" placeholder="Masukkan jumlah" value="50" required>
+            </div>
+
+            <div class="form-group">
+                <label>Total Harga (Otomatis)</label>
+                <input type="text" id="inputHarga" value="Rp 0" readonly>
+            </div>
+
+            <button type="submit" class="btn-submit">Pesan Sekarang</button>
+        </form>
+    </div>
+
+
+    <!-- =========================================
+         2. POP-UP MODAL SUKSES
+         ========================================= -->
+    <div class="overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="checkmark-circle">
+                <div class="checkmark"></div>
+            </div>
+            
+            <h2 class="title">Pesanan berhasil dibuat.</h2>
+            
+            <div class="details" id="modalDetails">
+                <!-- Data akan diisi oleh JavaScript -->
+            </div>
+            
+            <button class="btn-ok" onclick="tutupModal()">OK</button>
+        </div>
+    </div>
+
+
+    <!-- =========================================
+         3. JAVASCRIPT LOGIC
+         ========================================= -->
+    <script>
+        const form = document.getElementById('orderForm');
+        const selectLayanan = document.getElementById('inputLayanan');
+        const customServiceContainer = document.getElementById('customServiceContainer');
+        const inputCustomLayanan = document.getElementById('inputCustomLayanan');
+        const inputCustomHarga = document.getElementById('inputCustomHarga');
+        
+        const inputJumlah = document.getElementById('inputJumlah');
+        const inputHarga = document.getElementById('inputHarga');
+        
+        const overlay = document.getElementById('modalOverlay');
+        const modalDetails = document.getElementById('modalDetails');
+
+        // 1. Fungsi memunculkan/menyembunyikan form custom
+        function toggleCustomInput() {
+            if (selectLayanan.value === 'custom') {
+                customServiceContainer.style.display = 'block';
+                inputCustomLayanan.required = true; 
+                inputCustomHarga.required = true;
+                
+                // Kosongkan input harga otomatis agar user isi manual
+                inputHarga.value = "Isi harga custom di atas"; 
+            } else {
+                customServiceContainer.style.display = 'none';
+                inputCustomLayanan.required = false;
+                inputCustomHarga.required = false;
+                inputCustomLayanan.value = ''; 
+                inputCustomHarga.value = '';
+                
+                hitungHarga(); // Hitung ulang jika balik ke layanan biasa
+            }
+        }
+
+        // 2. Fungsi hitung harga untuk layanan biasa
+        function hitungHarga() {
+            // Jika pilih custom, biarkan function ini lewat (karena manual)
+            if (selectLayanan.value === 'custom') return;
+
+            const selectedOption = selectLayanan.options[selectLayanan.selectedIndex];
+            let jumlah = parseFloat(inputJumlah.value);
+
+            if (!selectedOption || selectedOption.value === "" || isNaN(jumlah) || jumlah <= 0) {
+                inputHarga.value = "Rp 0";
+                return;
+            }
+
+            const hargaDasarPer50 = parseFloat(selectedOption.getAttribute('data-harga'));
+            let totalHarga = Math.round((jumlah / 50) * hargaDasarPer50);
+            inputHarga.value = "Rp " + totalHarga.toLocaleString('id-ID');
+        }
+
+        // Event Listener: Dropdown berubah
+        selectLayanan.addEventListener('change', toggleCustomInput);
+
+        // Event Listener: Jumlah berubah (untuk layanan biasa)
+        inputJumlah.addEventListener('input', hitungHarga);
+
+        // Event Listener: Harga Custom diketik, langsung tampil ke Total Harga
+        inputCustomHarga.addEventListener('input', function() {
+            let val = parseFloat(this.value);
+            if (isNaN(val) || val <= 0) {
+                inputHarga.value = "Rp 0";
+            } else {
+                inputHarga.value = "Rp " + val.toLocaleString('id-ID');
+            }
+        });
+
+        // 3. Submit Form
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); 
+
+            let layananTeks = selectLayanan.value;
+            let jumlahTeks = inputJumlah.value;
+            
+            // Jika pilih custom
+            if (layananTeks === 'custom') {
+                const customText = inputCustomLayanan.value.trim();
+                const customPrice = parseFloat(inputCustomHarga.value);
+
+                if (customText === '' || isNaN(customPrice) || customPrice <= 0) {
+                    alert("Silahkan lengkapi Nama Layanan dan Harga Custom Anda!");
+                    return;
+                }
+                
+                layananTeks = `${customText}`;
+                // Tampilkan harga dari input custom
+                inputHarga.value = "Rp " + customPrice.toLocaleString('id-ID');
+            } else if (layananTeks === "") {
+                alert("Silahkan pilih layanan terlebih dahulu!");
+                return;
+            }
+
+            const targetUrl = document.getElementById('inputTarget').value;
+            const harga = inputHarga.value;
+
+            if (harga === "Rp 0" || harga === "Isi harga custom di atas") {
+                alert("Total harga belum valid!");
+                return;
+            }
+
+            const randomId = Math.floor(10000000 + Math.random() * 90000000);
+
+            const detailHTML = `
+                <p>ID Pesanan: <strong>${randomId}</strong></p>
+                <p>Layanan: ${layananTeks}</p>
+                <p>♻️⚡🔥⭐</p>
+                <p>Target/Data:</p>
+                <p style="color: #0066cc;">${targetUrl}</p>
+                <p>Jumlah Pesan: <strong>${jumlahTeks}</strong></p>
+                <p>Total Harga: <strong>${harga}</strong></p>
+            `;
+
+            modalDetails.innerHTML = detailHTML;
+            overlay.classList.add('show');
+        });
+
+        // 4. Tutup Modal & Reset
+        function tutupModal() {
+            overlay.classList.remove('show');
+            
+            setTimeout(() => {
+                form.reset();
+                inputHarga.value = "Rp 0"; 
+                customServiceContainer.style.display = 'none'; 
+                inputCustomLayanan.required = false;
+                inputCustomHarga.required = false;
+            }, 300); 
+        }
+    </script>
+
+</body>
+</html>
